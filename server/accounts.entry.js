@@ -72,10 +72,10 @@ Meteor.startup(function(){
         console.log(record);
 
         //if(record.emails[0].verified === false){
-        Accounts.emailTemplates.siteName = "AwesomeSite";
-        Accounts.emailTemplates.from = "AwesomeSite Admin <accounts@example.com>";
+        Accounts.emailTemplates.siteName = "Clinical UI Boilerplate";
+        Accounts.emailTemplates.from = "Clinical UI Boilerplate Admin <accounts@example.com>";
         Accounts.emailTemplates.enrollAccount.subject = function (user) {
-            return "Welcome to Awesome Town, " + user.profile.name;
+            return "Welcome to Clinical UI Boilerplate, " + user.profile.name;
         };
         Accounts.emailTemplates.enrollAccount.text = function (user, url) {
            return "You have been selected to participate in building a better future!"
