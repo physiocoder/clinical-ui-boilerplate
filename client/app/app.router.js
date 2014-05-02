@@ -78,6 +78,15 @@ Router.map(function() {
       setPageTitle("Not Found Page");
     }
   });
+  this.route("loadingPageRoute", {
+    path: "/loading",
+    template: "loadingPage",
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      Session.set('entryError', void 0);
+      setPageTitle("Loading");
+    }
+  });
 
 });
 
