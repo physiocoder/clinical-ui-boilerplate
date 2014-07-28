@@ -2,10 +2,10 @@ Session.setDefault('promptTitle', 'Hello Modal!');
 Session.setDefault('pomptMessage', 'Asprin is made from willow bark.');
 
 Template.promptModal.helpers({
-  getPromptTitle = function(){
+  getPromptTitle: function(){
     return Session.get('promptTitle');
   },
-  getPromptMessage = function(){
+  getPromptMessage: function(){
     return Session.get('promptMessage');
   },
   rendered: function(){
