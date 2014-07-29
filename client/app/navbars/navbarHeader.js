@@ -28,3 +28,7 @@ Template.navbarHeader.getUserName = function(){
     return "Sign In";
   }
 };
+
+Template.navbarHeader.isLoggedIn = function(){
+  return Meteor.userId();
+};

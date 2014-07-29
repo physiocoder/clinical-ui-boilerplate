@@ -14,10 +14,11 @@
   <div id="appLayout">
     {{> errorPanel }}
     {{> westPanel }}
-
     {{> yield region='header' }}
     {{> inPageAlert }}
-    {{> yield }}
+    <div id="templateWrapper">
+      {{> yield}}
+    </div>
     {{> eastPanel }}
     {{> yield region='footer' }}
   </div>

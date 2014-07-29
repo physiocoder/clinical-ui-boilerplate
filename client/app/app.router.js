@@ -1,5 +1,20 @@
+hideFooter = function() {
+  return $('footer').addClass("hide");
+};
 
+/**
+ * Set an element as invisible but still taking space in the page
+ * (present in the DOM Tree)
+ * @param  {string} selector - Any valid css selector
+ */
+hideElement = function (selector) {
+  $(selector).css('visibility', 'hidden');
+};
 
+animateContentOut = function() {
+  hideFooter();
+  hideElement('#templateWrapper');
+};
 
 //--------------------------------------------------------------
 // Accounts Entry Routes
@@ -10,6 +25,7 @@ Router.map(function() {
     template: "entrySignUpPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Sign Up");
     }
@@ -19,6 +35,7 @@ Router.map(function() {
     template: "entrySignInPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Sign In");
     }
@@ -29,6 +46,7 @@ Router.map(function() {
     template: "entryForgotPassword",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       setPageTitle("Forgot Password");
       return Session.set('entryError', void 0);
     }
@@ -38,6 +56,7 @@ Router.map(function() {
     template: "entrySignOut",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       Session.set('entryError', void 0);
       Meteor.logout();
       Router.go('/');
@@ -48,6 +67,7 @@ Router.map(function() {
     template: "entryResetPassword",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Reset Password");
       return Session.set('resetToken', this.params.resetToken);
@@ -65,6 +85,7 @@ Router.map(function() {
     template: "browserNotSupportedPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Browser Not Supported");
     }
@@ -74,6 +95,7 @@ Router.map(function() {
     template: "notFoundPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Not Found Page");
     }
@@ -83,15 +105,13 @@ Router.map(function() {
     template: "loadingPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Loading");
     }
   });
 
 });
-
-
-
 
 //--------------------------------------------------------------
 // Routes
@@ -107,7 +127,6 @@ renderHomePage = function(scope){
     //scope.render("sidebarTemplate",{to: 'aside'});
   }
 };
-
 
 Router.map(function() {
 
@@ -128,6 +147,7 @@ Router.map(function() {
     template: "homePage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       console.log('routing to: /dashboard');
       setPageTitle("Welcome");
     }
@@ -137,6 +157,7 @@ Router.map(function() {
     template: 'eulaPage',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       setPageTitle("End User License Agreement");
     }
   });
@@ -145,6 +166,7 @@ Router.map(function() {
     template: 'privacyPage',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       setPageTitle("Privacy Policy");
     }
   });
@@ -153,6 +175,7 @@ Router.map(function() {
     template: 'glossaryPage',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       setPageTitle("Glossary");
     }
   });
@@ -161,6 +184,7 @@ Router.map(function() {
     template: 'aboutPage',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
+      animateContentOut();
       setPageTitle("About");
     }
   });
