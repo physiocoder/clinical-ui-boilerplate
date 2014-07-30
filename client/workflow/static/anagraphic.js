@@ -1,6 +1,23 @@
 Template.anagraphic.usernames = function() {
   return Anagraphics.find().fetch();
 };
+
+Template.anagraphic.submitLabel = function() {
+  if(Session.get('selectedUser') === 'add')
+    return 'Add';
+  else
+    return 'Update';
+};
+
+Template.anagraphic.events({
+  'click a': function(evt, templ) {
+    $('a.list-group-item').removeClass('active');
+    evt.currentTarget.classList.add("active");
+    var name = $('a.list-group-item.active').attr('value');
+    Session.set('selectedUser', name);
+  }
+});
+
 /*
 Template.anagraphic.rendered = function() {
   $('#submitBtn').on('click', function (event) {

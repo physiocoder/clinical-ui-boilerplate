@@ -194,18 +194,10 @@ Router.map(function() {
     onBeforeAction: function() {
       animateContentOut();
       setPageTitle("Anagraphic");
+      Session.set('selectedUser','add');
     },
     waitOn: function() {
       return Meteor.subscribe('users');
-    }
-  });
-  this.route('showData', {
-    path: '/show',
-    template: 'showData',
-    yieldTemplates: getYieldTemplates(),
-    onBeforeAction: function() {
-      animateContentOut();
-      setPageTitle("Presentation");
     }
   });
 });

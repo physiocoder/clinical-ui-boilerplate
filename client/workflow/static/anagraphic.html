@@ -10,11 +10,28 @@
             <div class="panel-body">
               <div class="col col-md-6 col-sm-12">
                 <div class="list-group">
-                  <a class="list-group-item active">Add...</a>
+                  <a class="list-group-item active" value='add'>Add...</a>
                   {{#each usernames}}
                   {{> anagraphicListItem}}
                   {{/each}}
                 </div>
+              </div>
+              <div class="col col-md-6 col-sm-12">
+                <div class="form-group">
+                  <label for="inputName">Name</label>
+                  <input type="text" class="form-control" id="inputName" placeholder="Name">
+                  <label for="inputSurname">Surname</label>
+                  <input type="text" class="form-control" id="inputSurname" placeholder="Surname">
+                </div>
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-primary active">
+                    <input type="radio" name="options" id="option1" checked> Male
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="options" id="option2"> Female
+                  </label>
+                </div>
+                <button type="button" class="btn btn-primary pull-right">{{submitLabel}}</button>
               </div>
             </div>
           </div>
@@ -25,7 +42,7 @@
 </template>
 
 <template name="anagraphicListItem">
-  <a class="list-group-item">
+  <a class="list-group-item" value='{{name}}'>
     {{name}} {{surname}}
   </a>
 </template>
