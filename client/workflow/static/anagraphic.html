@@ -1,0 +1,31 @@
+<template name="anagraphic">
+  <div id="anagraphic" class="page">
+    <div class="content">
+
+        <div class="col col-md-6 col-md-offset-3">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              Personal
+            </div>
+            <div class="panel-body">
+              <div class="col col-md-6 col-sm-12">
+                <div class="list-group">
+                  <a class="list-group-item active">Add...</a>
+                  {{#each usernames}}
+                  {{> anagraphicListItem}}
+                  {{/each}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </div>
+</template>
+
+<template name="anagraphicListItem">
+  <a class="list-group-item">
+    {{name}} {{surname}}
+  </a>
+</template>

@@ -1,0 +1,1 @@
+Anagraphics = new Meteor.Collection('anagraphics');
