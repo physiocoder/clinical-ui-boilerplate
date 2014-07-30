@@ -129,7 +129,6 @@ renderHomePage = function(scope){
 };
 
 Router.map(function() {
-
   this.route('landingRoute', {
     path: '/',
     yieldTemplates: getYieldTemplates(),
@@ -188,7 +187,22 @@ Router.map(function() {
       setPageTitle("About");
     }
   });
-
-
-
+  this.route('personal', {
+    path: '/personal',
+    template: 'personal',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      animateContentOut();
+      setPageTitle("Personal");
+    }
+  });
+  this.route('showData', {
+    path: '/show',
+    template: 'showData',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      animateContentOut();
+      setPageTitle("Presentation");
+    }
+  });
 });
