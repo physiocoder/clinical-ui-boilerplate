@@ -187,13 +187,16 @@ Router.map(function() {
       setPageTitle("About");
     }
   });
-  this.route('personal', {
-    path: '/personal',
-    template: 'personal',
+  this.route('anagraphic', {
+    path: '/anagraphic',
+    template: 'anagraphic',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
       animateContentOut();
-      setPageTitle("Personal");
+      setPageTitle("Anagraphic");
+    },
+    waitOn: function() {
+      return Meteor.subscribe('users');
     }
   });
   this.route('showData', {
