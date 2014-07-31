@@ -11,10 +11,10 @@ hideElement = function (selector) {
   $(selector).css('visibility', 'hidden');
 };
 
-animateContentOut = function() {
+function animateContentOut() {
   hideFooter();
   hideElement('#templateWrapper');
-};
+}
 
 //--------------------------------------------------------------
 // Accounts Entry Routes
@@ -195,6 +195,7 @@ Router.map(function() {
       animateContentOut();
       setPageTitle("Anagraphic");
       Session.set('selectedUser','add');
+      Session.set('anagraphicFormIsActive', false);
     },
     waitOn: function() {
       return Meteor.subscribe('users');
