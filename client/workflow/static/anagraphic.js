@@ -76,7 +76,10 @@ function removeForm() {
 Template.anagraphicForm.events({
   'click #submitAdd': function() {
     // inserisce l'utente nel database
-    Anagraphics.insert(getAnagraphicFormData());
+    Anagraphics.insert(getAnagraphicFormData(), function(error, result) {
+      if(error !== undefined)
+        console.log("Error on insert", error);
+    });
     // nasconde il form
     removeForm();
   },

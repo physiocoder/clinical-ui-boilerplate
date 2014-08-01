@@ -5,6 +5,7 @@
     "mousetrap": {},
     "bowser": {},
     "font-awesome": {},
-    "iron-router": {}
+    "iron-router": {},
+    "collection2": {}
   }
 }

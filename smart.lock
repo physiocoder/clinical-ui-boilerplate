@@ -7,7 +7,8 @@
       "mousetrap": {},
       "bowser": {},
       "font-awesome": {},
-      "iron-router": {}
+      "iron-router": {},
+      "collection2": {}
     },
     "packages": {
       "bootstrap-3": {
@@ -40,6 +41,11 @@
         "tag": "v0.8.2",
         "commit": "05415a8891ea87a00fb1e2388585f2ca5a38e0da"
       },
+      "collection2": {
+        "git": "https://github.com/aldeed/meteor-collection2.git",
+        "tag": "v0.4.4",
+        "commit": "c70deb36e10f63238b884529eea1e38cf0789903"
+      },
       "nprogress": {
         "git": "https://github.com/zhouzhuojie/meteor-nprogress.git",
         "tag": "v0.0.5",
@@ -49,6 +55,11 @@
         "git": "https://github.com/EventedMind/iron-layout.git",
         "tag": "v0.2.0",
         "commit": "4a2d53e35ba036b0c189c7ceca34be494d4c6c97"
+      },
+      "simple-schema": {
+        "git": "https://github.com/aldeed/meteor-simple-schema.git",
+        "tag": "v0.6.0",
+        "commit": "418ec496612fb2afc853e342f0d2269b6674a2fe"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",
