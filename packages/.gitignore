@@ -1,11 +1,12 @@
 /bootstrap-3
-/iron-router
-/blaze-layout
 /event-hooks
-/browser-detection
 /auto-nprogress
-/nprogress
 /mousetrap
 /bowser
 /font-awesome
-/iron-transitioner
+/nprogress
+/iron-router
+/iron-layout
+/blaze-layout
+/iron-core
+/iron-dynamic-template

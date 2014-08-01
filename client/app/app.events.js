@@ -1,4 +1,5 @@
 Meteor.startup(function(){
+  /*
   Hooks.init();
 
   Hooks.onLoggedIn = function(){
@@ -22,4 +23,5 @@ Meteor.startup(function(){
   Hooks.onCloseSession = function(userId){
 
   };
+  */
 });
