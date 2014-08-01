@@ -55,20 +55,6 @@ Router.onBeforeAction(function() {
 });
 
 //--------------------------------------------------------------
-//fadeIn animation
-fadeContentIn = function() {
-  $('#templateWrapper').removeClass("animated fadeIn");
-  $('#templateWrapper').css('visibility', 'visible');
-  setTimeout(function() {
-    $('#templateWrapper').addClass("animated fadeIn");
-  }, 5);
-  return $('footer').removeClass("hide");
-};
-
-// define this as a global onAfterAction so it happens all the time
-Router.onAfterAction(fadeContentIn);
-
-//--------------------------------------------------------------
 // Routing Layout Helper Functions
 
 setPageTitle = function(newTitle) {

@@ -11,10 +11,19 @@ hideElement = function (selector) {
   $(selector).css('visibility', 'hidden');
 };
 
-function animateContentOut() {
-  hideFooter();
-  hideElement('#templateWrapper');
+function fadeContentIn() {
+  var templateName = Router.current().lookupTemplate();
+  var templateDiv = $('#' + templateName);
+
+  templateDiv.addClass("animated fadeIn");
+
+  templateDiv.on('webkitTransitionEnd', function() {
+    var templateName = Router.current().lookupTemplate();
+    $('#' + templateName).removeClass("animated fadeIn");
+  });
 }
+
+Router.onBeforeAction(fadeContentIn);
 
 //--------------------------------------------------------------
 // Accounts Entry Routes
@@ -25,7 +34,6 @@ Router.map(function() {
     template: "entrySignUpPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Sign Up");
     }
@@ -35,7 +43,6 @@ Router.map(function() {
     template: "entrySignInPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Sign In");
     }
@@ -46,7 +53,6 @@ Router.map(function() {
     template: "entryForgotPassword",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       setPageTitle("Forgot Password");
       return Session.set('entryError', void 0);
     }
@@ -56,7 +62,6 @@ Router.map(function() {
     template: "entrySignOut",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       Session.set('entryError', void 0);
       Meteor.logout();
       Router.go('/');
@@ -67,7 +72,6 @@ Router.map(function() {
     template: "entryResetPassword",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Reset Password");
       return Session.set('resetToken', this.params.resetToken);
@@ -85,7 +89,6 @@ Router.map(function() {
     template: "browserNotSupportedPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Browser Not Supported");
     }
@@ -95,7 +98,6 @@ Router.map(function() {
     template: "notFoundPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Not Found Page");
     }
@@ -105,7 +107,6 @@ Router.map(function() {
     template: "loadingPage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       Session.set('entryError', void 0);
       setPageTitle("Loading");
     }
@@ -146,7 +147,6 @@ Router.map(function() {
     template: "homePage",
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       console.log('routing to: /dashboard');
       setPageTitle("Welcome");
     }
@@ -156,7 +156,6 @@ Router.map(function() {
     template: 'eulaPage',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       setPageTitle("End User License Agreement");
     }
   });
@@ -165,7 +164,6 @@ Router.map(function() {
     template: 'privacyPage',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       setPageTitle("Privacy Policy");
     }
   });
@@ -174,7 +172,6 @@ Router.map(function() {
     template: 'glossaryPage',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       setPageTitle("Glossary");
     }
   });
@@ -183,7 +180,6 @@ Router.map(function() {
     template: 'aboutPage',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       setPageTitle("About");
     }
   });
@@ -192,7 +188,6 @@ Router.map(function() {
     template: 'anagraphic',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      animateContentOut();
       setPageTitle("Anagraphic");
       Session.set('selectedUser','add');
       Session.set('anagraphicFormIsActive', false);
