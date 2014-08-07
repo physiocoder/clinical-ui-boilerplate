@@ -21,8 +21,23 @@ Template.anagraphicSection.errMsg = function(field) {
 	return " -  " + ArtworksValidationContext.keyErrorMessage(field);
 };
 
+Template.anagraphicArtworkWizard.isTabActive = function(tab) {
+	if(Session.equals('activeSection', tab))
+		return "active";
+	else
+		return "";
+};
+
+Template.anagraphicArtworkWizard.created = function() {
+	Session.set('activeSection', 'anagraphicTab');
+};
+
+Template.anagraphicArtworkWizard.destroyed = function() {
+	delete Session.keys['activeSection'];
+};
+
 Template.anagraphicArtworkWizard.events({
-	'click .pager > .cancel': function(evt, templ) {
+	'click .pager > .back': function(evt, templ) {
 		closeForm();
 	},
 	'click .pager > .create': function() {
@@ -36,10 +51,8 @@ Template.anagraphicArtworkWizard.events({
 					console.log("Error on insert", error);
 			});
 			Session.set('selectedArtworkId', selectedArtworkId);
+			showNextTab();
 		}
-	},
-	'click .pager > .back': function(evt, templ) {
-		closeForm();
 	},
 	
 	// ***** Validation events *****/
@@ -52,6 +65,16 @@ Template.anagraphicArtworkWizard.events({
 		fieldValuePair[field] = evt.currentTarget.value;
 
 		ArtworksValidationContext.validateOne(fieldValuePair, field);
+	},
+	'click .tab-selector': function(evt, templ) {
+		var selection = evt.currentTarget.getAttribute('data-selection');
+		Session.set('activeSection', selection);
+	},
+	'click .save': function() {
+		showNextTab();
+	},
+	'click .delete': function() {
+		
 	}
 });
 
@@ -69,4 +92,25 @@ function getAnagraphicSectionData() {
 
 function closeForm() {
 	Session.set('anagraphicArtworkFormIsActive', false);
+}
+
+function showNextTab() {
+	var current = $('.tab-pane.active').attr('id');
+	var next = '';
+	if(current === 'anagraphicTab')
+		next = 'materialTab';
+	else if(current === 'materialTab')
+		next = 'physicsDescTab';
+	else if(current === 'physicsDescTab')
+		next = 'environmentTab';
+	else if(current === 'environmentTab')
+		next = 'attachmentsTab';
+	else if(current === 'attachmentsTab')
+		next = 'referentsTab';
+	else if(current === 'referentsTab')
+		next = 'expositionTab';
+	else
+		next = 'anagraphicTab';
+
+	Session.set('activeSection', next);
 }

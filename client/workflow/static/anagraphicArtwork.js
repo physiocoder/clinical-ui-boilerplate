@@ -43,28 +43,3 @@ Template.anagraphicArtworkList.events({
     Session.set('anagraphicArtworkFormIsActive', true);
   }
 });
-
-function removeForm() {
-  Session.set('anagraphicArtworkFormIsActive', false);
-  $('a.list-group-item').removeClass('active');
-}
-
-Template.anagraphicArtworkForm.events({
-  'click #submitAdd': function() {
-    // inserisce l'utente nel database
-    Artworks.insert(getAnagraphicArtworkFormData(), function(error, result) {
-      if(error !== undefined)
-        console.log("Error on insert", error);
-    });
-    // nasconde il form
-    removeForm();
-  },
-  'click #submitUpdate': function() {
-    Artworks.update(Session.get('selectedArtworkId'),{$set: getAnagraphicArtworkFormData()}, function(error, result) {
-      if(error !== undefined)
-        console.log("Error on update", error);
-    });
-    // nasconde il form
-    removeForm();
-  }
-});

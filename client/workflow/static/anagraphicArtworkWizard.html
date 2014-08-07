@@ -2,38 +2,38 @@
   <div id="anagraphicArtworkWizard">
     <div class="col-md-12">
       <ul class="nav nav-pills nav-stacked col-md-3">
-        <li class="active"><a href="#anagraphicTab" data-toggle="tab">Anagrafica</a></li>
+        <li class="{{isTabActive 'anagraphicTab'}}"><a class="tab-selector" data-selection="anagraphicTab" data-toggle="tab">Anagrafica</a></li>
         {{#if anagraphicSectionIsValid}}
-        <li><a href="#materialTab" data-toggle="tab">Materia e Tecnica</a></li>
-        <li><a href="#physicsDescriptionTab" data-toggle="tab">Descrizione fisica</a></li>
-        <li><a href="#environmentTab" data-toggle="tab">Ambiente e conservazione</a></li>
-        <li><a href="#attachmentsTab" data-toggle="tab">Allegati</a></li>
-        <li><a href="#referentsTab" data-toggle="tab">Referenti</a></li>
-        <li><a href="#expositionTab" data-toggle="tab">Esposizione</a></li>
+        <li class="{{isTabActive 'materialTab'}}"><a class="tab-selector" data-selection="materialTab" data-toggle="tab">Materia e Tecnica</a></li>
+        <li class="{{isTabActive 'physicsDescTab'}}"><a class="tab-selector" data-selection="physicsDescTab" data-toggle="tab">Descrizione fisica</a></li>
+        <li class="{{isTabActive 'environmentTab'}}"><a class="tab-selector" data-selection="environmentTab" data-toggle="tab">Ambiente e conservazione</a></li>
+        <li class="{{isTabActive 'attachmentsTab'}}"><a class="tab-selector" data-selection="attachmentsTab" data-toggle="tab">Allegati</a></li>
+        <li class="{{isTabActive 'referentsTab'}}"><a class="tab-selector" data-selection="referentsTab" data-toggle="tab">Referenti</a></li>
+        <li class="{{isTabActive 'expositionTab'}}"><a class="tab-selector" data-selection="expositionTab" data-toggle="tab">Esposizione</a></li>
         {{/if}}
       </ul>
       <div class="tabbable tabs-left col-md-9">
         <div class="alert alert-warning hidden" role="alert"></div>
         <div class="tab-content">
-          <div class="tab-pane active" id="anagraphicTab">
+          <div class="tab-pane {{isTabActive 'anagraphicTab'}}" id="anagraphicTab">
             {{> anagraphicSection}}
           </div>
-          <div class="tab-pane" id="materialTab">
+          <div class="tab-pane {{isTabActive 'materialTab'}}" id="materialTab">
             {{> materialSection}}
           </div>
-          <div class="tab-pane" id="physicsDescriptionTab">
+          <div class="tab-pane {{isTabActive 'physicsDescTab'}}" id="physicsDescTab">
             {{> physicsDescriptionSection}}
           </div>
-          <div class="tab-pane" id="environmentTab">
+          <div class="tab-pane {{isTabActive 'environmentTab'}}" id="environmentTab">
             {{> environmentSection}}
           </div>
-          <div class="tab-pane" id="attachmentsTab">
+          <div class="tab-pane {{isTabActive 'attachmentsTab'}}" id="attachmentsTab">
             5
           </div>
-          <div class="tab-pane" id="referentsTab">
+          <div class="tab-pane {{isTabActive 'referentsTab'}}" id="referentsTab">
             6
           </div>
-          <div class="tab-pane" id="expositionTab">
+          <div class="tab-pane {{isTabActive 'expositionTab'}}" id="expositionTab">
             7
           </div>
         </div>  
@@ -41,15 +41,23 @@
     </div>
     <ul class="pager wizard col-md-9 pull-right">
       {{#if anagraphicSectionIsValid}}
-      <li class="back"><a>Back to list</a></li>
-      <li class="save"><a>Save</a></li>
+      {{> deleteArtwork}}
+      {{> backToList}}
+      <button class="save btn btn-default">Save</button>
       {{else}}
-      <li class="cancel"><a>Cancel</a></li>
-      <li class="create"><a>Create artwork</a></li>
+      <button class="back btn">Cancel</button>
+      <button class="create btn btn-default">Create artwork</button>
       {{/if}}
-      <!--li class="next finish"><a>Finish</a></li-->
     </ul>
   </div>
+</template>
+
+<template name="deleteArtwork">
+  <button id="deleteArtwork" class="delete btn btn-danger">Delete artwork</button>
+</template>
+
+<template name="backToList">
+  <button class="back btn">Back to list</button>
 </template>
 
 <template name="anagraphicSection">
@@ -72,7 +80,7 @@
     </div>
     <div class="form-group field-dating {{fieldValidity 'dating'}}">
       <label class="control-label" for="datingElem">Dating {{errMsg 'dating'}}</label>
-      <input type="text" class="form-control" id="inputDating" placeholder="Ex. 1893, III sec., First half 1900..." value="{{dating}}" data-schemafield="dating" maxlength=20>
+      <input type="text" class="form-control" id="datingElem" placeholder="Ex. 1893, III sec., First half 1900..." value="{{dating}}" data-schemafield="dating" maxlength=20>
     </div>
     <div class="form-group field-type {{fieldValidity 'type'}}">
       <label class="control-label" for="typeElem">Artwork type {{errMsg 'type'}}</label>
