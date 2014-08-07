@@ -84,7 +84,10 @@ Template.anagraphicForm.events({
     removeForm();
   },
   'click #submitUpdate': function() {
-    Anagraphics.update(Session.get('selectedUser'),getAnagraphicFormData());
+    Anagraphics.update(Session.get('selectedUser'),{$set: getAnagraphicFormData()}, function(error, result) {
+      if(error !== undefined)
+        console.log("Error on update", error);
+    });
     // nasconde il form
     removeForm();
   }

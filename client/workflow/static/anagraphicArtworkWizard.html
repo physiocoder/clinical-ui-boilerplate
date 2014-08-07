@@ -1,0 +1,135 @@
+<template name="anagraphicArtworkWizard">
+  <div id="anagraphicArtworkWizard">
+    <div class="col-md-12">
+      <ul class="nav nav-pills nav-stacked col-md-3">
+        <li class="active"><a href="#anagraphicTab" data-toggle="tab">Anagrafica</a></li>
+        {{#if anagraphicSectionIsValid}}
+        <li><a href="#materialTab" data-toggle="tab">Materia e Tecnica</a></li>
+        <li><a href="#physicsDescriptionTab" data-toggle="tab">Descrizione fisica</a></li>
+        <li><a href="#environmentTab" data-toggle="tab">Ambiente e conservazione</a></li>
+        <li><a href="#attachmentsTab" data-toggle="tab">Allegati</a></li>
+        <li><a href="#referentsTab" data-toggle="tab">Referenti</a></li>
+        <li><a href="#expositionTab" data-toggle="tab">Esposizione</a></li>
+        {{/if}}
+      </ul>
+      <div class="tabbable tabs-left col-md-9">
+        <div class="alert alert-warning hidden" role="alert"></div>
+        <div class="tab-content">
+          <div class="tab-pane active" id="anagraphicTab">
+            {{> anagraphicSection}}
+          </div>
+          <div class="tab-pane" id="materialTab">
+            {{> materialSection}}
+          </div>
+          <div class="tab-pane" id="physicsDescriptionTab">
+            {{> physicsDescriptionSection}}
+          </div>
+          <div class="tab-pane" id="environmentTab">
+            {{> environmentSection}}
+          </div>
+          <div class="tab-pane" id="attachmentsTab">
+            5
+          </div>
+          <div class="tab-pane" id="referentsTab">
+            6
+          </div>
+          <div class="tab-pane" id="expositionTab">
+            7
+          </div>
+        </div>  
+      </div>
+    </div>
+    <ul class="pager wizard col-md-9 pull-right">
+      {{#if anagraphicSectionIsValid}}
+      <li class="back"><a>Back to list</a></li>
+      <li class="save"><a>Save</a></li>
+      {{else}}
+      <li class="cancel"><a>Cancel</a></li>
+      <li class="create"><a>Create artwork</a></li>
+      {{/if}}
+      <!--li class="next finish"><a>Finish</a></li-->
+    </ul>
+  </div>
+</template>
+
+<template name="anagraphicSection">
+  <div id="anagraphicSection" class="form-group">
+    <div class="form-group field-inventory">
+      <label for="inputInventory">Inventory</label>
+      <input type="text" class="form-control" id="inputInventory" placeholder="Inventory" value="{{inventory}}" maxlength=20>
+    </div>
+    <div class="form-group field-title">
+      <label for="inputTitle">Title</label>
+      <input type="text" class="form-control" id="inputTitle" placeholder="Title" value="{{title}}" maxlength=200>
+    </div>
+    <div class="form-group field-authors">
+      <label for="inputAuthors">Author(s)</label>
+      <input type="text" class="form-control" id="inputAuthors" placeholder="Author" value="{{authors}}" maxlength=20>
+    </div>
+    <div class="form-group field-description">
+      <label for="inputDescription">Description</label>
+      <textarea class="form-control" id="description" placeholder="Description..." value="{{description}}" maxlength=200></textarea>
+    </div>
+    <div class="form-group field-dating">
+      <label for="inputDating">Dating</label>
+      <input type="text" class="form-control" id="inputDating" placeholder="Ex. 1893, III sec., First half 1900..." value="{{dating}}" maxlength=20>
+    </div>
+    <div class="form-group field-type">
+      <label class="control-label" for="artworkType">Artwork type</label>
+      <select id="artworkTypeSelect" required autocomplete="off" class="form-control">
+        <option selected disabled value="">(Select artwork type)</option>
+        {{#each artworkTypes}}
+        <option value="{{name}}">{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+  </div>
+</template>
+
+<template name="materialSection">
+  <div id="materialSection">
+    <div class="form-group">
+      <label class="control-label" for="artworkMaterial">Artwork material</label>
+      <select {{isDisabled}} name="artworkMaterial" required autocomplete="off" class="form-control">
+        <option selected disabled value="">(Select artwork material)</option>
+        {{#each artworkMaterials}}
+        <option value="{{id}}">{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="artworkTechnique">Artwork technique</label>
+      <select {{isDisabled}} name="artworkTechnique" required autocomplete="off" class="form-control">
+        <option selected disabled value="">(Select artwork technique)</option>
+        {{#each artworkTechniques}}
+        <option value="{{id}}">{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+    {{> accessorySection}}
+  </div>
+</template>
+
+<template name="accessorySection">
+  <div id="accessorySection">
+    <button class="btn btn-default btn-lg">
+      Add accessory
+      <span class="glyphicon glyphicon-plus"></span>
+    </button>
+  </div>
+</template>
+
+<template name="physicsDescriptionSection">
+  <div id="physicsDescriptionSection">
+
+  </div>
+</template>
+
+<template name="environmentSection">
+  <div id="environmentSection">
+    <div class="form-group field-site">
+      <label for="inputSite">Site</label>
+      <input type="text" class="form-control" id="inputSite" placeholder="Site" value="{{site}}" maxlength=20>
+    </div>
+  </div>
+</template>

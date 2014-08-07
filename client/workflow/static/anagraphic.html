@@ -44,9 +44,9 @@
   {{#with actionContext}}
   <div class="form-group">
     <label for="inputName">Name</label>
-    <input type="text" class="form-control" id="inputName" placeholder="Name" value="{{name}}">
+    <input type="text" class="form-control" id="inputName" placeholder="Name" value="{{name}}" maxlength=20>
     <label for="inputSurname">Surname</label>
-    <input type="text" class="form-control" id="inputSurname" placeholder="Surname" value="{{surname}}">
+    <input type="text" class="form-control" id="inputSurname" placeholder="Surname" value="{{surname}}" maxlength=20>
   </div>
   <div class="btn-group" data-toggle="buttons">
       <label class="btn btn-primary {{activeIfUserIs 'm'}}" id="maleLabel">
