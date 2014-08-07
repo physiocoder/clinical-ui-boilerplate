@@ -1,0 +1,51 @@
+<template name="anagraphicArtwork">
+  <div id="anagraphicArtwork" class="page">
+    <div class="content">
+
+        <div class="col col-md-6 col-md-offset-3">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              Artwork's anagraphic
+            </div>
+            <div class="panel-body">
+              {{#if formShouldBeVisible}}
+              <div class="col col-md-12 col-sm-12 animated fadeIn">
+                {{> anagraphicArtworkForm}}
+              </div>
+              {{else}}
+              <div class="col col-md-12 col-sm-12 animated fadeIn">
+                {{> anagraphicArtworkList}}
+              </div>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </div>
+</template>
+  
+<template name="anagraphicArtworkList">
+  <div class="list-group">
+    <a class="list-group-item" value='add'>Add artwork...</a>
+    {{#each artworks}}
+    {{> anagraphicArtworkListItem}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="anagraphicArtworkListItem">
+  <a class="list-group-item" value='{{_id}}'>
+    <b>{{title}}</b> 
+    <br>
+    {{authors}}
+  </a>
+</template>
+
+<template name="anagraphicArtworkForm">
+  <div id="anagraphicArtworkForm">
+    {{#with contextArtwork}}
+    {{> anagraphicArtworkWizard}}
+    {{/with}}
+  </div>
+</template>

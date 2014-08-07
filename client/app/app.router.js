@@ -212,4 +212,17 @@ Router.map(function() {
       return Meteor.subscribe('users');
     }
   });
+  this.route('anagraphicArtwork', {
+    path: '/anagraphicartwork',
+    template: 'anagraphicArtwork',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      setPageTitle("Artwork's anagraphic");
+      Session.set('selectedArtwork','add');
+      Session.set('anagraphicArtworkFormIsActive', false);
+    },
+    waitOn: function() {
+      return Meteor.subscribe('artworks');
+    }
+  });
 });
