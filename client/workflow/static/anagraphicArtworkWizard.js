@@ -9,19 +9,27 @@ Template.anagraphicSection.artworkTypes = function() {
 	return artworkType;
 };
 
+Template.anagraphicSection.fieldValidity = function(field) {
+	var validationResult = ArtworksValidationContext.keyIsInvalid(field);
+	if(validationResult)
+		return 'has-error';
+	else
+		return '';
+};
+
+Template.anagraphicSection.errMsg = function(field) {
+	return " -  " + ArtworksValidationContext.keyErrorMessage(field);
+};
+
 Template.anagraphicArtworkWizard.events({
 	'click .pager > .cancel': function(evt, templ) {
 		closeForm();
 	},
 	'click .pager > .create': function() {
+		var data = getAnagraphicSectionData();
 
-		$('#anagraphicSection > .form-group').removeClass('has-error');
-
-		// data validation is done by attributes on HTML elements
-		// and by SimpleSchema. Thus I just check that the user provided
-		// all needed information
-		if(dataArePresent()) {
-			var data = getAnagraphicSectionData();
+		//ArtworksValidationContext.resetValidation();
+		if(ArtworksValidationContext.validate(data)) {
 			//$('.alert').text("").removeClass('animated fadeIn').addClass('hidden');
 			var selectedArtworkId = Artworks.insert(data, function(error, result) {
 				if(error !== undefined)
@@ -29,82 +37,34 @@ Template.anagraphicArtworkWizard.events({
 			});
 			Session.set('selectedArtworkId', selectedArtworkId);
 		}
-		else {
-			graphicInvalidation();
-			//$('.alert').text("All fields are mandatory!").removeClass('hidden').addClass('animated fadeIn');
-		}
 	},
 	'click .pager > .back': function(evt, templ) {
 		closeForm();
 	},
 	
-	// validation events
-	'change .field-inventory': function() {
-		//console.log("Changed value in field-inventory");
-		$('.form-group.field-inventory').removeClass('has-error');
-	},
-	'change .field-title': function() {
-		//console.log("Changed value in field-title");
-		$('.form-group.field-title').removeClass('has-error');
-	},
-	'change .field-authors': function() {
-		//console.log("Changed value in field-authors");
-		$('.form-group.field-authors').removeClass('has-error');
-	},
-	'change .field-type': function() {
-		//console.log("Changed value in field-type");
-		$('.form-group.field-type').removeClass('has-error');
-	}
+	// ***** Validation events *****/
+	// The change event fires when we leave the element and its content has changed
+	'change .form-control': function(evt, templ) {
+		// extracting field name from input id, whose format is #inputField
+		var field = evt.currentTarget.getAttribute('data-schemafield');
+		// constructing the object to pass to validateOne(obj, key)
+		var fieldValuePair = {};
+		fieldValuePair[field] = evt.currentTarget.value;
 
+		ArtworksValidationContext.validateOne(fieldValuePair, field);
+	}
 });
 
 function getAnagraphicSectionData() {
   var data = {
-    inventory: $('#inputInventory').val(),
-    title: $('#inputTitle').val(),
-    authors: $('#inputAuthors').val(),
-    description: $('#description').val(),
-    dating: $('#inputDating').val(),
-    type: $('#artworkTypeSelect').val()
+    inventory: $('#inventoryElem').val(),
+    title: $('#titleElem').val(),
+    authors: $('#authorsElem').val(),
+    description: $('#descriptionElem').val(),
+    dating: $('#datingElem').val(),
+    type: $('#typeElem').val()
   };
-  //console.log("Data:", data);
   return data;
-}
-
-function dataArePresent() {
-	var data = getAnagraphicSectionData();
-
-	if(!fieldIsPresent(data.inventory))
-		return false;
-	else if(!fieldIsPresent(data.title))
-		return false;
-	else if(!fieldIsPresent(data.authors))
-		return false;
-	else if(!fieldIsPresent(data.type))
-		return false;
-	else
-		return true;
-}
-
-function fieldIsPresent(field) {
-	if(field === null || field === undefined || field === "")
-		return false;
-	else
-		return true;
-}
-
-function graphicInvalidation() {
-	if(!fieldIsPresent($('#inputInventory').val()))
-		$('.form-group.field-inventory').addClass('has-error');
-
-	if(!fieldIsPresent($('#inputTitle').val()))
-		$('.form-group.field-title').addClass('has-error');
-
-	if(!fieldIsPresent($('#inputAuthors').val()))
-		$('.form-group.field-authors').addClass('has-error');
-
-	if(!fieldIsPresent($('#artworkTypeSelect').val()))
-		$('.form-group.field-type').addClass('has-error');
 }
 
 function closeForm() {

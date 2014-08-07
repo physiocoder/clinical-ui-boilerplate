@@ -54,29 +54,29 @@
 
 <template name="anagraphicSection">
   <div id="anagraphicSection" class="form-group">
-    <div class="form-group field-inventory">
-      <label for="inputInventory">Inventory</label>
-      <input type="text" class="form-control" id="inputInventory" placeholder="Inventory" value="{{inventory}}" maxlength=20>
+    <div class="form-group field-inventory {{fieldValidity 'inventory'}}">
+      <label class="control-label" for="inventoryElem">Inventory {{errMsg 'inventory'}}</label>
+      <input type="text" class="form-control" id="inventoryElem" placeholder="Inventory" value="{{inventory}}" data-schemafield="inventory" maxlength=20>
     </div>
-    <div class="form-group field-title">
-      <label for="inputTitle">Title</label>
-      <input type="text" class="form-control" id="inputTitle" placeholder="Title" value="{{title}}" maxlength=200>
+    <div class="form-group field-title {{fieldValidity 'title'}}">
+      <label class="control-label" for="titleElem">Title {{errMsg 'title'}}</label>
+      <input type="text" class="form-control" id="titleElem" placeholder="Title" value="{{title}}" data-schemafield="title" maxlength=200>
     </div>
-    <div class="form-group field-authors">
-      <label for="inputAuthors">Author(s)</label>
-      <input type="text" class="form-control" id="inputAuthors" placeholder="Author" value="{{authors}}" maxlength=20>
+    <div class="form-group field-authors {{fieldValidity 'authors'}}">
+      <label class="control-label" for="authorsElem">Author(s) {{errMsg 'authors'}}</label>
+      <input type="text" class="form-control" id="authorsElem" placeholder="Author" value="{{authors}}" data-schemafield="authors" maxlength=20>
     </div>
-    <div class="form-group field-description">
-      <label for="inputDescription">Description</label>
-      <textarea class="form-control" id="description" placeholder="Description..." value="{{description}}" maxlength=200></textarea>
+    <div class="form-group field-description {{fieldValidity 'description'}}">
+      <label class="control-label" for="descriptionElem">Description {{errMsg 'description'}}</label>
+      <textarea class="form-control" id="descriptionElem" placeholder="Description..." value="{{description}}" data-schemafield="description" maxlength=200></textarea>
     </div>
-    <div class="form-group field-dating">
-      <label for="inputDating">Dating</label>
-      <input type="text" class="form-control" id="inputDating" placeholder="Ex. 1893, III sec., First half 1900..." value="{{dating}}" maxlength=20>
+    <div class="form-group field-dating {{fieldValidity 'dating'}}">
+      <label class="control-label" for="datingElem">Dating {{errMsg 'dating'}}</label>
+      <input type="text" class="form-control" id="inputDating" placeholder="Ex. 1893, III sec., First half 1900..." value="{{dating}}" data-schemafield="dating" maxlength=20>
     </div>
-    <div class="form-group field-type">
-      <label class="control-label" for="artworkType">Artwork type</label>
-      <select id="artworkTypeSelect" required autocomplete="off" class="form-control">
+    <div class="form-group field-type {{fieldValidity 'type'}}">
+      <label class="control-label" for="typeElem">Artwork type {{errMsg 'type'}}</label>
+      <select id="typeElem" required autocomplete="off" class="form-control" data-schemafield="type">
         <option selected disabled value="">(Select artwork type)</option>
         {{#each artworkTypes}}
         <option value="{{name}}">{{name}}</option>

@@ -1,9 +1,9 @@
 Anagraphics = new Meteor.Collection('anagraphics');
 Artworks = new Meteor.Collection('artworks');
 
-var Schemas = {};
+var schemas = {};
 
-Schemas.User = new SimpleSchema({
+schemas.User = new SimpleSchema({
     name: {
         type: String,
         label: "Name",
@@ -21,7 +21,7 @@ Schemas.User = new SimpleSchema({
     }
 });
 
-Schemas.Artwork = new SimpleSchema({
+schemas.Artwork = new SimpleSchema({
     inventory: {
         type: String,
         label: "Inventory",
@@ -47,8 +47,15 @@ Schemas.Artwork = new SimpleSchema({
         type: String,
         label: "Dating",
         max: 20
+    },
+    type: {
+        type: String,
+        label: "Artwork type",
+        max: 200
     }
 });
 
-Anagraphics.attachSchema(Schemas.User);
-Artworks.attachSchema(Schemas.Artwork);
+Anagraphics.attachSchema(schemas.User);
+Artworks.attachSchema(schemas.Artwork);
+
+ArtworksValidationContext = schemas.Artwork.namedContext("artworksContext");
