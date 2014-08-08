@@ -13,14 +13,15 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
   }
   else {
     var artwork = Artworks.findOne({_id: Session.get('selectedArtworkId')});
-    contextObj = {
-      inventory: artwork.inventory,
-      title: artwork.title,
-      authors: artwork.authors,
-      description: artwork.description,
-      dating: artwork.dating,
-      isAdding: false
-    };
+    if(artwork !== undefined)
+      contextObj = {
+        inventory: artwork.inventory,
+        title: artwork.title,
+        authors: artwork.authors,
+        description: artwork.description,
+        dating: artwork.dating,
+        isAdding: false
+      };
   }
 
   return contextObj;

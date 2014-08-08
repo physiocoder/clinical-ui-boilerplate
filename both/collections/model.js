@@ -1,6 +1,12 @@
 Anagraphics = new Meteor.Collection('anagraphics');
 Artworks = new Meteor.Collection('artworks');
 
+Artworks.allow({
+    remove: function(userId) {
+        return userId;
+    }
+});
+
 var schemas = {};
 
 schemas.User = new SimpleSchema({

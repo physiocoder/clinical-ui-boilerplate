@@ -64,7 +64,7 @@
   <div id="anagraphicSection" class="form-group">
     <div class="form-group field-inventory {{fieldValidity 'inventory'}}">
       <label class="control-label" for="inventoryElem">Inventory {{errMsg 'inventory'}}</label>
-      <input type="text" class="form-control" id="inventoryElem" placeholder="Inventory" value="{{inventory}}" data-schemafield="inventory" maxlength=20>
+      <input type="text" class="form-control" id="inventoryElem" placeholder="Inventory" value="{{inventory}}" data-schemafield="inventory" autofocus maxlength=20>
     </div>
     <div class="form-group field-title {{fieldValidity 'title'}}">
       <label class="control-label" for="titleElem">Title {{errMsg 'title'}}</label>
@@ -98,7 +98,7 @@
   <div id="materialSection">
     <div class="form-group">
       <label class="control-label" for="artworkMaterial">Artwork material</label>
-      <select {{isDisabled}} name="artworkMaterial" required autocomplete="off" class="form-control">
+      <select {{isDisabled}} name="artworkMaterial" required autocomplete="off" class="form-control" autofocus>
         <option selected disabled value="">(Select artwork material)</option>
         {{#each artworkMaterials}}
         <option value="{{id}}">{{name}}</option>

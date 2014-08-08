@@ -53,12 +53,17 @@ Template.anagraphicArtworkWizard.events({
 			Session.set('selectedArtworkId', selectedArtworkId);
 			showNextTab();
 		}
+		else {
+			// put the focus on first invalid element
+			var fieldClass = 'field-' + ArtworksValidationContext.invalidKeys()[0].name;
+			$("." + fieldClass + " > .form-control").focus();
+		}
 	},
 	
 	// ***** Validation events *****/
 	// The change event fires when we leave the element and its content has changed
 	'change .form-control': function(evt, templ) {
-		// extracting field name from input id, whose format is #inputField
+		// extracting field name from input id
 		var field = evt.currentTarget.getAttribute('data-schemafield');
 		// constructing the object to pass to validateOne(obj, key)
 		var fieldValuePair = {};
@@ -74,7 +79,12 @@ Template.anagraphicArtworkWizard.events({
 		showNextTab();
 	},
 	'click .delete': function() {
-		
+		var n = Artworks.remove(Session.get('selectedArtworkId'), function(error, result) {
+			console.log("Error on remove: " + error);
+			console.log("Removed elements: " + result);
+		});
+		console.log("n: " + n);
+		if(n) closeForm();
 	}
 });
 
@@ -111,6 +121,9 @@ function showNextTab() {
 		next = 'expositionTab';
 	else
 		next = 'anagraphicTab';
+
+	if(next === 'anagraphicTab')
+		closeForm();
 
 	Session.set('activeSection', next);
 }
