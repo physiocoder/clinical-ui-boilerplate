@@ -8,7 +8,11 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
       authors: "",
       description: "",
       dating: "",
-      isAdding: true
+      type: "",
+      material: "",
+      technique: "",
+      accessories: [],
+      isAdding: true  // not in database
     };
   }
   else {
@@ -20,7 +24,11 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
         authors: artwork.authors,
         description: artwork.description,
         dating: artwork.dating,
-        isAdding: false
+        type: artwork.type,
+        material: artwork.material,
+        technique: artwork.technique,
+        accessories: artwork.accessories,
+        isAdding: false // not in database
       };
   }
 

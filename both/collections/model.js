@@ -1,12 +1,6 @@
 Anagraphics = new Meteor.Collection('anagraphics');
 Artworks = new Meteor.Collection('artworks');
 
-Artworks.allow({
-    remove: function(userId) {
-        return userId;
-    }
-});
-
 var schemas = {};
 
 schemas.User = new SimpleSchema({
@@ -58,6 +52,21 @@ schemas.Artwork = new SimpleSchema({
         type: String,
         label: "Artwork type",
         max: 200
+    },
+    material: {
+        type: String,
+        label: "Material",
+        optional: true
+    },
+    technique: {
+        type: String,
+        label: "Technique",
+        optional: true
+    },
+    accessories: {
+        type: [String],
+        label: "Accessories",
+        optional: true
     }
 });
 

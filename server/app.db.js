@@ -5,3 +5,12 @@ Meteor.publish('users', function() {
 Meteor.publish('artworks', function() {
 	return Artworks.find();
 });
+
+Artworks.allow({
+    update: function(userId) {
+        return userId;
+    },
+    remove: function(userId) {
+        return userId;
+    }
+});

@@ -85,9 +85,9 @@
     <div class="form-group field-type {{fieldValidity 'type'}}">
       <label class="control-label" for="typeElem">Artwork type {{errMsg 'type'}}</label>
       <select id="typeElem" required autocomplete="off" class="form-control" data-schemafield="type">
-        <option selected disabled value="">(Select artwork type)</option>
+        <option {{isSelectedHelper this 'none'}} disabled value="">(Select artwork type)</option>
         {{#each artworkTypes}}
-        <option value="{{name}}">{{name}}</option>
+        <option value="{{name}}" {{isSelectedHelper .. name "type"}}>{{name}}</option>
         {{/each}}
       </select>
     </div>
@@ -97,8 +97,8 @@
 <template name="materialSection">
   <div id="materialSection">
     <div class="form-group">
-      <label class="control-label" for="artworkMaterial">Artwork material</label>
-      <select {{isDisabled}} name="artworkMaterial" required autocomplete="off" class="form-control" autofocus>
+      <label class="control-label" for="materialElem">Artwork material</label>
+      <select id="materialElem" required autocomplete="off" class="form-control" data-schemafield="material" autofocus>
         <option selected disabled value="">(Select artwork material)</option>
         {{#each artworkMaterials}}
         <option value="{{id}}">{{name}}</option>
@@ -106,30 +106,34 @@
       </select>
     </div>
     <div class="form-group">
-      <label class="control-label" for="artworkTechnique">Artwork technique</label>
-      <select {{isDisabled}} name="artworkTechnique" required autocomplete="off" class="form-control">
-        <option selected disabled value="">(Select artwork technique)</option>
+      <label class="control-label" for="techniqueElem">Artwork technique</label>
+      <select id="techniqueElem" required autocomplete="off" class="form-control" data-schemafield="technique">
+        <option {{isSelectedHelper .. "none" "technique"}} disabled value="">(Select artwork technique)</option>
         {{#each artworkTechniques}}
-        <option value="{{id}}">{{name}}</option>
+        <option {{isSelectedHelper .. name "technique"}} value="{{name}}">{{name}}</option>
         {{/each}}
       </select>
     </div>
-    {{> accessorySection}}
+    {{> accessoriesSection}}
   </div>
 </template>
 
-<template name="accessorySection">
+<template name="accessoriesSection">
   <div id="accessorySection">
-    <button class="btn btn-default btn-lg">
-      Add accessory
-      <span class="glyphicon glyphicon-plus"></span>
-    </button>
+    {{#each accessories}}
+    <div class="checkbox col-md-4 col-sm-6 col-xs-12">
+      <label>
+        <input type="checkbox" value="{{this}}" {{isChecked}}>
+        {{this}}
+      </label>
+    </div>
+    {{/each}}
   </div>
 </template>
 
 <template name="physicsDescriptionSection">
   <div id="physicsDescriptionSection">
-
+    
   </div>
 </template>
 

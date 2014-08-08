@@ -5,22 +5,6 @@ Template.anagraphicArtworkWizard.anagraphicSectionIsValid = function() {
 		return true;
 };
 
-Template.anagraphicSection.artworkTypes = function() {
-	return artworkType;
-};
-
-Template.anagraphicSection.fieldValidity = function(field) {
-	var validationResult = ArtworksValidationContext.keyIsInvalid(field);
-	if(validationResult)
-		return 'has-error';
-	else
-		return '';
-};
-
-Template.anagraphicSection.errMsg = function(field) {
-	return " -  " + ArtworksValidationContext.keyErrorMessage(field);
-};
-
 Template.anagraphicArtworkWizard.isTabActive = function(tab) {
 	if(Session.equals('activeSection', tab))
 		return "active";
@@ -43,13 +27,12 @@ Template.anagraphicArtworkWizard.events({
 	'click .pager > .create': function() {
 		var data = getAnagraphicSectionData();
 
-		//ArtworksValidationContext.resetValidation();
 		if(ArtworksValidationContext.validate(data)) {
-			//$('.alert').text("").removeClass('animated fadeIn').addClass('hidden');
 			var selectedArtworkId = Artworks.insert(data, function(error, result) {
 				if(error !== undefined)
 					console.log("Error on insert", error);
 			});
+			//ArtworksValidationContext.resetValidation();
 			Session.set('selectedArtworkId', selectedArtworkId);
 			showNextTab();
 		}
@@ -76,17 +59,75 @@ Template.anagraphicArtworkWizard.events({
 		Session.set('activeSection', selection);
 	},
 	'click .save': function() {
+		writeSectionToDatabase(Session.get('activeSection'));
 		showNextTab();
 	},
 	'click .delete': function() {
-		var n = Artworks.remove(Session.get('selectedArtworkId'), function(error, result) {
+		var result = Artworks.remove(Session.get('selectedArtworkId'), function(error, result) {
 			console.log("Error on remove: " + error);
 			console.log("Removed elements: " + result);
 		});
-		console.log("n: " + n);
-		if(n) closeForm();
+		if(result) closeForm();
 	}
 });
+
+Template.anagraphicSection.artworkTypes = function() {
+	return artworkType;
+};
+
+Template.anagraphicSection.fieldValidity = function(field) {
+	var validationResult = ArtworksValidationContext.keyIsInvalid(field);
+	if(validationResult)
+		return 'has-error';
+	else
+		return '';
+};
+
+Template.anagraphicSection.errMsg = function(field) {
+	return " -  " + ArtworksValidationContext.keyErrorMessage(field);
+};
+
+Template.anagraphicSection.isSelectedHelper = function(context, current, field) {
+	return isSelected(context, current, field);
+};
+
+Template.materialSection.isSelectedHelper = function(context,current,field) {
+	return isSelected(context, current, field);
+};
+
+Template.materialSection.artworkTechniques = function() {
+	// refactor
+	return [
+		{
+			id: 1,
+			name: "a koftgari"
+		},
+		{
+			id: 2,
+			name: "acquerello"
+		}
+	];
+};
+
+Template.accessoriesSection.accessories = function() {
+	// of course, refactor
+	return [
+		"frame",
+		"mount",
+		"base",
+		"manuals",
+		"covers",
+		"case",
+		"belts"
+	];
+};
+
+Template.accessoriesSection.isChecked = function() {
+	if($.inArray(this.toString(), ['frame']) >= 0)
+		return 'checked';
+	else
+		return '';
+};
 
 function getAnagraphicSectionData() {
   var data = {
@@ -98,6 +139,40 @@ function getAnagraphicSectionData() {
     type: $('#typeElem').val()
   };
   return data;
+}
+
+function getMaterialSectionData() {
+	var checkboxes = $('.checkbox > label > input');
+	var selectedAccessories = [];
+
+	for(var i = 0; i < checkboxes.length; i++)
+		if(checkboxes.get(i).checked)
+			selectedAccessories.push(checkboxes.get(i).value);
+
+	var data = {
+		material: $('#materialElem').val(),
+		technique: $('#techniqueElem').val(),
+		accessories: selectedAccessories,
+	};
+
+	return data;
+}
+
+function writeSectionToDatabase(section) {
+	var dataToWrite;
+
+	if(section === "anagraphicTab")
+		dataToWrite = getAnagraphicSectionData();
+	else if(section === "materialTab")
+		dataToWrite = getMaterialSectionData();
+	
+	Artworks.update(Session.get('selectedArtworkId'), {$set: dataToWrite}, function(error, result) {
+		if(error)
+			console.log("Error on update: " + error);
+		else
+			console.log("On update: ", error, result);
+	});
+
 }
 
 function closeForm() {
@@ -126,4 +201,17 @@ function showNextTab() {
 		closeForm();
 
 	Session.set('activeSection', next);
+}
+
+function isSelected(context, current, field) {
+	// refactor
+	Session.get('activeSection');
+	if(context === null)
+		return '';
+	if(current === "none" && context[field] === "")
+		return 'selected';
+	else if(context[field] === current)
+		return 'selected';
+	else
+		return '';
 }
