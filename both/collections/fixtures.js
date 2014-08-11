@@ -2,11 +2,32 @@ artworkType = [
 	{	id: 1,
 		name: "Dipinto",
 		damages: [ 1, 5, 9, 12, 18, 20, 23, 27, 28, 34, 35, 40, 42, 47, 48, 56, 67],
+		tecnica: [
+			{ id: 1, name: "Acquarello/ Watercolor" },
+			{ id: 2, name: "Aerografo" },
+			{ id: 3, name: "Affresco/ Mural Painting" },
+			{ id: 4, name: "Acrilico/ Acrylic paint" },
+			{ id: 5, name: "Emulsione di cera" },
+			{ id: 6, name: "Emulsione" },
+			{ id: 7, name: "Encausto" },
+			{ id: 8, name: "Gouache/ Gouache" },
+			{ id: 9, name: "Magna" },
+			{ id: 10, name: "Olio/ Oil paint" },
+			{ id: 11, name: "Pastello/ Pastel" },
+			{ id: 12, name: "Pastelli a cera/ wax crayon" },
+			{ id: 13, name: "Pittura vinilica/ Vinilic Painting" },
+			{ id: 14, name: "Smalti Industriali" },
+			{ id: 15, name: "Tempera/ Tempera ( Tempera a colla, Tempera all’uovo..)" },
+			{ id: 16, name: "Vinilico" },
+			{ id: 17, name: "¿Cloisonnisme?" },
+			{ id: 18, name: "¿Decollage?" },
+			{ id: 19, name: "Cera" },
+			{ id: 20, name: "Tecnica mista" },
+			],
 		materials: [
-			{
-				list: ["Canvas", "Carta", "Intonaco"],
-				techniques: ["Acquarello", "Acrilico", "Aerografo"]
-			}
+			{ id: 1, name: "Canvas"},
+			{ id: 2, name: "Carta"},
+			{ id: 3, name: "Intonaco"}
 		]
 	},
 	{ id: 2,
@@ -88,18 +109,35 @@ artworkType = [
 	{ id: 4,
 		name: "Scultura",
 		damages: [ 1, 5, 15, 17, 19, 23, 27, 32, 35, 37, 40, 47, 55, 57, 58],
-		materials: [
-			{
-				category: "Metal",
-				list: ["Acciaio ceramico", "Acciaio temperato", "Argento"],
-				techniques: ["A koftgari in argento", "Cesellatura"]
-			},
-			{
-				category: "Glass",
-				list: ["Vetro a ghiaccio", "Vetro a specchio", "Vetro calcedonio"],
-				techniques: ["Argentatura", "Cabochon", "Colorazione"]
-			}
+		tecnica: [
+			{ id: 1, name: "Acciaio" },
+			{ id: 2, name: "Acciaio arrugginito e verniciato" },
+			{ id: 3, name: "Alabastro" },
+			{ id: 4, name: "Ardesia" },
+			{ id: 5, name: "Arenaia e pigmenti" },
+			{ id: 6, name: "Bronzo" },
+			{ id: 7, name: "Bronzo Dorato" },
+			{ id: 8, name: "Bronzo, legno e metallo" },
+			{ id: 9, name: "Compensato laminato" },
+			{ id: 10, name: "Ferro, rete metallica, cera e luce al neon" },
+			{ id: 11, name: "Filo di nylon e perspex su base di legno" },
+			{ id: 12, name: "Fogli allumini incurvati" },
+			{ id: 13, name: "Gesso" },
+			{ id: 14, name: "Gesso e ritagli di giornale" },
+			{ id: 15, name: "Legno dipinto" },
+			{ id: 16, name: "Legno dorato" },
+			{ id: 17, name: "Legno parzialmente dipinto" },
+			{ id: 18, name: "Legno, ferro e vetro" },
+			{ id: 19, name: "Marmo" },
+			{ id: 20, name: "Marmo,vetro e metallo" },
+			{ id: 21, name: "Oro, smalto ed ebano" },
+			{ id: 22, name: "Ottone e plexiglas verde" },
 		],
+		materials: [
+			{ id: 1, name: "Acciaio ceramico"},
+			{ id: 2, name: "Acciaio cromato"},
+			{ id: 3, name: "Bronzo"}
+		]
 	},
 	{ id: 5,
 		name: "Tessile",
@@ -139,7 +177,7 @@ artworkType = [
 
 artworkTypeLookUp = [];
 tecnicaLookUp = [];
-/*
+
 for (var i = 0, len = artworkType.length; i < len; i++) {
     artworkTypeLookUp[artworkType[i].id] = artworkType[i];
 		tecnicaLookUp[artworkType[i].id] = [];
@@ -148,7 +186,7 @@ for (var i = 0, len = artworkType.length; i < len; i++) {
 			tecnicaLookUp[artworkType[i].id][artworkType[i].tecnica[l].id] = artworkType[i].tecnica[l];
 		}
 }
-*/
+
 damageList = [
 { id: 0, name: "Generic"}, // show "(see details)"" on remark description
 { id: 1, name: "Abrasion" },

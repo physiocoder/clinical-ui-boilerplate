@@ -87,7 +87,7 @@
       <select id="typeElem" required autocomplete="off" class="form-control" data-schemafield="type">
         <option {{isSelectedHelper this 'none'}} disabled value="">(Select artwork type)</option>
         {{#each artworkTypes}}
-        <option value="{{name}}" {{isSelectedHelper .. name "type"}}>{{name}}</option>
+        <option value="{{id}}" {{isSelectedHelper .. id "type"}}>{{name}}</option>
         {{/each}}
       </select>
     </div>
@@ -98,19 +98,19 @@
   <div id="materialSection">
     <div class="form-group">
       <label class="control-label" for="materialElem">Artwork material</label>
-      <select id="materialElem" required autocomplete="off" class="form-control" data-schemafield="material" autofocus>
-        <option selected disabled value="">(Select artwork material)</option>
+      <select id="materialElem" autocomplete="off" class="form-control" data-schemafield="material" autofocus>
+        <option {{isSelectedHelper .. "none" "material"}} disabled value="">(Select artwork material)</option>
         {{#each artworkMaterials}}
-        <option value="{{id}}">{{name}}</option>
+        <option {{isSelectedHelper .. id "material"}} value="{{id}}">{{name}}</option>
         {{/each}}
       </select>
     </div>
     <div class="form-group">
       <label class="control-label" for="techniqueElem">Artwork technique</label>
-      <select id="techniqueElem" required autocomplete="off" class="form-control" data-schemafield="technique">
+      <select id="techniqueElem" autocomplete="off" class="form-control" data-schemafield="technique">
         <option {{isSelectedHelper .. "none" "technique"}} disabled value="">(Select artwork technique)</option>
         {{#each artworkTechniques}}
-        <option {{isSelectedHelper .. name "technique"}} value="{{name}}">{{name}}</option>
+        <option {{isSelectedHelper .. id "technique"}} value="{{id}}">{{name}}</option>
         {{/each}}
       </select>
     </div>
@@ -120,8 +120,9 @@
 
 <template name="accessoriesSection">
   <div id="accessorySection">
+    <label>Accessories</label>
     {{#each accessories}}
-    <div class="checkbox col-md-4 col-sm-6 col-xs-12">
+    <div class="checkbox">
       <label>
         <input type="checkbox" value="{{this}}" {{isChecked}}>
         {{this}}
@@ -133,15 +134,95 @@
 
 <template name="physicsDescriptionSection">
   <div id="physicsDescriptionSection">
-    
+    <div class="tab-content">
+      <div> <!-- objects container -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="active"><a href="#main" role="tab" data-toggle="tab">Main</a></li>
+          {{#each objects}}
+          <li><a href="#{{objname}}Tab" class="object-tab" role="tab" data-toggle="tab">{{objname}}</a></li>
+          {{/each}}
+          <li>
+            <a href="#add" role="tab" data-toggle="tab">
+              <span class="glyphicon glyphicon-plus"></span>
+            </a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="main">
+          {{> dimensionsTemplate}}
+          </div>
+          <div class="tab-pane" id="add">
+            <div class="form-group field-objname">
+              <label for="objnameElem">Name</label>
+              <input type="text" class="form-control" id="objnameElem" placeholder="Object name" value="{{objname}}" data-schemafield="objname" maxlength=10>
+            </div>
+            {{> dimensionsTemplate}}
+            <button class="add btn btn-default">Add object</button>
+          </div>
+          {{#each objects}}
+          <div class="tab-pane object-pane" id="{{objname}}Tab">
+            {{> dimensionsTemplate}}
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      <label>
+        <input type="checkbox" value="multiple" {{isChecked}}>
+        Opera multipla
+      </label>
+    </div>
+  </div>
+</template>
+
+<template name="dimensionsTemplate">
+  <div class="dimensionsTemplate">
+    <div class="form-group field-height">
+      <label for="heightElem">Height</label>
+      <input type="text" class="form-control" id="heightElem" placeholder="Height in cm" value="{{height}}" 
+        data-schemafield="height" maxlength=10>
+    </div>
+    <div class="form-group field-length">
+      <label for="lengthElem">Length</label>
+      <input type="text" class="form-control" id="lengthElem" placeholder="Length in cm" value="{{length}}" data-schemafield="length" maxlength=10>
+    </div>
+    <div class="form-group field-depth">
+      <label for="depthElem">Depth</label>
+      <input type="text" class="form-control" id="depthElem" placeholder="Depth in cm" value="{{depth}}" data-schemafield="depth" maxlength=10>
+    </div>
   </div>
 </template>
 
 <template name="environmentSection">
   <div id="environmentSection">
     <div class="form-group field-site">
-      <label for="inputSite">Site</label>
-      <input type="text" class="form-control" id="inputSite" placeholder="Site" value="{{site}}" maxlength=20>
+      <label for="siteElem">Site</label>
+      <input type="text" class="form-control" id="siteElem" placeholder="Site" value="{{site}}" data-schemafield="site" maxlength=20>
+    </div>
+    <div class="form-group field-city">
+      <label for="cityElem">City</label>
+      <input type="text" class="form-control" id="cityElem" placeholder="City" value="{{city}}" data-schemafield="city" maxlength=20>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input id="UVPElem" type="checkbox" value="UVP" data-schemafield="UVP" {{isChecked ..}}>
+        UV protection
+      </label>
+    </div>
+    <div class="form-group field-rh">
+      <label for="RHElem">Relative humidity</label>
+      <input type="text" class="form-control" id="RHElem" placeholder="Relative humidity" value="{{RH}}" data-schemafield="RH" maxlength=20>
+    </div>
+    <div class="form-group field-temperature">
+      <label for="temperatureElem">Temperature</label>
+      <input type="text" class="form-control" id="temperatureElem" placeholder="Temperature" value="{{temperature}}" data-schemafield="temperature" maxlength=20>
+    </div>
+    <div class="form-group field-lux">
+      <label for="luxElem">Lux</label>
+      <input type="text" class="form-control" id="luxElem" placeholder="Lux" value="{{lux}}" data-schemafield="lux" maxlength=20>
+    </div>
+    <div class="form-group field-amo">
+      <label for="AMOElem">Adesione Microbica Oraria</label>
+      <input type="text" class="form-control" id="AMOElem" placeholder="AMO" value="{{AMO}}" data-schemafield="AMO" maxlength=20>
     </div>
   </div>
 </template>

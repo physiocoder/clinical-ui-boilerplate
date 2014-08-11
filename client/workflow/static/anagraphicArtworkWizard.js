@@ -14,6 +14,7 @@ Template.anagraphicArtworkWizard.isTabActive = function(tab) {
 
 Template.anagraphicArtworkWizard.created = function() {
 	Session.set('activeSection', 'anagraphicTab');
+	Session.set('typeIsSet', false);
 };
 
 Template.anagraphicArtworkWizard.destroyed = function() {
@@ -37,7 +38,7 @@ Template.anagraphicArtworkWizard.events({
 			showNextTab();
 		}
 		else {
-			// put the focus on first invalid element
+			// put the focus on first invalid element - CHECK IF WORKING!!!
 			var fieldClass = 'field-' + ArtworksValidationContext.invalidKeys()[0].name;
 			$("." + fieldClass + " > .form-control").focus();
 		}
@@ -46,12 +47,13 @@ Template.anagraphicArtworkWizard.events({
 	// ***** Validation events *****/
 	// The change event fires when we leave the element and its content has changed
 	'change .form-control': function(evt, templ) {
-		// extracting field name from input id
+		// extracting field name from data-schemafield attribute
 		var field = evt.currentTarget.getAttribute('data-schemafield');
 		// constructing the object to pass to validateOne(obj, key)
 		var fieldValuePair = {};
 		fieldValuePair[field] = evt.currentTarget.value;
 
+		// do we want to always perform validation?
 		ArtworksValidationContext.validateOne(fieldValuePair, field);
 	},
 	'click .tab-selector': function(evt, templ) {
@@ -59,7 +61,7 @@ Template.anagraphicArtworkWizard.events({
 		Session.set('activeSection', selection);
 	},
 	'click .save': function() {
-		writeSectionToDatabase(Session.get('activeSection'));
+		writeSectionToDatabase(Session.get('activeSection'), this);
 		showNextTab();
 	},
 	'click .delete': function() {
@@ -95,18 +97,22 @@ Template.materialSection.isSelectedHelper = function(context,current,field) {
 	return isSelected(context, current, field);
 };
 
+Template.materialSection.artworkMaterials = function() {
+	// the following should never be true as type is a mandatory field
+	if(!this.type) return [];
+
+	return _.map(artworkTypeLookUp[this.type].materials, function(elem) {
+		return {name: elem.name, id: elem.id};
+	});
+};
+
 Template.materialSection.artworkTechniques = function() {
-	// refactor
-	return [
-		{
-			id: 1,
-			name: "a koftgari"
-		},
-		{
-			id: 2,
-			name: "acquerello"
-		}
-	];
+	// the following should never be true as type is a mandatory field
+	if(!this.type) return [];
+
+	return _.map(artworkTypeLookUp[this.type].tecnica, function(elem) {
+		return {name: elem.name, id: elem.id};
+	});
 };
 
 Template.accessoriesSection.accessories = function() {
@@ -127,6 +133,38 @@ Template.accessoriesSection.isChecked = function() {
 		return 'checked';
 	else
 		return '';
+};
+
+// this relates to the checbox for multiple artworks
+Template.physicsDescriptionSection.isChecked = function() {
+	if(this.multiple)
+		return 'checked';
+	else
+		return '';
+};
+
+Template.physicsDescriptionSection.objects = function() {
+	//return [];
+
+	return [
+		{
+			objname: "Sword",
+			height: "20",
+			length: "30"
+		}
+	];
+};
+
+Template.environmentSection.isChecked = function(context) {
+	// all sections are rendered when the form is activated,
+	// this should be changed! (add an #if in the main template 
+	// with a helper to check for activeSection)
+	if(context === null)
+		return "";
+	if(context.UVP)
+		return "checked";
+	else
+		return "";
 };
 
 function getAnagraphicSectionData() {
@@ -158,13 +196,77 @@ function getMaterialSectionData() {
 	return data;
 }
 
-function writeSectionToDatabase(section) {
+function getDimensionsSectionData() {
+	var names = _.map($('.object-tab'), function(elem) {
+		return {
+			objname: elem.innerText
+		};
+	});
+
+	var values = _.map($('.object-pane').children(), function(elem) {
+		//console.log("Elem: ", elem);
+		return {
+			height: parseInt(elem.children[0].children[1].value, 10),
+			length: parseInt(elem.children[1].children[1].value, 10),
+			depth: parseInt(elem.children[2].children[1].value, 10)
+		};
+	});
+
+	var l = names.length;
+	var objs = [];
+	for(var i = 0; i < l; i++) {
+		objs[i] = {
+			objname: names[i]["objname"],
+			height: values[i]["height"],
+			length: values[i]["length"],
+			depth: values[i]["depth"]
+		};
+	}
+
+	var data = {
+		height: parseInt($('#main > #heightElem').val(), 10),
+		length: parseInt($('#main > #lengthElem').val(), 10),
+		depth: parseInt($('#main > #depthElem').val(), 10),
+		objects: objs
+	};
+	return data;
+}
+
+function getEnvironmentSectionData() {
+	var data = {
+		site: $('#siteElem').val(),
+		city: $('#cityElem').val(),
+		UVP: $('#UVPElem').get(0).checked,
+		RH: $('#RHElem').val(),
+		temperature: $('#temperatureElem').val(),
+		lux: $('#luxElem').val(),
+		AMO: $('#AMOElem').val()
+	};
+	return data;
+}
+
+function writeSectionToDatabase(section, context) {
 	var dataToWrite;
 
-	if(section === "anagraphicTab")
+	if(section === "anagraphicTab") {
 		dataToWrite = getAnagraphicSectionData();
+		// material and technique depend on type, so if the artwork type is changed I delete
+		// material and technique fields from database.
+		// Is there a better way to deal with this kind of dependencies?
+		if($('#typeElem').val() !== context.type) {
+			var n = Artworks.update(Session.get('selectedArtworkId'), {$set: { material: "", technique: ""}});
+			if(n === 0) {
+				// in such a situation, it is likely that material and technique associated to the
+				// current artwork are wrong. I couldn't update the database to solve the problem,
+				//  so should I show a modal and tell the user to set the correct values?
+				console.log("Error updating after type changed");
+			}
+		}
+	}
 	else if(section === "materialTab")
 		dataToWrite = getMaterialSectionData();
+	else if(section === "environmentTab")
+		dataToWrite = getEnvironmentSectionData();
 	
 	Artworks.update(Session.get('selectedArtworkId'), {$set: dataToWrite}, function(error, result) {
 		if(error)
@@ -205,12 +307,18 @@ function showNextTab() {
 
 function isSelected(context, current, field) {
 	// refactor
+	// all sections are rendered when the form is activated,
+	// this should be changed! (add an #if in the main template 
+	// with a helper to check for activeSection)
 	Session.get('activeSection');
 	if(context === null)
 		return '';
-	if(current === "none" && context[field] === "")
+
+	var fieldIndex = parseInt(context[field], 10);
+
+	if(current === "none" && fieldIndex === 0)
 		return 'selected';
-	else if(context[field] === current)
+	else if(fieldIndex === current)
 		return 'selected';
 	else
 		return '';

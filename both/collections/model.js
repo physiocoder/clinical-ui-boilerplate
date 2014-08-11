@@ -67,6 +67,69 @@ schemas.Artwork = new SimpleSchema({
         type: [String],
         label: "Accessories",
         optional: true
+    },
+    site: {
+        type: String,
+        label: "Site",
+        optional: true
+    },
+    city: {
+        type: String,
+        label: "City",
+        optional: true
+    },
+    UVP: {
+        type: String,
+        label: "UV protection",
+        optional: true
+    },
+    RH: {
+        type: String,
+        label: "Relative Humidity",
+        optional: true
+    },
+    temperature: {
+        type: String,
+        label: "Temperature",
+        optional: true
+    },
+    lux: {
+        type: String,
+        label: "lux",
+        optional: true
+    },
+    AMO: {
+        type: String,
+        label: "Adesione Microbica Oraria",
+        optional: true
+    },
+    height: {
+        type: String,
+        label: "Height",
+        min: 1,
+        optional: true
+    },
+    length: {
+        type: String,
+        label: "Length",
+        min: 1,
+        optional: true
+    },
+    depth: {
+        type: String,
+        label: "Depth",
+        min: 1,
+        optional: true
+    },
+    multiple: {
+        type: Boolean,
+        label: "Multiple",
+        optional: true
+    },
+    objects: {
+        type: [Object],
+        label: "Ojects of multiple artworks",
+        optional: true
     }
 });
 

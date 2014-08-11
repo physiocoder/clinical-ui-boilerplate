@@ -12,6 +12,17 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
       material: "",
       technique: "",
       accessories: [],
+      site: "",
+      city: "",
+      UVP: "",
+      RH: "",
+      temperature: "",
+      lux: "",
+      AMO: "",
+      height: artwork.height,
+      length: "",
+      depth: "",
+      multiple: false,
       isAdding: true  // not in database
     };
   }
@@ -28,6 +39,17 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
         material: artwork.material,
         technique: artwork.technique,
         accessories: artwork.accessories,
+        site: artwork.site,
+        city: artwork.city,
+        UVP: artwork.UVP,
+        RH: artwork.RH,
+        temperature: artwork.temperature,
+        lux: artwork.lux,
+        AMO: artwork.AMO,
+        height: artwork.height,
+        length: artwork.length,
+        depth: artwork.depth,
+        multiple: artwork.multiple,
         isAdding: false // not in database
       };
   }
