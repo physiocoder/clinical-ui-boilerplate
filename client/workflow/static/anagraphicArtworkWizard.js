@@ -18,10 +18,10 @@ Template.anagraphicArtworkWizard.created = function() {
 };
 
 Template.anagraphicArtworkWizard.events({
-	'click .pager > .back': function(evt, templ) {
+	'click .back': function(evt, templ) {
 		closeForm();
 	},
-	'click .pager > .create': function() {
+	'click .create': function() {
 		var data = getAnagraphicSectionData();
 
 		// the clean method performs useful operations to avoid
