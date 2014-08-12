@@ -28,6 +28,11 @@ Template.anagraphicArtworkWizard.events({
 	'click .pager > .create': function() {
 		var data = getAnagraphicSectionData();
 
+		// the clean method performs usefule operations to avoid
+		// tricky validation errors (like conversion of String to 
+		// to Number when it is meaningful)
+		ArtworksValidationContext.clean(data);
+
 		if(ArtworksValidationContext.validate(data)) {
 			var selectedArtworkId = Artworks.insert(data, function(error, result) {
 				if(error !== undefined)
@@ -99,7 +104,10 @@ Template.materialSection.isSelectedHelper = function(context,current,field) {
 
 Template.materialSection.artworkMaterials = function() {
 	// the following should never be true as type is a mandatory field
-	if(!this.type) return [];
+	if(!this.type) {
+		console.log("Data on database are inconsistent!");
+		return [];
+	}
 
 	return _.map(artworkTypeLookUp[this.type].materials, function(elem) {
 		return {name: elem.name, id: elem.id};
@@ -224,9 +232,9 @@ function getDimensionsSectionData() {
 	}
 
 	var data = {
-		height: parseInt($('#main > #heightElem').val(), 10),
-		length: parseInt($('#main > #lengthElem').val(), 10),
-		depth: parseInt($('#main > #depthElem').val(), 10),
+		height: $('#main > #heightElem').val(),
+		length: $('#main > #lengthElem').val(),
+		depth: $('#main > #depthElem').val(),
 		objects: objs
 	};
 	return data;
@@ -250,24 +258,31 @@ function writeSectionToDatabase(section, context) {
 
 	if(section === "anagraphicTab") {
 		dataToWrite = getAnagraphicSectionData();
-		// material and technique depend on type, so if the artwork type is changed I delete
+		// material and technique depend on type, so if the artwork type is changed I remove
 		// material and technique fields from database.
 		// Is there a better way to deal with this kind of dependencies?
 		if($('#typeElem').val() !== context.type) {
-			var n = Artworks.update(Session.get('selectedArtworkId'), {$set: { material: "", technique: ""}});
-			if(n === 0) {
-				// in such a situation, it is likely that material and technique associated to the
-				// current artwork are wrong. I couldn't update the database to solve the problem,
-				//  so should I show a modal and tell the user to set the correct values?
-				console.log("Error updating after type changed");
-			}
+			Meteor.call('removeMaterialAndTechnique', Session.get('selectedArtworkId'), function(error, result) {
+				if(error !== undefined) {
+					// in such a situation, it is likely that material and technique associated to the
+					// current artwork are wrong. I couldn't update the database to solve the problem,
+					//  so should I show a modal and tell the user to set the correct values?
+					console.log("Error removing material and technique fields");
+				}
+			});
 		}
 	}
 	else if(section === "materialTab")
 		dataToWrite = getMaterialSectionData();
+	else if(section === "physicsDescTab")
+		dataToWrite = getDimensionsSectionData();
 	else if(section === "environmentTab")
 		dataToWrite = getEnvironmentSectionData();
-	
+
+	// TODO: add validation here!!
+	// Note: clean the object before validation (particularly useful
+	//       for dimensions section)
+
 	Artworks.update(Session.get('selectedArtworkId'), {$set: dataToWrite}, function(error, result) {
 		if(error)
 			console.log("Error on update: " + error);
@@ -313,10 +328,10 @@ function isSelected(context, current, field) {
 	Session.get('activeSection');
 	if(context === null)
 		return '';
-
+	
 	var fieldIndex = parseInt(context[field], 10);
 
-	if(current === "none" && fieldIndex === 0)
+	if(current === "none" && isNaN(fieldIndex))
 		return 'selected';
 	else if(fieldIndex === current)
 		return 'selected';

@@ -181,7 +181,7 @@ tecnicaLookUp = [];
 for (var i = 0, len = artworkType.length; i < len; i++) {
     artworkTypeLookUp[artworkType[i].id] = artworkType[i];
 		tecnicaLookUp[artworkType[i].id] = [];
-		console.log(artworkType[i]);
+		//console.log(artworkType[i]);
 		for (var l = 0, len2 = artworkType[i].tecnica.length; l < len2; l++) {
 			tecnicaLookUp[artworkType[i].id][artworkType[i].tecnica[l].id] = artworkType[i].tecnica[l];
 		}

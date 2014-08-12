@@ -19,7 +19,7 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
       temperature: "",
       lux: "",
       AMO: "",
-      height: artwork.height,
+      height: "",
       length: "",
       depth: "",
       multiple: false,

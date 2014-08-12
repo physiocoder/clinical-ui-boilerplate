@@ -28,7 +28,7 @@ schemas.Artwork = new SimpleSchema({
         max: 20
     },
     title: {
-    type: String,
+        type: String,
         label: "Title",
         max: 200
     },
@@ -129,7 +129,30 @@ schemas.Artwork = new SimpleSchema({
     objects: {
         type: [Object],
         label: "Ojects of multiple artworks",
-        optional: true
+        optional: true,
+        custom: function() {
+            return true;
+        }
+    },
+    'objects.$.objname': {
+        type: String,
+        label: "Object name",
+        max: 200
+    },
+    'objects.$.height': {
+        type: Number,
+        label: "Object's height",
+        decimal: true
+    },
+    'objects.$.length': {
+        type: Number,
+        label: "Object's length",
+        decimal: true
+    },
+    'objects.$.depth': {
+        type: Number,
+        label: "Object's depth",
+        decimal: true
     }
 });
 

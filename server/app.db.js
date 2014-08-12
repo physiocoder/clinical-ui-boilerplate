@@ -14,3 +14,9 @@ Artworks.allow({
         return userId;
     }
 });
+
+Meteor.methods({
+	removeMaterialAndTechnique: function(docId) {
+		return Artworks.remove({_id: docId, fields: { material: 1, technique: 1}});
+	}
+});
