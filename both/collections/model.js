@@ -79,7 +79,7 @@ Schemas.Artwork = new SimpleSchema({
         optional: true
     },
     UVP: {
-        type: String,
+        type: Boolean,
         label: "UV protection",
         optional: true
     },

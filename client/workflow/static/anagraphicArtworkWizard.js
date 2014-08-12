@@ -35,7 +35,7 @@ Template.anagraphicArtworkWizard.events({
 				if(error !== undefined)
 					console.log("Error on insert", error);
 			});
-			
+
 			Session.set('selectedArtworkId', selectedArtworkId);
 			showNextTab();
 		}
@@ -195,13 +195,13 @@ Template.physicsDescriptionSection.events({
 	}
 });
 
-Template.environmentSection.isChecked = function(context) {
+Template.environmentSection.isChecked = function() {
 	// all sections are rendered when the form is activated,
 	// this should be changed! (add an #if in the main template 
 	// with a helper to check for activeSection)
-	if(context === null)
+	if(this === null)
 		return "";
-	if(context.UVP)
+	if(this.UVP)
 		return "checked";
 	else
 		return "";
