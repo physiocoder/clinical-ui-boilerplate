@@ -19,6 +19,7 @@ Template.anagraphicArtworkWizard.created = function() {
 
 Template.anagraphicArtworkWizard.events({
 	'click .back': function(evt, templ) {
+		ArtworksValidationContext.resetValidation();
 		closeForm();
 	},
 	'click .create': function() {
@@ -34,7 +35,7 @@ Template.anagraphicArtworkWizard.events({
 				if(error !== undefined)
 					console.log("Error on insert", error);
 			});
-			//ArtworksValidationContext.resetValidation();
+			
 			Session.set('selectedArtworkId', selectedArtworkId);
 			showNextTab();
 		}
@@ -87,7 +88,11 @@ Template.anagraphicSection.fieldValidity = function(field) {
 };
 
 Template.anagraphicSection.errMsg = function(field) {
-	return " -  " + ArtworksValidationContext.keyErrorMessage(field);
+	var msg = ArtworksValidationContext.keyErrorMessage(field);
+	if(msg === "")
+		return "";
+	else
+		return " - " + msg;
 };
 
 Template.anagraphicSection.isSelectedHelper = function(context, current, field) {
