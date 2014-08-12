@@ -156,7 +156,7 @@ Schemas.Artwork = new SimpleSchema({
     }
 });
 
-Anagraphics.attachSchema(schemas.User);
-Artworks.attachSchema(schemas.Artwork);
+Anagraphics.attachSchema(Schemas.User);
+Artworks.attachSchema(Schemas.Artwork);
 
-ArtworksValidationContext = schemas.Artwork.namedContext("artworksContext");
+ArtworksValidationContext = Schemas.Artwork.namedContext("artworksContext");
