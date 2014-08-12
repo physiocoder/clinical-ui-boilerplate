@@ -17,10 +17,6 @@ Template.anagraphicArtworkWizard.created = function() {
 	Session.set('typeIsSet', false);
 };
 
-Template.anagraphicArtworkWizard.destroyed = function() {
-	delete Session.keys['activeSection'];
-};
-
 Template.anagraphicArtworkWizard.events({
 	'click .pager > .back': function(evt, templ) {
 		closeForm();
