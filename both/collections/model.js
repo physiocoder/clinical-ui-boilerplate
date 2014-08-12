@@ -1,9 +1,9 @@
 Anagraphics = new Meteor.Collection('anagraphics');
 Artworks = new Meteor.Collection('artworks');
 
-var schemas = {};
+Schemas = {};
 
-schemas.User = new SimpleSchema({
+Schemas.User = new SimpleSchema({
     name: {
         type: String,
         label: "Name",
@@ -21,7 +21,7 @@ schemas.User = new SimpleSchema({
     }
 });
 
-schemas.Artwork = new SimpleSchema({
+Schemas.Artwork = new SimpleSchema({
     inventory: {
         type: String,
         label: "Inventory",

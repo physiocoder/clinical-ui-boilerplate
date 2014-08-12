@@ -24,10 +24,10 @@ Template.anagraphicArtworkWizard.events({
 	'click .pager > .create': function() {
 		var data = getAnagraphicSectionData();
 
-		// the clean method performs usefule operations to avoid
+		// the clean method performs useful operations to avoid
 		// tricky validation errors (like conversion of String to 
 		// to Number when it is meaningful)
-		ArtworksValidationContext.clean(data);
+		Schemas.Artwork.clean(data);
 
 		if(ArtworksValidationContext.validate(data)) {
 			var selectedArtworkId = Artworks.insert(data, function(error, result) {
