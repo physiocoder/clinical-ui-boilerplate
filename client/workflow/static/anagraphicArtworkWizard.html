@@ -138,36 +138,45 @@
       <div> <!-- objects container -->
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="#main" role="tab" data-toggle="tab">Main</a></li>
+          {{#if isMultiple}}
           {{#each objects}}
-          <li><a href="#{{objname}}Tab" class="object-tab" role="tab" data-toggle="tab">{{objname}}</a></li>
+          <li><a href="#{{objname}}Pane" class="object-tab" role="tab" data-toggle="tab">{{objname}}</a></li>
           {{/each}}
           <li>
-            <a href="#add" role="tab" data-toggle="tab">
+            <a href="#addObj" role="tab" data-toggle="tab">
               <span class="glyphicon glyphicon-plus"></span>
             </a>
           </li>
+          {{/if}}
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="main">
           {{> dimensionsTemplate}}
           </div>
-          <div class="tab-pane" id="add">
+          {{#if isMultiple}}
+          <div class="tab-pane" id="addObj">
             <div class="form-group field-objname">
               <label for="objnameElem">Name</label>
               <input type="text" class="form-control" id="objnameElem" placeholder="Object name" value="{{objname}}" data-schemafield="objname" maxlength=10>
             </div>
+            {{#with empty}} <!-- the new object tab should be initially empty -->
             {{> dimensionsTemplate}}
-            <button class="add btn btn-default">Add object</button>
+            {{/with}}
+            <button class="add-object btn btn-default">Add object</button>
           </div>
           {{#each objects}}
-          <div class="tab-pane object-pane" id="{{objname}}Tab">
-            {{> dimensionsTemplate}}
+          <div class="tab-pane object-pane" id="{{objname}}Pane">
+            <div class="pane-content">
+              {{> dimensionsTemplate}}
+            </div>
+            <button class="remove-obj btn btn-danger" data-objref="{{objname}}">Remove object</button>
           </div>
           {{/each}}
+          {{/if}}
         </div>
       </div>
       <label>
-        <input type="checkbox" value="multiple" {{isChecked}}>
+        <input class="multiple-checkbox" type="checkbox" value="multiple" {{isChecked}}>
         Opera multipla
       </label>
     </div>

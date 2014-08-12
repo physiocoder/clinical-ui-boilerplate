@@ -23,6 +23,7 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
       length: "",
       depth: "",
       multiple: false,
+      objects: [],
       isAdding: true  // not in database
     };
   }
@@ -50,6 +51,7 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
         length: artwork.length,
         depth: artwork.depth,
         multiple: artwork.multiple,
+        objects: artwork.objects,
         isAdding: false // not in database
       };
   }

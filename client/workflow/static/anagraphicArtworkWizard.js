@@ -151,17 +151,48 @@ Template.physicsDescriptionSection.isChecked = function() {
 		return '';
 };
 
-Template.physicsDescriptionSection.objects = function() {
-	//return [];
-
-	return [
-		{
-			objname: "Sword",
-			height: "20",
-			length: "30"
-		}
-	];
+Template.physicsDescriptionSection.isMultiple = function() {
+	return this.multiple;
 };
+
+Template.physicsDescriptionSection.empty = function() {
+	return {};
+};
+
+Template.physicsDescriptionSection.objects = function() {
+	return this.objects;
+};
+
+Template.physicsDescriptionSection.events({
+	'change .multiple-checkbox': function(evt, templ) {
+		// checkbox for multiple artworks
+		Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: evt.currentTarget.checked}});
+		showMainPane();
+
+		//Note: notify the user that all the objects will be removed
+		Artworks.update(Session.get('selectedArtworkId'), {$unset: {objects: ""}});
+	},
+	'click .add-object': function(evt, templ) {
+		var obj = getNewObject();
+		Artworks.update(Session.get('selectedArtworkId'), {$push: {objects: obj}}, function(error, result) {
+			if(error !== undefined)
+				console.log("Error adding new object to database:", error);
+		});
+
+		// clear the tab content and show the main tab
+		clearAddObjTab();
+		showMainPane();
+	},
+	'click .remove-obj': function(evt, templ) {
+		var objref = evt.currentTarget.getAttribute('data-objref');
+		Artworks.update(Session.get("selectedArtworkId"), {$pull: {objects: {objname: objref}}}, function(error, resutl) {
+			if(error !== undefined)
+				console.log("Error eliminating object", error);
+		});
+		// show main tab
+		showMainPane();
+	}
+});
 
 Template.environmentSection.isChecked = function(context) {
 	// all sections are rendered when the form is activated,
@@ -205,39 +236,57 @@ function getMaterialSectionData() {
 }
 
 function getDimensionsSectionData() {
+	var data = {
+		height: $('#main #heightElem').val(),
+		length: $('#main #lengthElem').val(),
+		depth: $('#main #depthElem').val(),
+		objects: getObjects()
+	};
+	return data;
+}
+
+function getNewObject() {
+	var obj = {
+		objname: $('#objnameElem').val(),
+		height: $('#addObj #heightElem').val(),
+		length: $('#addObj #lengthElem').val(),
+		depth: $('#addObj #depthElem').val()
+	};
+
+	return obj;
+}
+
+function getObjects() {
 	var names = _.map($('.object-tab'), function(elem) {
 		return {
 			objname: elem.innerText
 		};
 	});
 
-	var values = _.map($('.object-pane').children(), function(elem) {
-		//console.log("Elem: ", elem);
-		return {
-			height: parseInt(elem.children[0].children[1].value, 10),
-			length: parseInt(elem.children[1].children[1].value, 10),
-			depth: parseInt(elem.children[2].children[1].value, 10)
-		};
-	});
-
 	var l = names.length;
 	var objs = [];
+
 	for(var i = 0; i < l; i++) {
 		objs[i] = {
 			objname: names[i]["objname"],
-			height: values[i]["height"],
-			length: values[i]["length"],
-			depth: values[i]["depth"]
+			height: $('#' + names[i]["objname"] + 'Pane #heightElem').val(),
+			length: $('#' + names[i]["objname"] + 'Pane #lengthElem').val(),
+			depth: $('#' + names[i]["objname"] + 'Pane #depthElem').val()
 		};
 	}
 
-	var data = {
-		height: $('#main > #heightElem').val(),
-		length: $('#main > #lengthElem').val(),
-		depth: $('#main > #depthElem').val(),
-		objects: objs
-	};
-	return data;
+	return objs;
+}
+
+function clearAddObjTab() {
+	$('#objnameElem').val("");
+	$('#addObj #heightElem').val("");
+	$('#addObj #lengthElem').val("");
+	$('#addObj #depthElem').val("");
+}
+
+function showMainPane() {
+	$('a[href="#main').tab('show');
 }
 
 function getEnvironmentSectionData() {
@@ -328,7 +377,7 @@ function isSelected(context, current, field) {
 	Session.get('activeSection');
 	if(context === null)
 		return '';
-	
+
 	var fieldIndex = parseInt(context[field], 10);
 
 	if(current === "none" && isNaN(fieldIndex))
