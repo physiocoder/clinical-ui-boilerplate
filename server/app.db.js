@@ -18,5 +18,8 @@ Artworks.allow({
 Meteor.methods({
 	removeMaterialAndTechnique: function(docId) {
 		return Artworks.remove({_id: docId, fields: { material: 1, technique: 1}});
+	},
+	removeObject: function(artworkId, objname) {
+		return Artworks.remove({_id: artworkId});
 	}
 });

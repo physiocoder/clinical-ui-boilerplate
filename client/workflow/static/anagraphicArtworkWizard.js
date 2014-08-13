@@ -126,19 +126,11 @@ Template.materialSection.artworkTechniques = function() {
 
 Template.accessoriesSection.accessories = function() {
 	// of course, refactor
-	return [
-		"frame",
-		"mount",
-		"base",
-		"manuals",
-		"covers",
-		"case",
-		"belts"
-	];
+	return Accessories;
 };
 
-Template.accessoriesSection.isChecked = function() {
-	if($.inArray(this.toString(), ['frame']) >= 0)
+Template.accessoriesSection.isChecked = function(artworkContext) {
+	if($.inArray(this.toString(), artworkContext.accessories) >= 0)
 		return 'checked';
 	else
 		return '';

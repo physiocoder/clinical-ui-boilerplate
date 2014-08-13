@@ -412,3 +412,12 @@ for (var i = 0, len = patternList.length; i < len; i++) {
     patternListLookUp[patternList[i].id] = patternList[i];
 }
 
+Accessories = [
+        "frame",
+        "mount",
+        "base",
+        "manuals",
+        "covers",
+        "case",
+        "belts"
+    ];
