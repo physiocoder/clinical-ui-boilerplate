@@ -4,17 +4,16 @@
       <ul class="nav nav-pills nav-stacked col-md-3">
         <li class="{{isTabActive 'anagraphicTab'}}"><a class="tab-selector" data-selection="anagraphicTab" data-toggle="tab">Anagrafica</a></li>
         {{#if anagraphicSectionIsValid}}
-        <li class="{{isTabActive 'materialTab'}}"><a class="tab-selector" data-selection="materialTab" data-toggle="tab">Materia e Tecnica</a></li>
-        <li class="{{isTabActive 'physicsDescTab'}}"><a class="tab-selector" data-selection="physicsDescTab" data-toggle="tab">Descrizione fisica</a></li>
-        <li class="{{isTabActive 'environmentTab'}}"><a class="tab-selector" data-selection="environmentTab" data-toggle="tab">Ambiente e conservazione</a></li>
-        <li class="{{isTabActive 'attachmentsTab'}}"><a class="tab-selector" data-selection="attachmentsTab" data-toggle="tab">Allegati</a></li>
-        <li class="{{isTabActive 'referentsTab'}}"><a class="tab-selector" data-selection="referentsTab" data-toggle="tab">Referenti</a></li>
-        <li class="{{isTabActive 'expositionTab'}}"><a class="tab-selector" data-selection="expositionTab" data-toggle="tab">Esposizione</a></li>
+          <li class="{{isTabActive 'materialTab'}}"><a class="tab-selector" data-selection="materialTab" data-toggle="tab">Materia e Tecnica</a></li>
+          <li class="{{isTabActive 'physicsDescTab'}}"><a class="tab-selector" data-selection="physicsDescTab" data-toggle="tab">Descrizione fisica</a></li>
+          <li class="{{isTabActive 'environmentTab'}}"><a class="tab-selector" data-selection="environmentTab" data-toggle="tab">Ambiente e conservazione</a></li>
+          <li class="{{isTabActive 'attachmentsTab'}}"><a class="tab-selector" data-selection="attachmentsTab" data-toggle="tab">Allegati</a></li>
+          <li class="{{isTabActive 'referentsTab'}}"><a class="tab-selector" data-selection="referentsTab" data-toggle="tab">Referenti</a></li>
+          <li class="{{isTabActive 'expositionTab'}}"><a class="tab-selector" data-selection="expositionTab" data-toggle="tab">Esposizione</a></li>
         {{/if}}
       </ul>
       <div class="tabbable tabs-left col-md-9">
-        <div class="alert alert-warning hidden" role="alert"></div>
-        <div class="tab-content">
+        <div class="tab-content main">
           <div class="tab-pane {{isTabActive 'anagraphicTab'}}" id="anagraphicTab">
             {{> anagraphicSection}}
           </div>
@@ -36,7 +35,11 @@
           <div class="tab-pane {{isTabActive 'expositionTab'}}" id="expositionTab">
             7
           </div>
-        </div>  
+        </div>
+        {{#if anagraphicSectionIsValid}}
+          <button class="prev btn btn-default pull-left {{navigatorHidden 'prev'}}">Prev</button>
+          <button class="next btn btn-default pull-right {{navigatorHidden 'next'}}">Next</button>
+        {{/if}}
       </div>
     </div>
     <ul class="pager wizard col-md-9 pull-right">

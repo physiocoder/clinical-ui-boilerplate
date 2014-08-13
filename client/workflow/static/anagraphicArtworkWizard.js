@@ -17,6 +17,16 @@ Template.anagraphicArtworkWizard.created = function() {
 	Session.set('typeIsSet', false);
 };
 
+Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
+	var section = Session.get('activeSection');
+	if(navBtn === 'prev' && section === 'anagraphicTab')
+		return "hidden";
+	else if(navBtn === 'next' && section === 'expositionTab')
+		return "hidden";
+	else
+		return "";
+};
+
 Template.anagraphicArtworkWizard.events({
 	'click .back': function(evt, templ) {
 		ArtworksValidationContext.resetValidation();
@@ -44,6 +54,12 @@ Template.anagraphicArtworkWizard.events({
 			var fieldClass = 'field-' + ArtworksValidationContext.invalidKeys()[0].name;
 			$("." + fieldClass + " > .form-control").focus();
 		}
+	},
+	'click .prev': function() {
+		showPrevTab();
+	},
+	'click .next': function() {
+		showNextTab();
 	},
 	
 	// ***** Validation events *****/
@@ -339,7 +355,7 @@ function closeForm() {
 }
 
 function showNextTab() {
-	var current = $('.tab-pane.active').attr('id');
+	var current = $('.main > .tab-pane.active').attr('id');
 	var next = '';
 	if(current === 'anagraphicTab')
 		next = 'materialTab';
@@ -360,6 +376,28 @@ function showNextTab() {
 		closeForm();
 
 	Session.set('activeSection', next);
+}
+
+function showPrevTab() {
+	var current = $('.main > .tab-pane.active').attr('id');
+	var prev = '';
+	
+	if(current === 'materialTab')
+		prev = 'anagraphicTab';
+	else if(current === 'physicsDescTab')
+		prev = 'materialTab';
+	else if(current === 'environmentTab')
+		prev = 'physicsDescTab';
+	else if(current === 'attachmentsTab')
+		prev = 'environmentTab';
+	else if(current === 'referentsTab')
+		prev = 'attachmentsTab';
+	else if(current === 'expositionTab')
+		prev = 'referentsTab';
+	else
+		prev = 'anagraphicTab';
+
+	Session.set('activeSection', prev);
 }
 
 function isSelected(context, current, field) {
