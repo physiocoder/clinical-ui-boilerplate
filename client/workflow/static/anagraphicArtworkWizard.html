@@ -99,8 +99,8 @@
 
 <template name="materialSection">
   <div id="materialSection">
-    <div class="form-group">
-      <label class="control-label" for="materialElem">Artwork material</label>
+    <div class="form-group {{fieldValidity 'material'}}">
+      <label class="control-label" for="materialElem">Artwork material {{errMsg 'material'}}</label>
       <select id="materialElem" autocomplete="off" class="form-control" data-schemafield="material" autofocus>
         <option {{isSelectedHelper .. "none" "material"}} disabled value="">(Select artwork material)</option>
         {{#each artworkMaterials}}
@@ -108,8 +108,8 @@
         {{/each}}
       </select>
     </div>
-    <div class="form-group">
-      <label class="control-label" for="techniqueElem">Artwork technique</label>
+    <div class="form-group {{fieldValidity 'technique'}}">
+      <label class="control-label" for="techniqueElem">Artwork technique {{errMsg 'technique'}}</label>
       <select id="techniqueElem" autocomplete="off" class="form-control" data-schemafield="technique">
         <option {{isSelectedHelper .. "none" "technique"}} disabled value="">(Select artwork technique)</option>
         {{#each artworkTechniques}}
@@ -154,7 +154,13 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="main">
-          {{> dimensionsTemplate}}
+          {{> dimensionsTemplate 
+
+            heightField="height" 
+            lengthField="length" 
+            depthField="depth"
+
+          }}
           </div>
           {{#if isMultiple}}
           <div class="tab-pane" id="addObj">
@@ -162,15 +168,19 @@
               <label for="objnameElem">Name</label>
               <input type="text" class="form-control" id="objnameElem" placeholder="Object name" value="{{objname}}" data-schemafield="objname" maxlength=10>
             </div>
-            {{#with empty}} <!-- the new object tab should be initially empty -->
             {{> dimensionsTemplate}}
-            {{/with}}
             <button class="add-object btn btn-default">Add object</button>
           </div>
           {{#each objects}}
           <div class="tab-pane object-pane" id="{{objname}}Pane">
             <div class="pane-content">
-              {{> dimensionsTemplate}}
+              {{> dimensionsTemplate
+
+                heightField="objects.$.height" 
+                lengthField="objects.$.length" 
+                depthField="objects.$.depth"
+
+              }}
             </div>
             <button class="remove-obj btn btn-danger" data-objref="{{objname}}">Remove object</button>
           </div>
@@ -188,30 +198,30 @@
 
 <template name="dimensionsTemplate">
   <div class="dimensionsTemplate">
-    <div class="form-group field-height">
-      <label for="heightElem">Height</label>
-      <input type="text" class="form-control" id="heightElem" placeholder="Height in cm" value="{{height}}" 
-        data-schemafield="height" maxlength=10>
+    <div class="form-group field-height {{fieldValidity heightField }}">
+      <label class="control-label" for="heightElem">Height {{errMsg heightField}}</label>
+      <input type="text" class="form-control" id="heightElem" placeholder="Height in cm" 
+        data-schemafield="{{heightField}}" maxlength=10>
     </div>
-    <div class="form-group field-length">
-      <label for="lengthElem">Length</label>
-      <input type="text" class="form-control" id="lengthElem" placeholder="Length in cm" value="{{length}}" data-schemafield="length" maxlength=10>
+    <div class="form-group field-length {{fieldValidity lengthField }}">
+      <label class="control-label" for="lengthElem">Length {{errMsg lengthField}}</label>
+      <input type="text" class="form-control" id="lengthElem" placeholder="Length in cm" value="{{length}}" data-schemafield="{{lengthField}}" maxlength=10>
     </div>
-    <div class="form-group field-depth">
-      <label for="depthElem">Depth</label>
-      <input type="text" class="form-control" id="depthElem" placeholder="Depth in cm" value="{{depth}}" data-schemafield="depth" maxlength=10>
+    <div class="form-group field-depth {{fieldValidity depthField }}">
+      <label class="control-label" for="depthElem">Depth {{errMsg depthField}}</label>
+      <input type="text" class="form-control" id="depthElem" placeholder="Depth in cm" value="{{depth}}" data-schemafield="{{depthField}}" maxlength=10>
     </div>
   </div>
 </template>
 
 <template name="environmentSection">
   <div id="environmentSection">
-    <div class="form-group field-site">
-      <label for="siteElem">Site</label>
+    <div class="form-group field-site {{fieldValidity 'site'}}">
+      <label class="control-label" for="siteElem">Site {{errMsg 'site'}}</label>
       <input type="text" class="form-control" id="siteElem" placeholder="Site" value="{{site}}" data-schemafield="site" maxlength=20>
     </div>
-    <div class="form-group field-city">
-      <label for="cityElem">City</label>
+    <div class="form-group field-city {{fieldValidity 'city'}}">
+      <label class="control-label" for="cityElem">City {{errMsg 'city'}}</label>
       <input type="text" class="form-control" id="cityElem" placeholder="City" value="{{city}}" data-schemafield="city" maxlength=20>
     </div>
     <div class="checkbox">
@@ -220,20 +230,20 @@
         UV protection
       </label>
     </div>
-    <div class="form-group field-rh">
-      <label for="RHElem">Relative humidity</label>
+    <div class="form-group field-rh {{fieldValidity 'RH'}}">
+      <label class="control-label" for="RHElem">Relative humidity {{errMsg 'RH'}}</label>
       <input type="text" class="form-control" id="RHElem" placeholder="Relative humidity" value="{{RH}}" data-schemafield="RH" maxlength=20>
     </div>
-    <div class="form-group field-temperature">
-      <label for="temperatureElem">Temperature</label>
+    <div class="form-group field-temperature {{fieldValidity 'temperature'}}">
+      <label class="control-label" for="temperatureElem">Temperature {{errMsg 'temperature'}}</label>
       <input type="text" class="form-control" id="temperatureElem" placeholder="Temperature" value="{{temperature}}" data-schemafield="temperature" maxlength=20>
     </div>
-    <div class="form-group field-lux">
-      <label for="luxElem">Lux</label>
+    <div class="form-group field-lux {{fieldValidity 'lux'}}">
+      <label class="control-label" for="luxElem">Lux {{errMsg 'lux'}}</label>
       <input type="text" class="form-control" id="luxElem" placeholder="Lux" value="{{lux}}" data-schemafield="lux" maxlength=20>
     </div>
-    <div class="form-group field-amo">
-      <label for="AMOElem">Adesione Microbica Oraria</label>
+    <div class="form-group field-amo {{fieldValidity 'AMO'}}">
+      <label class="control-label" for="AMOElem">Adesione Microbica Oraria {{errMsg 'AMO'}}</label>
       <input type="text" class="form-control" id="AMOElem" placeholder="AMO" value="{{AMO}}" data-schemafield="AMO" maxlength=20>
     </div>
   </div>

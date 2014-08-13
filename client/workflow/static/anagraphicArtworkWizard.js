@@ -36,7 +36,7 @@ Template.anagraphicArtworkWizard.events({
 		var data = getAnagraphicSectionData();
 
 		// the clean method performs useful operations to avoid
-		// tricky validation errors (like conversion of String to 
+		// tricky validation errors (like conversion of String 
 		// to Number when it is meaningful)
 		Schemas.Artwork.clean(data);
 
@@ -71,7 +71,9 @@ Template.anagraphicArtworkWizard.events({
 		var fieldValuePair = {};
 		fieldValuePair[field] = evt.currentTarget.value;
 
-		// do we want to always perform validation?
+		// clean the object "to avoid any avoidable validation errors" 
+		// [cit. aldeed - Simple-Schema author]
+		Schemas.Artwork.clean(fieldValuePair, {removeEmptyStrings: false});
 		ArtworksValidationContext.validateOne(fieldValuePair, field);
 	},
 	'click .tab-selector': function(evt, templ) {
@@ -93,22 +95,6 @@ Template.anagraphicArtworkWizard.events({
 
 Template.anagraphicSection.artworkTypes = function() {
 	return artworkType;
-};
-
-Template.anagraphicSection.fieldValidity = function(field) {
-	var validationResult = ArtworksValidationContext.keyIsInvalid(field);
-	if(validationResult)
-		return 'has-error';
-	else
-		return '';
-};
-
-Template.anagraphicSection.errMsg = function(field) {
-	var msg = ArtworksValidationContext.keyErrorMessage(field);
-	if(msg === "")
-		return "";
-	else
-		return " - " + msg;
 };
 
 Template.anagraphicSection.isSelectedHelper = function(context, current, field) {
@@ -141,7 +127,6 @@ Template.materialSection.artworkTechniques = function() {
 };
 
 Template.accessoriesSection.accessories = function() {
-	// of course, refactor
 	return Accessories;
 };
 
@@ -162,10 +147,6 @@ Template.physicsDescriptionSection.isChecked = function() {
 
 Template.physicsDescriptionSection.isMultiple = function() {
 	return this.multiple;
-};
-
-Template.physicsDescriptionSection.empty = function() {
-	return {};
 };
 
 Template.physicsDescriptionSection.objects = function() {
@@ -324,7 +305,7 @@ function writeSectionToDatabase(section, context) {
 				if(error !== undefined) {
 					// in such a situation, it is likely that material and technique associated to the
 					// current artwork are wrong. I couldn't update the database to solve the problem,
-					//  so should I show a modal and tell the user to set the correct values?
+					// so should I show a modal and tell the user to set the correct values?
 					console.log("Error removing material and technique fields");
 				}
 			});

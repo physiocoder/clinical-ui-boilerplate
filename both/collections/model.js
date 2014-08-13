@@ -84,12 +84,12 @@ Schemas.Artwork = new SimpleSchema({
         optional: true
     },
     RH: {
-        type: String,
+        type: Number,
         label: "Relative Humidity",
         optional: true
     },
     temperature: {
-        type: String,
+        type: Number,
         label: "Temperature",
         optional: true
     },
@@ -104,19 +104,19 @@ Schemas.Artwork = new SimpleSchema({
         optional: true
     },
     height: {
-        type: String,
+        type: Number,
         label: "Height",
         min: 1,
         optional: true
     },
     length: {
-        type: String,
+        type: Number,
         label: "Length",
         min: 1,
         optional: true
     },
     depth: {
-        type: String,
+        type: Number,
         label: "Depth",
         min: 1,
         optional: true
