@@ -29,8 +29,12 @@ Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
 
 Template.anagraphicArtworkWizard.events({
 	'click .back': function(evt, templ) {
-		ArtworksValidationContext.resetValidation();
-		closeForm();
+		bootbox.confirm("Unsaved updates will be discarded. Do you really want to go back?", function(result) {
+			if (result) {
+				ArtworksValidationContext.resetValidation();
+				closeForm();
+			}
+		});
 	},
 	'click .create': function() {
 		var data = getAnagraphicSectionData();
