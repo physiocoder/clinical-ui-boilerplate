@@ -160,3 +160,22 @@ Anagraphics.attachSchema(Schemas.User);
 Artworks.attachSchema(Schemas.Artwork);
 
 ArtworksValidationContext = Schemas.Artwork.namedContext("artworksContext");
+
+/**
+ * Useful method to validate the fields of a given object
+ * one by one. This solves the problem of directly validating
+ * an object against the whole schema using validate(obj).
+ * As it relies on validateOne(), all validation context properties
+ * and reactivity are preserved.
+ * @param  {Object} obj - Object to validate
+ * @param  {Object} context - Simple-Schema validation context
+ * @param  {Object} options - Options to pass to mySchema.clean(obj)
+ */
+validateObj = function(obj, context, schema, options) {
+    var fieldValuePair = {};
+    for(var field in obj) {
+        fieldValuePair = {field: obj[field]};
+        schema.clean(fieldValuePair, options);
+        context.validateOne(fieldValuePair, field);
+    }
+};
