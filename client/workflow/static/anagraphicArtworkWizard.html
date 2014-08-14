@@ -1,7 +1,7 @@
 <template name="anagraphicArtworkWizard">
   <div id="anagraphicArtworkWizard">
-    <div class="col-md-12">
-      <ul class="nav nav-pills nav-stacked col-md-3">
+    <div class="col-xs-12">
+      <ul class="nav nav-pills nav-stacked col-xs-3">
         <li class="{{isTabActive 'anagraphicTab'}}"><a class="tab-selector" data-selection="anagraphicTab" data-toggle="tab">Anagrafica</a></li>
         {{#if anagraphicSectionIsValid}}
           <li class="{{isTabActive 'materialTab'}}"><a class="tab-selector" data-selection="materialTab" data-toggle="tab">Materia e Tecnica</a></li>
@@ -12,7 +12,7 @@
           <li class="{{isTabActive 'expositionTab'}}"><a class="tab-selector" data-selection="expositionTab" data-toggle="tab">Esposizione</a></li>
         {{/if}}
       </ul>
-      <div class="tabbable tabs-left col-md-9">
+      <div class="tabbable tabs-left col-xs-9">
         <div class="tab-content main">
           <div class="tab-pane {{isTabActive 'anagraphicTab'}}" id="anagraphicTab">
             {{> anagraphicSection}}
@@ -42,7 +42,7 @@
         {{/if}}
       </div>
     </div>
-    <ul class="pager wizard col-md-9 pull-right">
+    <ul class="pager wizard col-xs-9 pull-right">
       {{#if anagraphicSectionIsValid}}
       {{> deleteArtwork}}
       {{> backToList}}
@@ -60,7 +60,7 @@
 </template>
 
 <template name="backToList">
-  <button id="backToList" class="back btn">Back to list</button>
+  <button id="backToList" class="back btn btn-default">Back to list</button>
 </template>
 
 <template name="anagraphicSection">
