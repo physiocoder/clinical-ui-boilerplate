@@ -85,7 +85,8 @@ Template.anagraphicArtworkWizard.events({
 		setSectionFocus(selection);
 	},
 	'click .save': function() {
-		writeToDatabase(this);
+		if(writeToDatabase(this))
+			closeForm();
 	},
 	'click .delete': function() {
 		var result = Artworks.remove(Session.get('selectedArtworkId'), function(error, result) {
