@@ -47,7 +47,6 @@ Template.anagraphicArtworkWizard.events({
 			});
 
 			Session.set('selectedArtworkId', selectedArtworkId);
-			showNextTab();
 		}
 		else {
 			// put the focus on first invalid element - CHECK IF WORKING!!!
@@ -81,8 +80,7 @@ Template.anagraphicArtworkWizard.events({
 		Session.set('activeSection', selection);
 	},
 	'click .save': function() {
-		writeSectionToDatabase(Session.get('activeSection'), this);
-		showNextTab();
+		writeToDatabase(this);
 	},
 	'click .delete': function() {
 		var result = Artworks.remove(Session.get('selectedArtworkId'), function(error, result) {
@@ -292,7 +290,8 @@ function getEnvironmentSectionData() {
 	return data;
 }
 
-function writeSectionToDatabase(section, context) {
+// return false if there are errors on validation or update, true otherwise
+function writeSectionToDatabase(section, context, onObjIsInvalid, onUpdateError) {
 	var dataToWrite;
 
 	if(section === "anagraphicTab") {
@@ -318,17 +317,35 @@ function writeSectionToDatabase(section, context) {
 	else if(section === "environmentTab")
 		dataToWrite = getEnvironmentSectionData();
 
-	// TODO: add validation here!!
-	// Note: clean the object before validation (particularly useful
-	//       for dimensions section)
+	ArtworksValidationContext.resetValidation();
+	validateObj(dataToWrite, ArtworksValidationContext, Schemas.Artwork);
 
-	Artworks.update(Session.get('selectedArtworkId'), {$set: dataToWrite}, function(error, result) {
-		if(error)
-			console.log("Error on update: " + error);
-		else
-			console.log("On update: ", error, result);
-	});
+	if(ArtworksValidationContext.invalidKeys().length > 0) {
+		// show the section to let the user correct highlighted values
+		Session.set('activeSection', section);
+		return false;
+	}
+	else // .update() returns the number of element corrctly updated. If none is updated, it returns 0 (false)
+		return Artworks.update(Session.get('selectedArtworkId'), {$set: dataToWrite}, function(error, result) {
+			if(error)
+				console.log("Error on update: " + error);
+			else
+				console.log("On update: ", error, result);
+		});
 
+}
+
+function writeToDatabase(context) {
+	// write each section stopping if there are validation/update mistakes
+	if(
+		writeSectionToDatabase("anagraphicTab", context) &&
+		writeSectionToDatabase("materialTab", context) &&
+		writeSectionToDatabase("physicsDescTab", context) &&
+		writeSectionToDatabase("environmentTab", context)
+	)
+		return true;
+	else
+		return false;
 }
 
 function closeForm() {

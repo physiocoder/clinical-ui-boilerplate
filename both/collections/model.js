@@ -171,10 +171,24 @@ ArtworksValidationContext = Schemas.Artwork.namedContext("artworksContext");
  * @param  {Object} context - Simple-Schema validation context
  * @param  {Object} options - Options to pass to mySchema.clean(obj)
  */
-validateObj = function(obj, context, schema, options) {
-    var fieldValuePair = {};
+validateObj = function(obj, context, schema) {
+    var options = {};
     for(var field in obj) {
-        fieldValuePair = {field: obj[field]};
+
+        // By default, the clean() method removes empty strings from
+        // the object to validate. As we are doing a one by one validation,
+        // we don't want this to happen if the field to validate is a required
+        // field, so that the validateOne() can invalidate such field.
+        // On the contrary, if the field to validate is optional, we want
+        // the clean() method to remove it from the object so that the validateOne()
+        // would validate it (no value is an acceptable value).
+        if($.inArray(field, schema.requiredSchemaKeys()) >= 0)
+            options = {removeEmptyStrings: false};
+        else
+            options = {removeEmptyStrings: true};
+
+        var fieldValuePair = {};
+        fieldValuePair[field]  = obj[field];
         schema.clean(fieldValuePair, options);
         context.validateOne(fieldValuePair, field);
     }
