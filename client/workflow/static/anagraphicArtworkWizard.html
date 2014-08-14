@@ -175,7 +175,13 @@
               <label for="objnameElem">Name</label>
               <input type="text" class="form-control" id="objnameElem" placeholder="Object name" value="{{objname}}" data-schemafield="objname" maxlength=10>
             </div>
-            {{> dimensionsTemplate}}
+            {{> dimensionsTemplate
+
+              heightField="objects.$.height" 
+              lengthField="objects.$.length" 
+              depthField="objects.$.depth"
+
+            }}
             <button class="add-object btn btn-default">Add object</button>
           </div>
           {{#each objects}}

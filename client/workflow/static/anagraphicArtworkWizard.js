@@ -168,14 +168,21 @@ Template.physicsDescriptionSection.events({
 	},
 	'click .add-object': function(evt, templ) {
 		var obj = getNewObject();
-		Artworks.update(Session.get('selectedArtworkId'), {$push: {objects: obj}}, function(error, result) {
+		var n = Artworks.update(Session.get('selectedArtworkId'), {$push: {objects: obj}}, function(error, result) {
 			if(error !== undefined)
 				console.log("Error adding new object to database:", error);
 		});
 
-		// clear the new object tab content and show the main tab
-		clearAddObjTab();
-		showMainPane();
+		if(n > 0) {
+			// clear the new object tab content and show the main tab
+			clearAddObjTab();
+			showMainPane();
+		}
+		else {
+			// perform validation here!
+			// Maybe using a function which can be used also
+			// in the global Save (it seems like objects are not correctly validated)
+		}
 	},
 	'click .remove-obj': function(evt, templ) {
 		var objref = evt.currentTarget.getAttribute('data-objref');
