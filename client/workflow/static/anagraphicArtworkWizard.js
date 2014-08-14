@@ -49,9 +49,7 @@ Template.anagraphicArtworkWizard.events({
 			Session.set('selectedArtworkId', selectedArtworkId);
 		}
 		else {
-			// put the focus on first invalid element - CHECK IF WORKING!!!
-			var fieldClass = 'field-' + ArtworksValidationContext.invalidKeys()[0].name;
-			$("." + fieldClass + " > .form-control").focus();
+			setSectionFocus('anagraphicTab');
 		}
 	},
 	'click .prev': function() {
@@ -74,10 +72,13 @@ Template.anagraphicArtworkWizard.events({
 		// [cit. aldeed - Simple-Schema author]
 		Schemas.Artwork.clean(fieldValuePair, {removeEmptyStrings: false});
 		ArtworksValidationContext.validateOne(fieldValuePair, field);
+
+		return true;
 	},
 	'click .tab-selector': function(evt, templ) {
 		var selection = evt.currentTarget.getAttribute('data-selection');
 		Session.set('activeSection', selection);
+		setSectionFocus(selection);
 	},
 	'click .save': function() {
 		writeToDatabase(this);
@@ -167,7 +168,7 @@ Template.physicsDescriptionSection.events({
 				console.log("Error adding new object to database:", error);
 		});
 
-		// clear the tab content and show the main tab
+		// clear the new object tab content and show the main tab
 		clearAddObjTab();
 		showMainPane();
 	},
@@ -323,6 +324,7 @@ function writeSectionToDatabase(section, context, onObjIsInvalid, onUpdateError)
 	if(ArtworksValidationContext.invalidKeys().length > 0) {
 		// show the section to let the user correct highlighted values
 		Session.set('activeSection', section);
+		setSectionFocus(section);
 		return false;
 	}
 	else // .update() returns the number of element corrctly updated. If none is updated, it returns 0 (false)
@@ -333,6 +335,22 @@ function writeSectionToDatabase(section, context, onObjIsInvalid, onUpdateError)
 				console.log("On update: ", error, result);
 		});
 
+}
+
+function setSectionFocus(section) {
+	var invalidFields = $('#' + section + ' .form-group.has-error > .form-control');
+
+	var elemToFocus;
+
+	if(invalidFields.length > 0)
+		elemToFocus = invalidFields[0];
+	else
+		elemToFocus = $('#' + section + ' .form-group > .form-control')[0];
+
+	// wait to be sure that the element is visible before applying .focus()
+	setTimeout(function(elem) {
+		elem.focus();
+	}, 300, elemToFocus);
 }
 
 function writeToDatabase(context) {
@@ -374,6 +392,7 @@ function showNextTab() {
 		closeForm();
 
 	Session.set('activeSection', next);
+	setSectionFocus(next);
 }
 
 function showPrevTab() {
@@ -396,6 +415,7 @@ function showPrevTab() {
 		prev = 'anagraphicTab';
 
 	Session.set('activeSection', prev);
+	setSectionFocus(prev);
 }
 
 function isSelected(context, current, field) {
