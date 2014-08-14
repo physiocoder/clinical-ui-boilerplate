@@ -67,11 +67,23 @@ Template.anagraphicArtworkList.artworks = function() {
   return Artworks.find({},{fields: {title: 1, authors: 1}}).fetch();
 };
 
+Template.anagraphicArtworkListItem.itemIsActive = function(_id) {
+  // if the session variable has not been set yet, just return ""
+  try {
+    var current = Session.get("selectedArtworkId");
+    var formIsVisible = Session.get("anagraphicArtworkFormIsActive");
+    if(current !== undefined && _id === current && formIsVisible)
+      return "active";
+    else
+      return "";
+  } catch(e) {
+    return "";
+  }
+};
+
 Template.anagraphicArtworkList.events({
   'click a': function(evt, templ) {
-    $('a.list-group-item').removeClass('active');
-    evt.currentTarget.classList.add("active");
-    var id = $('a.list-group-item.active').attr('value');
+    var id = evt.currentTarget.getAttribute('value');
     Session.set('selectedArtworkId', id);
     Session.set('anagraphicArtworkFormIsActive', true);
   }
