@@ -159,12 +159,23 @@ Template.physicsDescriptionSection.objects = function() {
 
 Template.physicsDescriptionSection.events({
 	'change .multiple-checkbox': function(evt, templ) {
-		// checkbox for multiple artworks
-		Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: evt.currentTarget.checked}});
-		showMainPane();
-
-		//Note: notify the user that all the objects will be removed
-		Artworks.update(Session.get('selectedArtworkId'), {$unset: {objects: ""}});
+		var isChecked = evt.currentTarget.checked;
+		if(!isChecked) {
+			bootbox.confirm("Proceeding, all objects will be removed.", function(result) {
+				if (result) {
+					Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: false}});
+					Artworks.update(Session.get('selectedArtworkId'), {$unset: {objects: ""}});
+					showMainPane();
+				}
+				else {
+					// if the user aborts operation, set checkbox to true (it was true before checking)
+					var n = Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: true}});
+				}
+			});
+		}
+		else {
+			Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: true}});
+		}
 	},
 	'click .add-object': function(evt, templ) {
 		var result = writeSectionToDatabase("newObjPane", this);
