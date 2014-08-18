@@ -167,21 +167,12 @@ Template.physicsDescriptionSection.events({
 		Artworks.update(Session.get('selectedArtworkId'), {$unset: {objects: ""}});
 	},
 	'click .add-object': function(evt, templ) {
-		var obj = getNewObject();
-		var n = Artworks.update(Session.get('selectedArtworkId'), {$push: {objects: obj}}, function(error, result) {
-			if(error !== undefined)
-				console.log("Error adding new object to database:", error);
-		});
+		var result = writeSectionToDatabase("newObjPane", this);
 
-		if(n > 0) {
+		if(result) {
 			// clear the new object tab content and show the main tab
 			clearAddObjTab();
 			showMainPane();
-		}
-		else {
-			// perform validation here!
-			// Maybe using a function which can be used also
-			// in the global Save (it seems like objects are not correctly validated)
 		}
 	},
 	'click .remove-obj': function(evt, templ) {
@@ -276,6 +267,12 @@ function getObjects() {
 		};
 	}
 
+	// if there is a new object, add it at the end of the array
+	var newObj = getNewObject();
+
+	if(newObj.objname !== "")
+		objs.push(newObj);
+
 	return objs;
 }
 
@@ -329,6 +326,18 @@ function writeSectionToDatabase(section, context, onObjIsInvalid, onUpdateError)
 		dataToWrite = getDimensionsSectionData();
 	else if(section === "environmentTab")
 		dataToWrite = getEnvironmentSectionData();
+	else if(section === "newObjPane") {
+		// Simple Schema expects an array of objects
+		var objs = [];
+		if(context.objects !== undefined)
+			objs = context.objects.slice(0);
+		objs.push(getNewObject());
+		dataToWrite = {objects: objs};
+
+		// The pane is 'newObjPane', but the section is 'physicsDescTab'.
+		// Later the section is used so the correct value is set here
+		section = "physicsDescTab";
+	}
 
 	ArtworksValidationContext.resetValidation();
 	validateObj(dataToWrite, ArtworksValidationContext, Schemas.Artwork);
@@ -339,7 +348,7 @@ function writeSectionToDatabase(section, context, onObjIsInvalid, onUpdateError)
 		setSectionFocus(section);
 		return false;
 	}
-	else // .update() returns the number of element corrctly updated. If none is updated, it returns 0 (false)
+	else // .update() returns the number of element correctly updated. If none is updated, it returns 0 (false)
 		return Artworks.update(Session.get('selectedArtworkId'), {$set: dataToWrite}, function(error, result) {
 			if(error)
 				console.log("Error on update: " + error);
@@ -367,6 +376,8 @@ function setSectionFocus(section) {
 
 function writeToDatabase(context) {
 	// write each section stopping if there are validation/update mistakes
+
+	// refactor
 	if(
 		writeSectionToDatabase("anagraphicTab", context) &&
 		writeSectionToDatabase("materialTab", context) &&
