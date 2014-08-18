@@ -33,6 +33,7 @@ Template.anagraphicArtworkWizard.events({
 			if (result) {
 				ArtworksValidationContext.resetValidation();
 				closeForm();
+				updateSessionData({_id: ""});
 			}
 		});
 	},
@@ -160,21 +161,34 @@ Template.physicsDescriptionSection.objects = function() {
 Template.physicsDescriptionSection.events({
 	'change .multiple-checkbox': function(evt, templ) {
 		var isChecked = evt.currentTarget.checked;
+
+		var updateStatus = function(isMultiple) {
+			var current = Session.get('currentArtwork');
+			var updated = updateObj({multiple: isMultiple}, current);
+			Session.set('currentArtwork', updated);
+		};
+
 		if(!isChecked) {
 			bootbox.confirm("Proceeding, all objects will be removed.", function(result) {
 				if (result) {
-					Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: false}});
-					Artworks.update(Session.get('selectedArtworkId'), {$unset: {objects: ""}});
+					updateStatus(false);
+					//Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: false}});
+
+					// Remove objects
+					updateSessionData({objects: []});
+					//Artworks.update(Session.get('selectedArtworkId'), {$unset: {objects: ""}});
 					showMainPane();
 				}
 				else {
 					// if the user aborts operation, set checkbox to true (it was true before checking)
-					var n = Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: true}});
+					updateStatus(true);
+					//var n = Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: true}});
 				}
 			});
 		}
 		else {
-			Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: true}});
+			updateStatus(true);
+			//Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: true}});
 		}
 	},
 	'click .add-object': function(evt, templ) {
@@ -188,10 +202,22 @@ Template.physicsDescriptionSection.events({
 	},
 	'click .remove-obj': function(evt, templ) {
 		var objref = evt.currentTarget.getAttribute('data-objref');
-		Artworks.update(Session.get("selectedArtworkId"), {$pull: {objects: {objname: objref}}}, function(error, resutl) {
-			if(error !== undefined)
-				console.log("Error eliminating object", error);
-		});
+		var current = Session.get('currentArtwork');
+
+		var predicate = function(obj) {
+			if(obj.objname === objref)
+				return true;
+			else
+				return false;
+		};
+
+		// get objects to delete
+		var objToDelete = _.find(current.objects, predicate);
+		// remove object from objects array
+		current.objects.splice($.inArray(objToDelete, current.objects), 1);
+		// update session variable
+		updateSessionData({objects: current.objects});
+
 		// show main tab
 		showMainPane();
 	}
@@ -314,21 +340,14 @@ function getEnvironmentSectionData() {
 // return false if there are errors on validation or update, true otherwise
 function writeSectionToDatabase(section, context, onObjIsInvalid, onUpdateError) {
 	var dataToWrite;
+	var current = Session.get('currentArtwork');
 
 	if(section === "anagraphicTab") {
 		dataToWrite = getAnagraphicSectionData();
 		// material and technique depend on type, so if the artwork type is changed I remove
-		// material and technique fields from database.
-		// Is there a better way to deal with this kind of dependencies?
-		if($('#typeElem').val() !== context.type) {
-			Meteor.call('removeMaterialAndTechnique', Session.get('selectedArtworkId'), function(error, result) {
-				if(error !== undefined) {
-					// in such a situation, it is likely that material and technique associated to the
-					// current artwork are wrong. I couldn't update the database to solve the problem,
-					// so should I show a modal and tell the user to set the correct values?
-					console.log("Error removing material and technique fields");
-				}
-			});
+		// material and technique fields.
+		if(dataToWrite.type !== current.type) {
+			updateSessionData({material: "", technique: ""});
 		}
 	}
 	else if(section === "materialTab")
@@ -340,8 +359,8 @@ function writeSectionToDatabase(section, context, onObjIsInvalid, onUpdateError)
 	else if(section === "newObjPane") {
 		// Simple Schema expects an array of objects
 		var objs = [];
-		if(context.objects !== undefined)
-			objs = context.objects.slice(0);
+		if(current.objects !== undefined)
+			objs = current.objects.slice(0);
 		objs.push(getNewObject());
 		dataToWrite = {objects: objs};
 
@@ -359,14 +378,27 @@ function writeSectionToDatabase(section, context, onObjIsInvalid, onUpdateError)
 		setSectionFocus(section);
 		return false;
 	}
-	else // .update() returns the number of element correctly updated. If none is updated, it returns 0 (false)
-		return Artworks.update(Session.get('selectedArtworkId'), {$set: dataToWrite}, function(error, result) {
-			if(error)
-				console.log("Error on update: " + error);
-			else
-				console.log("On update: ", error, result);
-		});
+	else {
+		// save changes for the session (not to database yet)
+		updateSessionData(dataToWrite);
+		return true;
+	}
+}
 
+function updateObj(upToDate, old) {
+	for(var field in upToDate)
+		old[field] = upToDate[field];
+
+	return old;
+}
+
+// Temporarily saves data in a session variable to exploit free
+// reactivity. On global Save, the session variable (which is an 
+// object) will be read and changes will be written to the database
+function updateSessionData(newData) {
+	var current = Session.get('currentArtwork');
+	var updated = updateObj(newData, current);
+	Session.set('currentArtwork', updated);
 }
 
 function setSectionFocus(section) {
@@ -394,8 +426,15 @@ function writeToDatabase(context) {
 		writeSectionToDatabase("materialTab", context) &&
 		writeSectionToDatabase("physicsDescTab", context) &&
 		writeSectionToDatabase("environmentTab", context)
-	)
-		return true;
+	) {
+		// up-to-date data are already in the session variable, just write to database
+		// the entire object without the _id field
+		var current = Session.get('currentArtwork');
+		var toWrite = _.omit(current, '_id');
+		return Artworks.update(current._id, {$set: toWrite}, function(error, result) {
+				// callback
+			});
+	}
 	else
 		return false;
 }

@@ -1,60 +1,50 @@
 Template.anagraphicArtworkForm.contextArtwork = function() {
 	var contextObj;
+  var id = Session.get('selectedArtworkId');
+  
+  try {
+    // first time this is executed, 'currentArtwork' doesn't
+    // exist so an exception is thrown.
+    var current = Session.get('currentArtwork');
 
-  if(Session.get('selectedArtworkId') === 'add') {
-    contextObj = {
-      inventory: "",
-      title: "",
-      authors: "",
-      description: "",
-      dating: "",
-      type: "",
-      material: "",
-      technique: "",
-      accessories: [],
-      site: "",
-      city: "",
-      UVP: "",
-      RH: "",
-      temperature: "",
-      lux: "",
-      AMO: "",
-      height: "",
-      length: "",
-      depth: "",
-      multiple: false,
-      objects: [],
-      isAdding: true  // not in database
-    };
+    if(current._id === id)
+      contextObj = current;
+    else
+      contextObj = getContextFromDatabase(id);
   }
-  else {
-    var artwork = Artworks.findOne({_id: Session.get('selectedArtworkId')});
-    if(artwork !== undefined)
+  catch(e) {
+    if(id === 'add') {
       contextObj = {
-        inventory: artwork.inventory,
-        title: artwork.title,
-        authors: artwork.authors,
-        description: artwork.description,
-        dating: artwork.dating,
-        type: artwork.type,
-        material: artwork.material,
-        technique: artwork.technique,
-        accessories: artwork.accessories,
-        site: artwork.site,
-        city: artwork.city,
-        UVP: artwork.UVP,
-        RH: artwork.RH,
-        temperature: artwork.temperature,
-        lux: artwork.lux,
-        AMO: artwork.AMO,
-        height: artwork.height,
-        length: artwork.length,
-        depth: artwork.depth,
-        multiple: artwork.multiple,
-        objects: artwork.objects,
-        isAdding: false // not in database
+        _id: id,
+        inventory: "",
+        title: "",
+        authors: "",
+        description: "",
+        dating: "",
+        type: "",
+        material: "",
+        technique: "",
+        accessories: [],
+        site: "",
+        city: "",
+        UVP: "",
+        RH: "",
+        temperature: "",
+        lux: "",
+        AMO: "",
+        height: "",
+        length: "",
+        depth: "",
+        multiple: false,
+        objects: []
       };
+    }
+    else {
+      contextObj = getContextFromDatabase(id);
+    }
   }
+
+  Session.set('currentArtwork', contextObj);
 
   return contextObj;
 };
@@ -88,3 +78,7 @@ Template.anagraphicArtworkList.events({
     Session.set('anagraphicArtworkFormIsActive', true);
   }
 });
+
+function getContextFromDatabase(id) {
+  return Artworks.findOne({_id: Session.get('selectedArtworkId')});
+}
