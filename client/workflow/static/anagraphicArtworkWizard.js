@@ -431,9 +431,12 @@ function writeToDatabase(context) {
 		// the entire object without the _id field
 		var current = Session.get('currentArtwork');
 		var toWrite = _.omit(current, '_id');
-		return Artworks.update(current._id, {$set: toWrite}, function(error, result) {
-				// callback
+		Artworks.update(current._id, {$set: toWrite}, function(error, result) {
+				// something went wrong... 
+				// TODO: add a callback that saves the datacontext in order not
+				// to lose changes
 			});
+		return true;
 	}
 	else
 		return false;
