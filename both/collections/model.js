@@ -21,7 +21,7 @@ Schemas.User = new SimpleSchema({
     }
 });
 
-Schemas.Artwork = new SimpleSchema({
+Schemas.ArtworkEssentials = new SimpleSchema({
     inventory: {
         type: String,
         label: "Inventory",
@@ -61,11 +61,6 @@ Schemas.Artwork = new SimpleSchema({
     technique: {
         type: String,
         label: "Technique",
-        optional: true
-    },
-    accessories: {
-        type: [String],
-        label: "Accessories",
         optional: true
     },
     site: {
@@ -134,6 +129,11 @@ Schemas.Artwork = new SimpleSchema({
             return true;
         }
     },
+    'objects.$.id': {
+        type: Number,
+        label: "Object ID",
+        max: 999
+    },
     'objects.$.objname': {
         type: String,
         label: "Object name",
@@ -155,6 +155,39 @@ Schemas.Artwork = new SimpleSchema({
         decimal: true
     }
 });
+
+Schemas.Accessories = new SimpleSchema({
+    frame: {
+        type: Boolean,
+        label: "Frame - accessory",
+    },
+    mount: {
+        type: Boolean,
+        label: "Mount - accessory",
+    },
+    base: {
+        type: Boolean,
+        label: "Base - accessory",
+    },
+    manuals: {
+        type: Boolean,
+        label: "Manuals - accessory",
+    },
+    covers: {
+        type: Boolean,
+        label: "Covers - accessory",
+    },
+    "case": {
+        type: Boolean,
+        label: "Case - accessory",
+    },
+    belts: {
+        type: Boolean,
+        label: "Belts - accessory",
+    }
+});
+
+Schemas.Artwork = new SimpleSchema([Schemas.ArtworkEssentials, Schemas.Accessories]);
 
 Anagraphics.attachSchema(Schemas.User);
 Artworks.attachSchema(Schemas.Artwork);

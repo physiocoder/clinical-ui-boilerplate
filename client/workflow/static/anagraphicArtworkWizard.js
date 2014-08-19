@@ -29,16 +29,23 @@ Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
 
 Template.anagraphicArtworkWizard.events({
 	'click .back': function(evt, templ) {
-		bootbox.confirm("Unsaved updates will be discarded. Do you really want to go back?", function(result) {
-			if (result) {
+		var inDatabase = Artworks.findOne({_id: Session.get('selectedArtworkId')});
+
+		var goBack = function(result) {
+			if(result) {
 				ArtworksValidationContext.resetValidation();
 				closeForm();
 				updateSessionData({_id: ""});
 			}
-		});
+		};
+
+		if(!_.isEqual(inDatabase, this)) {
+			bootbox.confirm("Unsaved updates will be discarded. Do you really want to go back?", goBack);
+		}
+		else goBack(true);
 	},
 	'click .create': function() {
-		var data = getAnagraphicSectionData();
+		var data = Session.get("currentArtwork");
 
 		// the clean method performs useful operations to avoid
 		// tricky validation errors (like conversion of String 
@@ -66,12 +73,23 @@ Template.anagraphicArtworkWizard.events({
 	
 	// ***** Validation events *****/
 	// The change event fires when we leave the element and its content has changed
-	'change .form-control': function(evt, templ) {
+	'change .form-control, change .form-checkbox': function(evt, templ) {
 		// extracting field name from data-schemafield attribute
 		var field = evt.currentTarget.getAttribute('data-schemafield');
+		var inputType = evt.currentTarget.getAttribute('type');
+		
+		var value;
+		if(inputType === "checkbox")
+			value = evt.currentTarget.checked;
+		else
+			value = evt.currentTarget.value;
+
 		// constructing the object to pass to validateOne(obj, key)
 		var fieldValuePair = {};
-		fieldValuePair[field] = evt.currentTarget.value;
+		fieldValuePair[field] = value;
+
+		// update the data context
+		updateSessionData(fieldValuePair);
 
 		// clean the object "to avoid any avoidable validation errors" 
 		// [cit. aldeed - Simple-Schema author]
@@ -86,8 +104,39 @@ Template.anagraphicArtworkWizard.events({
 		setSectionFocus(selection);
 	},
 	'click .save': function() {
-		if(writeToDatabase(this))
+		var current = Session.get('currentArtwork');
+		// up-to-date data are already in the session variable, just validate
+		// the entire object without the _id field
+		var toSave = _.omit(current, '_id');
+
+		ArtworksValidationContext.resetValidation();
+		// usual clean
+		Schemas.Artwork.clean(toSave);
+		ArtworksValidationContext.validate(toSave);
+
+		if(ArtworksValidationContext.invalidKeys().length > 0) {
+			// show the section to let the user correct highlighted values
+			var selectors = $('.tab-selector');
+			var n = selectors.length;
+			for(var i = 0; i < n; i++) {
+				var section = selectors[i].getAttribute('data-selection');
+				var errors = $("#" + section + " .has-error").length;
+				if(errors > 0) {
+					Session.set('activeSection', section);
+					setSectionFocus(section);
+					break;
+				}
+			}
+		}
+		else {
+			Artworks.update(current._id, {$set: toSave}, function(error, result) {
+				// something went wrong... 
+				// TODO: add a callback that saves the datacontext in order not
+				// to lose changes
+			});
+
 			closeForm();
+		}
 	},
 	'click .delete': function() {
 		var result = Artworks.remove(Session.get('selectedArtworkId'), function(error, result) {
@@ -132,11 +181,12 @@ Template.materialSection.artworkTechniques = function() {
 };
 
 Template.accessoriesSection.accessories = function() {
-	return Accessories;
+	return Schemas.Accessories.firstLevelSchemaKeys();
 };
 
 Template.accessoriesSection.isChecked = function(artworkContext) {
-	if($.inArray(this.toString(), artworkContext.accessories) >= 0)
+	var current = Session.get("currentArtwork");
+	if(current[this])
 		return 'checked';
 	else
 		return '';
@@ -155,7 +205,14 @@ Template.physicsDescriptionSection.isMultiple = function() {
 };
 
 Template.physicsDescriptionSection.objects = function() {
-	return this.objects;
+	return _.map(this.objects, function(elem, index, list) {
+		elem["index"] = index;
+		elem["objnameFieldStr"] = "objects." + index + ".objname";
+		elem["heightFieldStr"] = "objects." + index + ".height";
+		elem["lengthFieldStr"] = "objects." + index + ".length";
+		elem["depthFieldStr"] = "objects." + index + ".depth";
+		return elem;
+	});
 };
 
 Template.physicsDescriptionSection.events({
@@ -163,9 +220,7 @@ Template.physicsDescriptionSection.events({
 		var isChecked = evt.currentTarget.checked;
 
 		var updateStatus = function(isMultiple) {
-			var current = Session.get('currentArtwork');
-			var updated = updateObj({multiple: isMultiple}, current);
-			Session.set('currentArtwork', updated);
+			updateSessionData({multiple: isMultiple});
 		};
 
 		if(!isChecked) {
@@ -192,20 +247,45 @@ Template.physicsDescriptionSection.events({
 		}
 	},
 	'click .add-object': function(evt, templ) {
-		var result = writeSectionToDatabase("newObjPane", this);
+		var current = Session.get('currentArtwork');
+		
+		// returns a random number between 0-999
+		var getNewId = function() {
+			return Math.floor(Math.random() * 1000);
+		};
 
-		if(result) {
-			// clear the new object tab content and show the main tab
-			clearAddObjTab();
-			showMainPane();
+		// ids of current objects
+		var ids = _.map(current.objects, function(value, key, list) {
+			return value.id;
+		});
+
+		var _id;
+
+		do {
+			_id = getNewId();
 		}
+		while($.inArray(_id, ids) >= 0);
+		
+		var newObj = {
+			id: _id,
+			objname: "Object" + _id,
+			height: "",
+			length: "",
+			depth: ""
+		};
+
+		updateSessionData({objects: newObj});
+
+		// let the user insert values for the new object
+		$('a[href=#' + newObj.id + 'Pane]').tab('show');
+		
 	},
 	'click .remove-obj': function(evt, templ) {
 		var objref = evt.currentTarget.getAttribute('data-objref');
 		var current = Session.get('currentArtwork');
 
 		var predicate = function(obj) {
-			if(obj.objname === objref)
+			if(obj.id === objref)
 				return true;
 			else
 				return false;
@@ -215,7 +295,7 @@ Template.physicsDescriptionSection.events({
 		var objToDelete = _.find(current.objects, predicate);
 		// remove object from objects array
 		current.objects.splice($.inArray(objToDelete, current.objects), 1);
-		// update session variable
+		// update session variable (seems useless, but reactivity...)
 		updateSessionData({objects: current.objects});
 
 		// show main tab
@@ -235,161 +315,8 @@ Template.environmentSection.isChecked = function() {
 		return "";
 };
 
-function getAnagraphicSectionData() {
-  var data = {
-    inventory: $('#inventoryElem').val(),
-    title: $('#titleElem').val(),
-    authors: $('#authorsElem').val(),
-    description: $('#descriptionElem').val(),
-    dating: $('#datingElem').val(),
-    type: $('#typeElem').val()
-  };
-  return data;
-}
-
-function getMaterialSectionData() {
-	var checkboxes = $('.checkbox > label > input');
-	var selectedAccessories = [];
-
-	for(var i = 0; i < checkboxes.length; i++)
-		if(checkboxes.get(i).checked)
-			selectedAccessories.push(checkboxes.get(i).value);
-
-	var data = {
-		material: $('#materialElem').val(),
-		technique: $('#techniqueElem').val(),
-		accessories: selectedAccessories,
-	};
-
-	return data;
-}
-
-function getDimensionsSectionData() {
-	var data = {
-		height: $('#main #heightElem').val(),
-		length: $('#main #lengthElem').val(),
-		depth: $('#main #depthElem').val(),
-		objects: getObjects()
-	};
-	return data;
-}
-
-function getNewObject() {
-	var obj = {
-		objname: $('#objnameElem').val(),
-		height: $('#addObj #heightElem').val(),
-		length: $('#addObj #lengthElem').val(),
-		depth: $('#addObj #depthElem').val()
-	};
-
-	return obj;
-}
-
-function getObjects() {
-	var names = _.map($('.object-tab'), function(elem) {
-		return {
-			objname: elem.innerText
-		};
-	});
-
-	var l = names.length;
-	var objs = [];
-
-	for(var i = 0; i < l; i++) {
-		objs[i] = {
-			objname: names[i]["objname"],
-			height: $('#' + names[i]["objname"] + 'Pane #heightElem').val(),
-			length: $('#' + names[i]["objname"] + 'Pane #lengthElem').val(),
-			depth: $('#' + names[i]["objname"] + 'Pane #depthElem').val()
-		};
-	}
-
-	// if there is a new object, add it at the end of the array
-	var newObj = getNewObject();
-
-	if(newObj.objname !== "")
-		objs.push(newObj);
-
-	return objs;
-}
-
-function clearAddObjTab() {
-	$('#objnameElem').val("");
-	$('#addObj #heightElem').val("");
-	$('#addObj #lengthElem').val("");
-	$('#addObj #depthElem').val("");
-}
-
 function showMainPane() {
 	$('a[href="#main').tab('show');
-}
-
-function getEnvironmentSectionData() {
-	var data = {
-		site: $('#siteElem').val(),
-		city: $('#cityElem').val(),
-		UVP: $('#UVPElem').get(0).checked,
-		RH: $('#RHElem').val(),
-		temperature: $('#temperatureElem').val(),
-		lux: $('#luxElem').val(),
-		AMO: $('#AMOElem').val()
-	};
-	return data;
-}
-
-// return false if there are errors on validation or update, true otherwise
-function writeSectionToDatabase(section, context, onObjIsInvalid, onUpdateError) {
-	var dataToWrite;
-	var current = Session.get('currentArtwork');
-
-	if(section === "anagraphicTab") {
-		dataToWrite = getAnagraphicSectionData();
-		// material and technique depend on type, so if the artwork type is changed I remove
-		// material and technique fields.
-		if(dataToWrite.type !== current.type) {
-			updateSessionData({material: "", technique: ""});
-		}
-	}
-	else if(section === "materialTab")
-		dataToWrite = getMaterialSectionData();
-	else if(section === "physicsDescTab")
-		dataToWrite = getDimensionsSectionData();
-	else if(section === "environmentTab")
-		dataToWrite = getEnvironmentSectionData();
-	else if(section === "newObjPane") {
-		// Simple Schema expects an array of objects
-		var objs = [];
-		if(current.objects !== undefined)
-			objs = current.objects.slice(0);
-		objs.push(getNewObject());
-		dataToWrite = {objects: objs};
-
-		// The pane is 'newObjPane', but the section is 'physicsDescTab'.
-		// Later the section is used so the correct value is set here
-		section = "physicsDescTab";
-	}
-
-	ArtworksValidationContext.resetValidation();
-	validateObj(dataToWrite, ArtworksValidationContext, Schemas.Artwork);
-
-	if(ArtworksValidationContext.invalidKeys().length > 0) {
-		// show the section to let the user correct highlighted values
-		Session.set('activeSection', section);
-		setSectionFocus(section);
-		return false;
-	}
-	else {
-		// save changes for the session (not to database yet)
-		updateSessionData(dataToWrite);
-		return true;
-	}
-}
-
-function updateObj(upToDate, old) {
-	for(var field in upToDate)
-		old[field] = upToDate[field];
-
-	return old;
 }
 
 // Temporarily saves data in a session variable to exploit free
@@ -397,8 +324,34 @@ function updateObj(upToDate, old) {
 // object) will be read and changes will be written to the database
 function updateSessionData(newData) {
 	var current = Session.get('currentArtwork');
-	var updated = updateObj(newData, current);
-	Session.set('currentArtwork', updated);
+
+	// apply changes to current object
+	for(var field in newData) {
+		// For 'objects' if a single element is passed I add
+		// it to the current array
+		if(field === "objects" && !Array.isArray(newData[field])) {
+			// Simple-Schema expects an array
+			var elems = [];
+			if(current[field] !== undefined)
+				// use .slice() to achieve deep copy
+				elems = current[field].slice(0);
+			elems.push(newData[field]);
+			current[field] = elems;
+		}
+		else if(field.length > 7 && field.indexOf("objects") === 0) {
+			// we are dealing with a field of the type 'objects.$.fieldName'
+			var index = field.substr(8,1);
+			var subfield = field.substring(10);
+
+			// the corresponding object must already exist in the 
+			// data context, so I just assign the new value
+			current.objects[index][subfield] = newData[field];
+		}
+		else current[field] = newData[field];
+	}
+
+	// save the modified object
+	Session.set('currentArtwork', current);
 }
 
 function setSectionFocus(section) {
@@ -415,31 +368,6 @@ function setSectionFocus(section) {
 	setTimeout(function(elem) {
 		elem.focus();
 	}, 300, elemToFocus);
-}
-
-function writeToDatabase(context) {
-	// write each section stopping if there are validation/update mistakes
-
-	// refactor
-	if(
-		writeSectionToDatabase("anagraphicTab", context) &&
-		writeSectionToDatabase("materialTab", context) &&
-		writeSectionToDatabase("physicsDescTab", context) &&
-		writeSectionToDatabase("environmentTab", context)
-	) {
-		// up-to-date data are already in the session variable, just write to database
-		// the entire object without the _id field
-		var current = Session.get('currentArtwork');
-		var toWrite = _.omit(current, '_id');
-		Artworks.update(current._id, {$set: toWrite}, function(error, result) {
-				// something went wrong... 
-				// TODO: add a callback that saves the datacontext in order not
-				// to lose changes
-			});
-		return true;
-	}
-	else
-		return false;
 }
 
 function closeForm() {

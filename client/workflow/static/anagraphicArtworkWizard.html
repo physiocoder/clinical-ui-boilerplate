@@ -127,7 +127,7 @@
     {{#each accessories}}
     <div class="checkbox">
       <label>
-        <input type="checkbox" value="{{this}}" {{isChecked  ..}}>
+        <input class="form-checkbox" type="checkbox" {{isChecked  this}} data-schemafield="{{this}}">
         {{this}}
       </label>
     </div>
@@ -143,10 +143,10 @@
           <li class="active"><a href="#main" role="tab" data-toggle="tab">Main</a></li>
           {{#if isMultiple}}
           {{#each objects}}
-          <li><a href="#{{objname}}Pane" class="object-tab" role="tab" data-toggle="tab">{{objname}}</a></li>
+          <li><a href="#{{id}}Pane" class="object-tab" role="tab" data-toggle="tab">{{objname}}</a></li>
           {{/each}}
           <li>
-            <a href="#addObj" role="tab" data-toggle="tab">
+            <a class="add-object" role="tab" data-toggle="tab">
               <span class="glyphicon glyphicon-plus"></span>
             </a>
           </li>
@@ -170,37 +170,28 @@
           }}
           </div>
           {{#if isMultiple}}
-          <div class="tab-pane" id="addObj">
-            <div class="form-group field-objname">
-              <label for="objnameElem">Name</label>
-              <input type="text" class="form-control" id="objnameElem" placeholder="Object name" value="{{objname}}" data-schemafield="objname" maxlength=10>
+            {{#each objects}}
+            <div class="tab-pane object-pane" id="{{id}}Pane">
+              <div class="pane-content">
+                <div class="form-group {{fieldValidity objnameFieldStr }}">
+                  <label class="control-label" for="objname">Name {{errMsg objnameFieldStr}}</label>
+                  <input type="text" class="form-control" id="objname" placeholder="Object name..." value="{{objname}}"
+        data-schemafield={{objnameFieldStr}} maxlength=10>
+                </div>
+                {{> dimensionsTemplate
+
+                  heightVal = height
+                  lengthVal = length
+                  depthVal = depth
+                  heightField = heightFieldStr 
+                  lengthField = lengthFieldStr 
+                  depthField = depthFieldStr
+
+                }}
+              </div>
+              <button class="remove-obj btn btn-danger" data-objref="{{id}}">Remove object</button>
             </div>
-            {{> dimensionsTemplate
-
-              heightField="objects.$.height" 
-              lengthField="objects.$.length" 
-              depthField="objects.$.depth"
-
-            }}
-            <button class="add-object btn btn-default">Add object</button>
-          </div>
-          {{#each objects}}
-          <div class="tab-pane object-pane" id="{{objname}}Pane">
-            <div class="pane-content">
-              {{> dimensionsTemplate
-
-                heightVal = height
-                lengthVal = length
-                depthVal = depth
-                heightField="objects.$.height" 
-                lengthField="objects.$.length" 
-                depthField="objects.$.depth"
-
-              }}
-            </div>
-            <button class="remove-obj btn btn-danger" data-objref="{{objname}}">Remove object</button>
-          </div>
-          {{/each}}
+            {{/each}}
           {{/if}}
         </div>
       </div>
