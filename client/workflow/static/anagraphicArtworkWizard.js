@@ -223,7 +223,9 @@ Template.physicsDescriptionSection.events({
 			updateSessionData({multiple: isMultiple});
 		};
 
-		if(!isChecked) {
+		var current = Session.get("currentArtwork");
+
+		if(!isChecked && current.objects.length !== 0) {
 			bootbox.confirm("Proceeding, all objects will be removed.", function(result) {
 				if (result) {
 					updateStatus(false);
