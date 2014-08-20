@@ -319,13 +319,19 @@ Template.environmentSection.isChecked = function() {
 		return "";
 };
 
+Template.attachmentsSection.attachments = function() {
+	return this.attachments;
+};
+
 Template.attachmentsSection.events({
 	'change #fileinput': function(evt, templ) {
 		FS.Utility.eachFile(event, function(file) {
-			Images.insert(file, function (err, fileObj) {
+			Attachments.insert(file, function (err, fileObj) {
 				//If !err, we have inserted new doc with ID fileObj._id, and
 				//kicked off the data upload using HTTP
 				if(!err) {
+					var newImg = {id: fileObj._id, type: "image"}; // for the moment, just treat images
+					updateSessionData({attachments: newImg});
 					bootbox.alert("Immagine caricata!");
 				} else {
 					bootbox.alert("Errore nel caricamento immagine!");
@@ -334,6 +340,10 @@ Template.attachmentsSection.events({
 		});
 	}
 });
+
+Template.attachmentThumb.thumbAddress = function(id) {
+	return Attachments.findOne({_id: id}).url({store: "atcs_thumbs"});
+};
 
 function showMainPane() {
 	$('a[href="#main').tab('show');
@@ -347,9 +357,9 @@ function updateSessionData(newData) {
 
 	// apply changes to current object
 	for(var field in newData) {
-		// For 'objects' if a single element is passed I add
+		// For 'objects' and 'attachments' if a single element is passed I add
 		// it to the current array
-		if(field === "objects" && !Array.isArray(newData[field])) {
+		if(field === "objects" || field === "attachments" && !Array.isArray(newData[field])) {
 			// Simple-Schema expects an array
 			var elems = [];
 			if(current[field] !== undefined)

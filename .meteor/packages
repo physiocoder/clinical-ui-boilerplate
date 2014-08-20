@@ -20,3 +20,4 @@ cfs-filesystem
 simple-schema
 collectionFS
 cfs-graphicsmagick
+cfs-ui

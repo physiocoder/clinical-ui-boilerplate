@@ -153,6 +153,24 @@ Schemas.ArtworkEssentials = new SimpleSchema({
         type: Number,
         label: "Object's depth",
         decimal: true
+    },
+    attachments: {
+        type: [Object],
+        label: "Attachments",
+        optional: true
+    },
+    'attachments.$.id': {
+        type: String,
+        label: "Attachment ID"
+    },
+    'attachments.$.type': {
+        type: String,
+        label: "Attachment type"
+    },
+    'attachments.$.description': {
+        type: String,
+        label: "Attachment description",
+        optional: true
     }
 });
 
@@ -258,7 +276,7 @@ var validateField = function(fieldValuePair, context, schema) {
     context.validateOne(fieldValuePair, fieldName);
 };
 
-Images = new FS.Collection("images", {
+Attachments = new FS.Collection("attachments", {
     filter: {
             maxSize: 1048576, //in bytes
             allow: {
@@ -279,22 +297,15 @@ Images = new FS.Collection("images", {
         },
     // .autoOrient() read EXIF info and rotate image accordingly
     stores: [
-        new FS.Store.FileSystem("fullsize", {
-            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/images/fullsize",
-            transformWrite: function(fileObj, readStream, writeStream) {
-                        // Rotate image according to EXIF info
-                        gm(readStream, fileObj.name()).autoOrient().stream().pipe(writeStream);
-                    }
-        }),
-        new FS.Store.FileSystem("medium", {
-            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/images/medium",
+        new FS.Store.FileSystem("attachments", {
+            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/raw"/*,
             transformWrite: function(fileObj, readStream, writeStream) {
                         // Rotate image according to EXIF info and scale to 1000px longest side
                         gm(readStream, fileObj.name()).autoOrient().resize('1200', '1200').quality(80).stream().pipe(writeStream);
-                    }
+                    }*/
         }),
-        new FS.Store.FileSystem("thumbs", {
-            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/images/thumbs",
+        new FS.Store.FileSystem("atcs_thumbs", {
+            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/thumbs",
             transformWrite: function(fileObj, readStream, writeStream) {
                         // Rotate image according to EXIF info and transform into a 200px thumbnail
                         gm(readStream, fileObj.name()).autoOrient().resize('200', '200').stream().pipe(writeStream);

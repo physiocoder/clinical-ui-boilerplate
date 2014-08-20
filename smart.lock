@@ -15,7 +15,8 @@
         "git": "https://github.com/aldeed/meteor-collection2.git",
         "tag": "v0.4.3"
       },
-      "collectionFS": {}
+      "collectionFS": {},
+      "cfs-ui": {}
     },
     "packages": {
       "bootstrap-3": {
@@ -57,6 +58,11 @@
         "git": "https://github.com/CollectionFS/Meteor-CollectionFS.git",
         "tag": "v0.4.8",
         "commit": "fea890b1e27799ccc9f71046748fb23a84330a16"
+      },
+      "cfs-ui": {
+        "git": "https://github.com/CollectionFS/Meteor-cfs-ui.git",
+        "tag": "v0.1.0",
+        "commit": "41feb979e88cb2cf4c6f2934ba58ae0bb4e3dddb"
       },
       "nprogress": {
         "git": "https://github.com/zhouzhuojie/meteor-nprogress.git",

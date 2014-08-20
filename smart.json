@@ -15,6 +15,7 @@
       "tag": "v0.4.3",
       "commit": "cb470de2cfeebeccbf76d4cc0a39ad4afc76d553"
     },
-    "collectionFS": {}
+    "collectionFS": {},
+    "cfs-ui": {}
   }
 }

@@ -14,6 +14,8 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
   }
   catch(e) {
     if(id === 'add') {
+      // refactor
+      // read the schema and construct the empty object
       contextObj = {
         _id: id,
         inventory: "",
@@ -42,7 +44,8 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
         length: "",
         depth: "",
         multiple: false,
-        objects: []
+        objects: [],
+        attachments: []
       };
     }
     else {

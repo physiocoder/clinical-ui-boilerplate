@@ -222,7 +222,7 @@ Router.map(function() {
       Session.set('anagraphicArtworkFormIsActive', false);
     },
     waitOn: function() {
-      return [Meteor.subscribe('artworks'), Meteor.subscribe('images')];
+      return [Meteor.subscribe('artworks'), Meteor.subscribe('attachments')];
     }
   });
 });

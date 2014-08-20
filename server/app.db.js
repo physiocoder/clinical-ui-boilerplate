@@ -6,8 +6,8 @@ Meteor.publish('artworks', function() {
 	return Artworks.find();
 });
 
-Meteor.publish('images', function() {
-	return Images.find();
+Meteor.publish('attachments', function() {
+	return Attachments.find();
 });
 
 Artworks.allow({
@@ -19,7 +19,7 @@ Artworks.allow({
     }
 });
 
-Images.allow({
+Attachments.allow({
 	update: function(userId) {
 		return userId;
 	},
