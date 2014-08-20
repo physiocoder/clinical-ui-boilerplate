@@ -206,7 +206,7 @@ Template.physicsDescriptionSection.isMultiple = function() {
 
 Template.physicsDescriptionSection.objects = function() {
 	return _.map(this.objects, function(elem, index, list) {
-		elem["index"] = index;
+		elem["objNum"] = index + 1;
 		elem["objnameFieldStr"] = "objects." + index + ".objname";
 		elem["heightFieldStr"] = "objects." + index + ".height";
 		elem["lengthFieldStr"] = "objects." + index + ".length";
@@ -270,7 +270,7 @@ Template.physicsDescriptionSection.events({
 		
 		var newObj = {
 			id: _id,
-			objname: "Object" + _id,
+			objname: "",
 			height: "",
 			length: "",
 			depth: ""
@@ -287,7 +287,9 @@ Template.physicsDescriptionSection.events({
 		var current = Session.get('currentArtwork');
 
 		var predicate = function(obj) {
-			if(obj.id === objref)
+			// here coercion is useful
+			// (obj.id is Number and objref is String)
+			if(obj.id == objref)
 				return true;
 			else
 				return false;
