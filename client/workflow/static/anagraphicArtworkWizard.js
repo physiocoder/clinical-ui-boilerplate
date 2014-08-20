@@ -319,6 +319,22 @@ Template.environmentSection.isChecked = function() {
 		return "";
 };
 
+Template.attachmentsSection.events({
+	'change #fileinput': function(evt, templ) {
+		FS.Utility.eachFile(event, function(file) {
+			Images.insert(file, function (err, fileObj) {
+				//If !err, we have inserted new doc with ID fileObj._id, and
+				//kicked off the data upload using HTTP
+				if(!err) {
+					bootbox.alert("Immagine caricata!");
+				} else {
+					bootbox.alert("Errore nel caricamento immagine!");
+				}
+			});
+		});
+	}
+});
+
 function showMainPane() {
 	$('a[href="#main').tab('show');
 }

@@ -27,7 +27,7 @@
             {{> environmentSection}}
           </div>
           <div class="tab-pane {{isTabActive 'attachmentsTab'}}" id="attachmentsTab">
-            5
+            {{> attachmentsSection}}
           </div>
           <div class="tab-pane {{isTabActive 'referentsTab'}}" id="referentsTab">
             6
@@ -252,6 +252,18 @@
     <div class="form-group field-amo {{fieldValidity 'AMO'}}">
       <label class="control-label" for="AMOElem">Adesione Microbica Oraria {{errMsg 'AMO'}}</label>
       <input type="text" class="form-control" id="AMOElem" placeholder="AMO" value="{{AMO}}" data-schemafield="AMO" maxlength=20>
+    </div>
+  </div>
+</template>
+
+<template name="attachmentsSection">
+  <div class="col-xs-12" id="attachmentsSection">
+    <div class="col-xs-4 form-group">
+      <label for="fileinput">Attachments</label>
+      <span class="btn btn-default btn-file">
+        <i class="fa fa-cloud-upload"></i> Upload immagine...
+        <input class="form-control" id="fileinput" accept="image/*;capture=camera" type="file">
+      </span>
     </div>
   </div>
 </template>

@@ -6,6 +6,10 @@ Meteor.publish('artworks', function() {
 	return Artworks.find();
 });
 
+Meteor.publish('images', function() {
+	return Images.find();
+});
+
 Artworks.allow({
     update: function(userId) {
         return userId;
@@ -13,6 +17,15 @@ Artworks.allow({
     remove: function(userId) {
         return userId;
     }
+});
+
+Images.allow({
+	update: function(userId) {
+		return userId;
+	},
+	remove: function() {
+		return userId;
+	}
 });
 
 Meteor.methods({

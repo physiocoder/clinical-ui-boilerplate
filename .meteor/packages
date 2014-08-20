@@ -16,3 +16,7 @@ bowser
 font-awesome
 iron-router
 collection2
+cfs-filesystem
+simple-schema
+collectionFS
+cfs-graphicsmagick

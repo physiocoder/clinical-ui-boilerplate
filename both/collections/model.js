@@ -257,3 +257,48 @@ var validateField = function(fieldValuePair, context, schema) {
     schema.clean(fieldValuePair, options);
     context.validateOne(fieldValuePair, fieldName);
 };
+
+Images = new FS.Collection("images", {
+    filter: {
+            maxSize: 1048576, //in bytes
+            allow: {
+                contentTypes: ['image/*'],
+                extensions: ['png', 'jpg', 'jpeg']
+            },
+            deny: {
+                contentTypes: ['audio/*', 'video/*'],
+                extensions: ['pdf']
+            },
+            onInvalid: function (message) {
+                if (Meteor.isClient) {
+                    bootbox.alert(message);
+                } else {
+                    console.log(message);
+                }
+            }
+        },
+    // .autoOrient() read EXIF info and rotate image accordingly
+    stores: [
+        new FS.Store.FileSystem("fullsize", {
+            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/images/fullsize",
+            transformWrite: function(fileObj, readStream, writeStream) {
+                        // Rotate image according to EXIF info
+                        gm(readStream, fileObj.name()).autoOrient().stream().pipe(writeStream);
+                    }
+        }),
+        new FS.Store.FileSystem("medium", {
+            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/images/medium",
+            transformWrite: function(fileObj, readStream, writeStream) {
+                        // Rotate image according to EXIF info and scale to 1000px longest side
+                        gm(readStream, fileObj.name()).autoOrient().resize('1200', '1200').quality(80).stream().pipe(writeStream);
+                    }
+        }),
+        new FS.Store.FileSystem("thumbs", {
+            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/images/thumbs",
+            transformWrite: function(fileObj, readStream, writeStream) {
+                        // Rotate image according to EXIF info and transform into a 200px thumbnail
+                        gm(readStream, fileObj.name()).autoOrient().resize('200', '200').stream().pipe(writeStream);
+                    }
+        })
+    ]
+});
