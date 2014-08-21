@@ -258,26 +258,65 @@
 
 <template name="attachmentsSection">
   <div class="col-xs-12" id="attachmentsSection">
-    <div class="col-xs-4 form-group">
+    <div class="row form-group">
       <label for="fileinput">Attachments</label>
       <span class="btn btn-default btn-file">
         <i class="fa fa-cloud-upload"></i> Upload image...
-        <input class="form-control" id="fileinput" accept="image/*;capture=camera" type="file">
+        <input id="fileinput" accept="image/*;capture=camera" type="file">
       </span>
     </div>
-    <div class="col-xs-12">
-      {{> FS.UploadProgressBar bootstrap=true}}
-    </div>
+    
+    {{#each upFiles}}
+      {{#unless this.isUploaded}}
+        <div class="row">
+          <div class="col-xs-4">
+            {{> FS.UploadProgressBar bootstrap=true}}
+          </div>
+          <p class="col-xs-8">
+            Uploading: {{name}}
+          </p>
+        </div>
+      {{/unless}}
+    {{/each}}
+    
     {{#each attachments}}
-      {{> attachmentThumb}}
+      {{> attachmentSummary}}
     {{/each}}
   </div>
 </template>
 
-<template name="attachmentThumb">
-  <div id="attachmentThumb" data-atcref="{{id}}">
-    <img class="col-sx-4" src="{{thumbAddress id}}" alt="">
-    
-    <p class="col-sx-8">{{notes}}</p>
+<template name="attachmentSummary">
+  <div id="attachmentSummary" class="col-xs-12 row">
+    <div class="col-xs-4">
+      {{> attachmentThumb}}
+    </div>
+    <div class="col-xs-6">
+      {{> attachmentInfo}}
+    </div>
+    <div class="col-xs-2">
+      {{> removeAttachment}}
+    </div>
   </div>
+</template>
+
+<template name="attachmentThumb">
+  <div id="attachmentThumb">
+    <img src="{{url store='atcs_thumbs'}}" alt="">
+  </div>
+</template>
+
+<template name="attachmentInfo">
+  <div id="attachmentInfo">
+    <p><strong>Filename:</strong> {{name}}</p>
+    <p><strong>Type:</strong> {{type}}</p>
+    <p><strong>Size:</strong> {{size}} Bytes</p>
+    <div class="form-group {{fieldValidity descFieldStr}}">
+      <label class="control-label" for="atcDesc">Description {{errMsg descFieldStr}}</label>
+      <textarea class="form-control" id="atcDesc" placeholder="Description..." value="{{description}}" data-schemafield="{{descFieldStr}}" maxlength=200></textarea>
+    </div>
+  </div>
+</template>
+
+<template name="removeAttachment">
+  <button class="remove-atc btn btn-danger" data-atcref="{{_id}}">Remove attachment</button>
 </template>

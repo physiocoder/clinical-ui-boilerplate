@@ -163,10 +163,6 @@ Schemas.ArtworkEssentials = new SimpleSchema({
         type: String,
         label: "Attachment ID"
     },
-    'attachments.$.type': {
-        type: String,
-        label: "Attachment type"
-    },
     'attachments.$.description': {
         type: String,
         label: "Attachment description",

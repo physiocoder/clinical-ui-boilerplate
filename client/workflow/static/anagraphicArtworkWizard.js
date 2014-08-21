@@ -15,6 +15,7 @@ Template.anagraphicArtworkWizard.isTabActive = function(tab) {
 Template.anagraphicArtworkWizard.created = function() {
 	Session.set('activeSection', 'anagraphicTab');
 	Session.set('typeIsSet', false);
+	Session.set('upFiles', []);
 };
 
 Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
@@ -278,7 +279,7 @@ Template.physicsDescriptionSection.events({
 
 		updateSessionData({objects: newObj});
 
-		// let the user insert values for the new object
+		// let the user insert values for the new object <- doesn't work
 		$('a[href=#' + newObj.id + 'Pane]').tab('show');
 		
 	},
@@ -319,20 +320,72 @@ Template.environmentSection.isChecked = function() {
 		return "";
 };
 
+Template.attachmentsSection.created = function() {
+	// during upload, files ID are store in this array
+	this.upFiles = [];
+};
+
 Template.attachmentsSection.attachments = function() {
-	return this.attachments;
+	var current = Session.get('currentArtwork');
+	var ids = _.map(current.attachments, function(elem) {
+		return elem.id;
+	});
+	var FSFiles = Attachments.find({_id: {$in: ids}}).fetch();
+
+	return _.map(FSFiles, function(elem) {
+		var index = $.inArray(elem._id, ids);
+		elem['descFieldStr'] = "attachments." + index + ".description";
+		elem['description'] = current.attachments[index].description;
+		return elem;
+	});
+};
+
+Template.attachmentsSection.upFiles = function() {
+	// get the template instance
+	// WARNING: in date 21 Aug 2014 the method UI._templateInstance()
+	// is not reported in the official documentation. While the functionality
+	// will be provided for sure, it is not sure that the method name will remain
+	// unchanged. If this breaks, check Documentation to access template instance.
+	var inst = UI._templateInstance();
+
+	var upFiles = inst.upFiles;
+	// get FS.File objects whose _id is stored in upFiles template variable
+	var upFSFiles = Attachments.find({_id: {$in: upFiles}}).fetch();
+
+	_.each(upFSFiles, function(elem) {
+		var index = $.inArray(elem._id, upFiles);
+		// if the file is present in upFiles but isUploaded()
+		// returns true, then the upload is finished and we
+		// should remove the file's id from upFiles
+		if(index > -1 && elem.isUploaded()) {
+			// remove file's id from upFiles
+			upFiles.splice(index, 1);
+			debugger;
+			// add the new attachment id to the data context
+			var newAtc = {id: elem.id};
+			updateSessionData({attachments: newAtc});
+
+			// TODO: add growl notification 
+		}
+	});
+	return upFSFiles;
 };
 
 Template.attachmentsSection.events({
 	'change #fileinput': function(evt, templ) {
+		
+		var onInsertSuccess = function(FSFile) {
+			var upFiles = templ.upFiles;
+			upFiles.push(FSFile._id);
+		};
+
 		FS.Utility.eachFile(event, function(file) {
 			Attachments.insert(file, function (err, fileObj) {
 				//If !err, we have inserted new doc with ID fileObj._id, and
 				//kicked off the data upload using HTTP
 				if(!err) {
-					var newImg = {id: fileObj._id, type: "image"}; // for the moment, just treat images
-					updateSessionData({attachments: newImg});
-					bootbox.alert("Immagine caricata!");
+					debugger;
+					onInsertSuccess(fileObj);
 				} else {
 					bootbox.alert("Errore nel caricamento immagine!");
 				}
@@ -354,28 +407,33 @@ function showMainPane() {
 // object) will be read and changes will be written to the database
 function updateSessionData(newData) {
 	var current = Session.get('currentArtwork');
+	var schema = Schemas.Artwork;
 
 	// apply changes to current object
 	for(var field in newData) {
-		// For 'objects' and 'attachments' if a single element is passed I add
-		// it to the current array
-		if(field === "objects" || field === "attachments" && !Array.isArray(newData[field])) {
-			// Simple-Schema expects an array
+
+		var dotIndex = field.indexOf(".");
+
+		if(dotIndex > -1 && field[dotIndex + 2] === '.') {
+			// we are dealing with a field of the type 'mainField.$.customField',
+			// which is a field of a custom object saved in an array named mainField
+			var mainField = field.substring(0, dotIndex);
+			var index = field.substr(dotIndex + 1,1);
+			var customField = field.substring(dotIndex + 3);
+
+			// the corresponding object must already exist in the 
+			// data context, so I just assign the new value
+			current[mainField][index][customField] = newData[field];
+		}
+		else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema()[field].type()) && !Array.isArray(newData[field])) {
+			// If for the current field the schema expects an array of objects 
+			// but a single objects is passed, I add the object to the current array
 			var elems = [];
 			if(current[field] !== undefined)
 				// use .slice() to achieve deep copy
 				elems = current[field].slice(0);
 			elems.push(newData[field]);
 			current[field] = elems;
-		}
-		else if(field.length > 7 && field.indexOf("objects") === 0) {
-			// we are dealing with a field of the type 'objects.$.fieldName'
-			var index = field.substr(8,1);
-			var subfield = field.substring(10);
-
-			// the corresponding object must already exist in the 
-			// data context, so I just assign the new value
-			current.objects[index][subfield] = newData[field];
 		}
 		else current[field] = newData[field];
 	}
