@@ -272,9 +272,69 @@ var validateField = function(fieldValuePair, context, schema) {
     context.validateOne(fieldValuePair, fieldName);
 };
 
+/*
+localStore = [
+        new FS.Store.FileSystem("attachments", {
+            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/raw",
+            // transformWrite: function(fileObj, readStream, writeStream) {
+            //            // Rotate image according to EXIF info and scale to 1000px longest side
+            //            gm(readStream, fileObj.name()).autoOrient().resize('1200', '1200').quality(80).stream().pipe(writeStream);
+            //        }
+        }),
+        new FS.Store.FileSystem("atcs_thumbs", {
+            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/thumbs",
+            transformWrite: function(fileObj, readStream, writeStream) {
+                        // Rotate image according to EXIF info and transform into a 200px thumbnail
+                        gm(readStream, fileObj.name()).autoOrient().resize('200', '200').stream().pipe(writeStream);
+                    }
+        })
+    ]
+*/
+
+s3Store = [
+  new FS.Store.S3("attachments", {
+    folder: "/artwork_img/fullsize",
+    // region: "eu-west-1", //optional in most cases
+    // accessKeyId: process.env.AWS_ACCESS_KEY_ID, //required if environment variables are not set
+    // secretAccessKey: process.AWS_SECRET_ACCESS_KEY, //required if environment variables are not set
+    bucket: "mastorage", //required
+    // ACL: myValue //optional, default is 'private', but you can allow public or secure access routed through your app URL
+    // The rest are generic store options supported by all storage adapters
+    transformWrite: function(fileObj, readStream, writeStream) {
+          // Rotate image according to EXIF info
+          gm(readStream, fileObj.name()).autoOrient().stream().pipe(writeStream);
+        },
+    maxTries: 1 //optional, default 5
+  }),
+  new FS.Store.S3("medium", {
+    folder: "/artwork_img/medium",
+    // region: "eu-west-1", //optional in most cases
+    // accessKeyId: process.env.AWS_ACCESS_KEY_ID, //required if environment variables are not set
+    // secretAccessKey: process.AWS_SECRET_ACCESS_KEY, //required if environment variables are not set
+    bucket: "mastorage", //required
+      transformWrite: function(fileObj, readStream, writeStream) {
+            // Rotate image according to EXIF info and scale to 1200px longest side
+            gm(readStream, fileObj.name()).autoOrient().resize('1200', '1200').quality(50).stream().pipe(writeStream);
+          },
+    maxTries: 1 //optional, default 5
+  }),
+  new FS.Store.S3("atcs_thumbs", {
+    folder: "/artwork_img/thumbs",
+    // region: "eu-west-1", //optional in most cases
+    // accessKeyId: process.env.AWS_ACCESS_KEY_ID, //required if environment variables are not set
+    // secretAccessKey: process.AWS_SECRET_ACCESS_KEY, //required if environment variables are not set
+    bucket: "mastorage", //required
+      transformWrite: function(fileObj, readStream, writeStream) {
+            // Rotate image according to EXIF info and transform into a 200px thumbnail
+            gm(readStream, fileObj.name()).autoOrient().resize('200', '200').stream().pipe(writeStream);
+          },
+    maxTries: 1 //optional, default 5
+  })
+];
+
 Attachments = new FS.Collection("attachments", {
     filter: {
-            maxSize: 1048576, //in bytes
+            maxSize: 20485760, //in bytes
             allow: {
                 contentTypes: ['image/*'],
                 extensions: ['png', 'jpg', 'jpeg']
@@ -292,20 +352,5 @@ Attachments = new FS.Collection("attachments", {
             }
         },
     // .autoOrient() read EXIF info and rotate image accordingly
-    stores: [
-        new FS.Store.FileSystem("attachments", {
-            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/raw"/*,
-            transformWrite: function(fileObj, readStream, writeStream) {
-                        // Rotate image according to EXIF info and scale to 1000px longest side
-                        gm(readStream, fileObj.name()).autoOrient().resize('1200', '1200').quality(80).stream().pipe(writeStream);
-                    }*/
-        }),
-        new FS.Store.FileSystem("atcs_thumbs", {
-            path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/thumbs",
-            transformWrite: function(fileObj, readStream, writeStream) {
-                        // Rotate image according to EXIF info and transform into a 200px thumbnail
-                        gm(readStream, fileObj.name()).autoOrient().resize('200', '200').stream().pipe(writeStream);
-                    }
-        })
-    ]
+    stores: s3Store
 });
