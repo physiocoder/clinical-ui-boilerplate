@@ -349,8 +349,9 @@ Template.attachmentsSection.upFiles = function() {
 	var inst = UI._templateInstance();
 
 	var upFiles = inst.upFiles;
+
 	// get FS.File objects whose _id is stored in upFiles template variable
-	var upFSFiles = Attachments.find({_id: {$in: upFiles}}).fetch();
+	var upFSFiles = Attachments.find({}).fetch();
 
 	_.each(upFSFiles, function(elem) {
 		var index = $.inArray(elem._id, upFiles);
@@ -360,9 +361,8 @@ Template.attachmentsSection.upFiles = function() {
 		if(index > -1 && elem.isUploaded()) {
 			// remove file's id from upFiles
 			upFiles.splice(index, 1);
-			debugger;
 			// add the new attachment id to the data context
-			var newAtc = {id: elem.id};
+			var newAtc = {id: elem._id};
 			updateSessionData({attachments: newAtc});
 
 			// TODO: add growl notification 
@@ -384,7 +384,6 @@ Template.attachmentsSection.events({
 				//If !err, we have inserted new doc with ID fileObj._id, and
 				//kicked off the data upload using HTTP
 				if(!err) {
-					debugger;
 					onInsertSuccess(fileObj);
 				} else {
 					bootbox.alert("Errore nel caricamento immagine!");
@@ -424,7 +423,7 @@ function updateSessionData(newData) {
 			// the corresponding object must already exist in the 
 			// data context, so I just assign the new value
 			current[mainField][index][customField] = newData[field];
-		}
+		} // if condition is too long, refactor
 		else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema()[field].type()) && !Array.isArray(newData[field])) {
 			// If for the current field the schema expects an array of objects 
 			// but a single objects is passed, I add the object to the current array
@@ -514,7 +513,7 @@ function isSelected(context, current, field) {
 	// refactor
 	// all sections are rendered when the form is activated,
 	// this should be changed! (add an #if in the main template 
-	// with a helper to check for activeSection)
+	// with a helper to check for activeSection) <- no more
 	Session.get('activeSection');
 	if(context === null)
 		return '';
