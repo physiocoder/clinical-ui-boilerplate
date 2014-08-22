@@ -272,7 +272,7 @@ var validateField = function(fieldValuePair, context, schema) {
     context.validateOne(fieldValuePair, fieldName);
 };
 
-/*
+
 localStore = [
         new FS.Store.FileSystem("attachments", {
             path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/raw",
@@ -288,8 +288,8 @@ localStore = [
                         gm(readStream, fileObj.name()).autoOrient().resize('200', '200').stream().pipe(writeStream);
                     }
         })
-    ]
-*/
+    ];
+
 
 s3Store = [
   new FS.Store.S3("attachments", {
@@ -352,5 +352,5 @@ Attachments = new FS.Collection("attachments", {
             }
         },
     // .autoOrient() read EXIF info and rotate image accordingly
-    stores: s3Store
+    stores: localStore
 });
