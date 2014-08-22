@@ -282,17 +282,31 @@ localStore = [
             //        }
         }),
         new FS.Store.FileSystem("atcs_thumbs", {
+            beforeWrite: function(fileObj) {
+              // in transformWrite() we convert the file, so here we set
+              // the right metadata to store in the database
+              return {
+                extension: 'png',
+                type: 'image/png'
+              };
+            }, // the path should be get from a variable, not hardcoded
             path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/thumbs",
             transformWrite: function(fileObj, readStream, writeStream) {
-                        // Rotate image according to EXIF info and transform into a 200px thumbnail
-                        gm(readStream, fileObj.name()).autoOrient().resize('200', '200').stream().pipe(writeStream);
-                    }
+                // Rotate image according to EXIF info, transform into a 200px thumbnail and convert to png.
+                // Second parameter of gm() is the filename for which an array notation is used to get always the
+                // first frame (the first page for a pdf, the image itself for an image)
+                gm(readStream, fileObj.name() + "[0]")
+                    .autoOrient()
+                    .resize('200', '200')
+                    .stream('png')
+                    .pipe(writeStream);
+            }
         })
     ];
 
 
 s3Store = [
-  new FS.Store.S3("attachments", {
+  new FS.Store.S3("attachments_cloud", {
     folder: "/artwork_img/fullsize",
     // region: "eu-west-1", //optional in most cases
     // accessKeyId: process.env.AWS_ACCESS_KEY_ID, //required if environment variables are not set
@@ -318,30 +332,32 @@ s3Store = [
           },
     maxTries: 1 //optional, default 5
   }),
-  new FS.Store.S3("atcs_thumbs", {
+  new FS.Store.S3("atcs_thumbs_cloud", {
     folder: "/artwork_img/thumbs",
     // region: "eu-west-1", //optional in most cases
     // accessKeyId: process.env.AWS_ACCESS_KEY_ID, //required if environment variables are not set
     // secretAccessKey: process.AWS_SECRET_ACCESS_KEY, //required if environment variables are not set
     bucket: "mastorage", //required
-      transformWrite: function(fileObj, readStream, writeStream) {
-            // Rotate image according to EXIF info and transform into a 200px thumbnail
-            gm(readStream, fileObj.name()).autoOrient().resize('200', '200').stream().pipe(writeStream);
-          },
+    transformWrite: function(fileObj, readStream, writeStream) {
+        // Rotate image according to EXIF info, transform into a 200px thumbnail and convert to png.
+        // Second parameter of gm() is the filename for which an array notation is used to get always the
+        // first frame (the first page for a pdf, the image itself for an image)
+        gm(readStream, fileObj.name() + "[0]")
+            .autoOrient()
+            .resize('200', '200')
+            .stream('png')
+            .pipe(writeStream);
+    },
     maxTries: 1 //optional, default 5
   })
 ];
 
 Attachments = new FS.Collection("attachments", {
-    filter: {
+    filter: {  // note: the filter option should be passed on the
             maxSize: 20485760, //in bytes
             allow: {
-                contentTypes: ['image/*'],
-                extensions: ['png', 'jpg', 'jpeg']
-            },
-            deny: {
-                contentTypes: ['audio/*', 'video/*'],
-                extensions: ['pdf']
+                // it would be better to check for contentTypes
+                extensions: ['png', 'jpg', 'jpeg', 'pdf']
             },
             onInvalid: function (message) {
                 if (Meteor.isClient) {

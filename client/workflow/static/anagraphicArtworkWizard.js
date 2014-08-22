@@ -34,6 +34,8 @@ Template.anagraphicArtworkWizard.events({
 
 		var goBack = function(result) {
 			if(result) {
+				var current = Session.get('currentArtwork');
+				//removeOrphanAttachmentsOnBack(current);
 				ArtworksValidationContext.resetValidation();
 				closeForm();
 				updateSessionData({_id: ""});
@@ -130,6 +132,7 @@ Template.anagraphicArtworkWizard.events({
 			}
 		}
 		else {
+			//removeOrphanAttachmentsOnSave(current);
 			Artworks.update(current._id, {$set: toSave}, function(error, result) {
 				// something went wrong... 
 				// TODO: add a callback that saves the datacontext in order not
@@ -306,7 +309,7 @@ Template.environmentSection.isChecked = function() {
 };
 
 Template.attachmentsSection.created = function() {
-	// during upload, files ID are store in this array
+	// during upload, files ID are stored in this array
 	this.upFiles = [];
 };
 
@@ -325,6 +328,7 @@ Template.attachmentsSection.attachments = function() {
 	});
 };
 
+// following helper is not used anymore
 Template.attachmentsSection.upFiles = function() {
 	// get the template instance
 	// WARNING: in date 21 Aug 2014 the method UI._templateInstance()
@@ -346,9 +350,6 @@ Template.attachmentsSection.upFiles = function() {
 		if(index > -1 && elem.isUploaded()) {
 			// remove file's id from upFiles
 			upFiles.splice(index, 1);
-			// add the new attachment id to the data context
-			var newAtc = {id: elem._id};
-			updateSessionData({attachments: newAtc});
 
 			// TODO: add growl notification 
 		}
@@ -362,6 +363,10 @@ Template.attachmentsSection.events({
 		var onInsertSuccess = function(FSFile) {
 			var upFiles = templ.upFiles;
 			upFiles.push(FSFile._id);
+
+			// add the new attachment id to the data context
+			var newAtc = {id: FSFile._id};
+			updateSessionData({attachments: newAtc});
 		};
 
 		FS.Utility.eachFile(event, function(file) {
@@ -371,7 +376,8 @@ Template.attachmentsSection.events({
 				if(!err) {
 					onInsertSuccess(fileObj);
 				} else {
-					bootbox.alert("Errore nel caricamento immagine!");
+					// message from collection's filter + is better
+					//bootbox.alert(err);
 				}
 			});
 		});
@@ -539,4 +545,26 @@ function isSelected(context, current, field) {
 		return 'selected';
 	else
 		return '';
+}
+
+// is there a good way to unify the following two functions?
+function removeOrphanAttachmentsOnBack(context) {
+	var oldList = Artworks.findOne(Session.get('selectedArtworkId')).attachments;
+	var newList = context.attachments;
+	var diff = _.difference(_.union(oldList, newList), _.intersection(oldList, newList));
+
+	// untrusted code can only remove one element at a time
+	_.each(diff, function(elem) {
+		Attachments.remove(elem.id);
+	});
+}
+
+function removeOrphanAttachmentsOnSave(context) {
+	var oldList = Artworks.findOne(Session.get('selectedArtworkId')).attachments;
+	var diff = _.difference(oldList, context.attachments);
+
+	// untrusted code can only remove one element at a time
+	_.each(diff, function(elem) {
+		Attachments.remove(elem.id);
+	});
 }

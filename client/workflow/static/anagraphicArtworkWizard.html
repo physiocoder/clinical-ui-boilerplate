@@ -262,23 +262,9 @@
       <label for="fileinput">Attachments</label>
       <span class="btn btn-default btn-file">
         <i class="fa fa-cloud-upload"></i> Upload image...
-        <input id="fileinput" accept="image/*;capture=camera" type="file">
+        <input id="fileinput" accept="image/*,.pdf" capture="camera" type="file">
       </span>
-    </div>
-    
-    {{#each upFiles}}
-      {{#unless this.isUploaded}}
-        <div class="row">
-          <div class="col-xs-4">
-            {{> FS.UploadProgressBar bootstrap=true}}
-          </div>
-          <p class="col-xs-8">
-            Uploading: {{name}}
-          </p>
-        </div>
-      {{/unless}}
-    {{/each}}
-    
+    </div>    
     {{#each attachments}}
       {{> attachmentSummary}}
     {{/each}}
@@ -288,7 +274,17 @@
 <template name="attachmentSummary">
   <div id="attachmentSummary" class="col-xs-12 row">
     <div class="col-xs-4">
-      {{> attachmentThumb}}
+      {{#if this.isUploaded}}
+        {{#if url store="atcs_thumbs"}}
+          {{> attachmentThumb}}
+        {{else}}
+          <div>
+            Processing file...
+          </div>
+        {{/if}}
+      {{else}}
+        
+      {{/if}}
     </div>
     <div class="col-xs-6">
       {{> attachmentInfo}}
@@ -296,6 +292,20 @@
     <div class="col-xs-2">
       {{> removeAttachment}}
     </div>
+  </div>
+</template>
+
+<template name="attachmentProgress">
+  <div id="attachmentProgress" class="row">
+    <div class="col-xs-4">
+      <p class="col-xs-8">
+        {{this.uploadProgress}}
+      </p>
+      {{> FS.UploadProgressBar bootstrap=true}}
+    </div>
+    <p class="col-xs-8">
+      Uploading: {{name}}
+    </p>
   </div>
 </template>
 
