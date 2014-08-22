@@ -285,23 +285,8 @@ Template.physicsDescriptionSection.events({
 	},
 	'click .remove-obj': function(evt, templ) {
 		var objref = evt.currentTarget.getAttribute('data-objref');
-		var current = Session.get('currentArtwork');
 
-		var predicate = function(obj) {
-			// here coercion is useful
-			// (obj.id is Number and objref is String)
-			if(obj.id == objref)
-				return true;
-			else
-				return false;
-		};
-
-		// get objects to delete
-		var objToDelete = _.find(current.objects, predicate);
-		// remove object from objects array
-		current.objects.splice($.inArray(objToDelete, current.objects), 1);
-		// update session variable (seems useless, but reactivity...)
-		updateSessionData({objects: current.objects});
+		removeElemFromSessionDataArray(objref, "objects");
 
 		// show main tab
 		showMainPane();
@@ -390,6 +375,11 @@ Template.attachmentsSection.events({
 				}
 			});
 		});
+	},
+	'click .remove-atc': function(evt, templ) {
+		var atcref = evt.currentTarget.getAttribute('data-atcref');
+
+		removeElemFromSessionDataArray(atcref, "attachments");
 	}
 });
 
@@ -423,7 +413,7 @@ function updateSessionData(newData) {
 			// the corresponding object must already exist in the 
 			// data context, so I just assign the new value
 			current[mainField][index][customField] = newData[field];
-		} // if condition is too long, refactor
+		} // following if condition is too long, refactor
 		else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema()[field].type()) && !Array.isArray(newData[field])) {
 			// If for the current field the schema expects an array of objects 
 			// but a single objects is passed, I add the object to the current array
@@ -439,6 +429,29 @@ function updateSessionData(newData) {
 
 	// save the modified object
 	Session.set('currentArtwork', current);
+}
+
+function removeElemFromSessionDataArray(elemRef, arrayName) {
+	var current = Session.get('currentArtwork');
+
+	var predicate = function(obj) {
+			// here coercion is useful
+			// (obj.id is Number and objref is String)
+			if(obj.id == elemRef)
+				return true;
+			else
+				return false;
+		};
+
+	// get elem to delete
+	var elemToDelete = _.find(current[arrayName], predicate);
+	// remove elem from array
+	current[arrayName].splice($.inArray(elemToDelete, current[arrayName]), 1);
+
+	var data = {};
+	data[arrayName] = current[arrayName];
+	// update session variable (seems useless, but reactivity...)
+	updateSessionData(data);
 }
 
 function setSectionFocus(section) {
