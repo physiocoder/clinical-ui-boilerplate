@@ -16,6 +16,7 @@
       "commit": "cb470de2cfeebeccbf76d4cc0a39ad4afc76d553"
     },
     "collectionFS": {},
-    "cfs-ui": {}
+    "cfs-ui": {},
+    "cfs-s3": {}
   }
 }

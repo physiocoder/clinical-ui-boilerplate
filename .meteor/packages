@@ -21,3 +21,4 @@ simple-schema
 collectionFS
 cfs-graphicsmagick
 cfs-ui
+cfs-s3
