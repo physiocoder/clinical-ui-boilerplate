@@ -20,10 +20,16 @@ Artworks.allow({
 });
 
 Attachments.allow({
+	insert: function(userId) {
+		return userId;
+	},
 	update: function(userId) {
 		return userId;
 	},
 	remove: function() {
+		return userId;
+	},
+	download: function(userId) {
 		return userId;
 	}
 });
@@ -33,8 +39,5 @@ Meteor.methods({
 	// data structure to store current artwork's changes
 	removeMaterialAndTechnique: function(docId) {
 		return Artworks.remove({_id: docId, fields: { material: 1, technique: 1}});
-	},
-	removeObject: function(artworkId, objname) {
-		return Artworks.remove({_id: artworkId});
 	}
 });

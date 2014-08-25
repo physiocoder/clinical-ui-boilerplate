@@ -275,7 +275,7 @@
   <div id="attachmentSummary" class="col-xs-12 row">
     <div class="col-xs-4">
       {{#if this.isUploaded}}
-        {{#if url store="atcs_thumbs"}}
+        {{#if getThumbURL}}
           {{> attachmentThumb}}
         {{else}}
           <div>
@@ -283,7 +283,7 @@
           </div>
         {{/if}}
       {{else}}
-        
+        {{> attachmentProgress}}
       {{/if}}
     </div>
     <div class="col-xs-6">
@@ -297,13 +297,13 @@
 
 <template name="attachmentProgress">
   <div id="attachmentProgress" class="row">
-    <div class="col-xs-4">
-      <p class="col-xs-8">
-        {{this.uploadProgress}}
+    <div class="row">
+      <p class="col-xs-2">
+        {{this.uploadProgress}}%
       </p>
       {{> FS.UploadProgressBar bootstrap=true}}
     </div>
-    <p class="col-xs-8">
+    <p class="row">
       Uploading: {{name}}
     </p>
   </div>
@@ -311,7 +311,7 @@
 
 <template name="attachmentThumb">
   <div id="attachmentThumb">
-    <img src="{{url store='atcs_thumbs'}}" alt="">
+    <img src="{{getThumbURL}}" alt="">
   </div>
 </template>
 

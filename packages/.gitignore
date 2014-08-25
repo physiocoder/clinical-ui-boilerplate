@@ -6,6 +6,8 @@
 /iron-router
 /collection2
 /collectionFS
+/cfs-ui
+/cfs-s3
 /nprogress
 /iron-layout
 /simple-schema
@@ -16,11 +18,11 @@
 /cfs-access-point
 /cfs-worker
 /cfs-upload-http
+/cfs-storage-adapter
 /blaze-layout
 /iron-core
 /iron-dynamic-template
 /cfs-filesaver
-/cfs-storage-adapter
 /http-methods
 /numeral
 /data-man
@@ -36,5 +38,3 @@
 /cfs-filesystem
 /reactive-property
 /micro-queue
-/cfs-ui
-/cfs-s3

@@ -389,10 +389,6 @@ Template.attachmentsSection.events({
 	}
 });
 
-Template.attachmentThumb.thumbAddress = function(id) {
-	return Attachments.findOne({_id: id}).url({store: "atcs_thumbs"});
-};
-
 function showMainPane() {
 	$('a[href="#main').tab('show');
 }
@@ -549,9 +545,12 @@ function isSelected(context, current, field) {
 
 // is there a good way to unify the following two functions?
 function removeOrphanAttachmentsOnBack(context) {
-	var oldList = Artworks.findOne(Session.get('selectedArtworkId')).attachments;
-	var newList = context.attachments;
-	var diff = _.difference(_.union(oldList, newList), _.intersection(oldList, newList));
+	var oldList = _.map(Artworks.findOne(Session.get('selectedArtworkId')).attachments, function(elem) {
+			return elem.id;
+		});
+	var newList = _.map(context.attachments, function(elem) { return elem.id; });
+
+	var diff = _.difference(newList, oldList);
 
 	// untrusted code can only remove one element at a time
 	_.each(diff, function(elem) {
@@ -560,11 +559,21 @@ function removeOrphanAttachmentsOnBack(context) {
 }
 
 function removeOrphanAttachmentsOnSave(context) {
-	var oldList = Artworks.findOne(Session.get('selectedArtworkId')).attachments;
-	var diff = _.difference(oldList, context.attachments);
+	var oldList = _.map(Artworks.findOne(Session.get('selectedArtworkId')).attachments, function(elem) {
+			return elem.id;
+		});
+	var newList = _.map(context.attachments, function(elem) { return elem.id; });
+
+	var diff = _.difference(_.union(oldList, newList), _.intersection(oldList, newList));
+	var toRemove = _.difference(diff, newList);
 
 	// untrusted code can only remove one element at a time
-	_.each(diff, function(elem) {
-		Attachments.remove(elem.id);
+	_.each(oldList, function(elem) {
+		if($.inArray(elem, newList) < 0)
+			// it seems like this remove is not working properly
+			Attachments.remove(elem.id, function(err, result) {
+				if(err !== undefined)
+					console.log("Err", err);
+			});
 	});
 }

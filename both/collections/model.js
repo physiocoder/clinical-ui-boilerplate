@@ -276,10 +276,13 @@ var validateField = function(fieldValuePair, context, schema) {
 localStore = [
         new FS.Store.FileSystem("attachments", {
             path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/raw",
-            // transformWrite: function(fileObj, readStream, writeStream) {
-            //            // Rotate image according to EXIF info and scale to 1000px longest side
-            //            gm(readStream, fileObj.name()).autoOrient().resize('1200', '1200').quality(80).stream().pipe(writeStream);
-            //        }
+            transformWrite: function(fileObj, readStream, writeStream) {
+                if(fileObj.isImage()) {
+                    // Rotate image according to EXIF info and scale to 1000px longest side
+                    gm(readStream, fileObj.name()).autoOrient().resize('1200', '1200').quality(80).stream().pipe(writeStream);
+                } // does nothing, just links read-write streams
+                else readStream.pipe(writeStream);
+            }
         }),
         new FS.Store.FileSystem("atcs_thumbs", {
             beforeWrite: function(fileObj) {
@@ -289,7 +292,7 @@ localStore = [
                 extension: 'png',
                 type: 'image/png'
               };
-            }, // the path should be get from a variable, not hardcoded
+            }, // the path should be got from a variable, not hardcoded
             path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/thumbs",
             transformWrite: function(fileObj, readStream, writeStream) {
                 // Rotate image according to EXIF info, transform into a 200px thumbnail and convert to png.
@@ -315,9 +318,13 @@ s3Store = [
     // ACL: myValue //optional, default is 'private', but you can allow public or secure access routed through your app URL
     // The rest are generic store options supported by all storage adapters
     transformWrite: function(fileObj, readStream, writeStream) {
-          // Rotate image according to EXIF info
-          gm(readStream, fileObj.name()).autoOrient().stream().pipe(writeStream);
-        },
+        if(fileObj.isImage()) {
+            // Rotate image according to EXIF info and scale to 1000px longest
+            // side
+            gm(readStream, fileObj.name()).autoOrient().resize('1200', '1200').quality(80).stream().pipe(writeStream);
+        } // does nothing, just links read-write streams
+        else readStream.pipe(writeStream);
+    },
     maxTries: 1 //optional, default 5
   }),
   new FS.Store.S3("medium", {
@@ -326,10 +333,13 @@ s3Store = [
     // accessKeyId: process.env.AWS_ACCESS_KEY_ID, //required if environment variables are not set
     // secretAccessKey: process.AWS_SECRET_ACCESS_KEY, //required if environment variables are not set
     bucket: "mastorage", //required
-      transformWrite: function(fileObj, readStream, writeStream) {
+    transformWrite: function(fileObj, readStream, writeStream) {
+        if(fileObj.isImage()) {
             // Rotate image according to EXIF info and scale to 1200px longest side
             gm(readStream, fileObj.name()).autoOrient().resize('1200', '1200').quality(50).stream().pipe(writeStream);
-          },
+        } // does nothing, just links read-write streams
+        else readStream.pipe(writeStream);
+    },
     maxTries: 1 //optional, default 5
   }),
   new FS.Store.S3("atcs_thumbs_cloud", {
@@ -338,6 +348,14 @@ s3Store = [
     // accessKeyId: process.env.AWS_ACCESS_KEY_ID, //required if environment variables are not set
     // secretAccessKey: process.AWS_SECRET_ACCESS_KEY, //required if environment variables are not set
     bucket: "mastorage", //required
+    beforeWrite: function(fileObj) {
+      // in transformWrite() we convert the file, so here we set
+      // the right metadata to store in the database
+      return {
+        extension: 'png',
+        type: 'image/png'
+      };
+    },
     transformWrite: function(fileObj, readStream, writeStream) {
         // Rotate image according to EXIF info, transform into a 200px thumbnail and convert to png.
         // Second parameter of gm() is the filename for which an array notation is used to get always the
@@ -353,7 +371,7 @@ s3Store = [
 ];
 
 Attachments = new FS.Collection("attachments", {
-    filter: {  // note: the filter option should be passed on the
+    filter: {  // note: the filter option should be passed on the server
             maxSize: 20485760, //in bytes
             allow: {
                 // it would be better to check for contentTypes
@@ -367,6 +385,5 @@ Attachments = new FS.Collection("attachments", {
                 }
             }
         },
-    // .autoOrient() read EXIF info and rotate image accordingly
-    stores: localStore
+    stores: s3Store
 });
