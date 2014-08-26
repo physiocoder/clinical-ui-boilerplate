@@ -15,7 +15,8 @@ Template.anagraphicArtworkWizard.isTabActive = function(tab) {
 Template.anagraphicArtworkWizard.created = function() {
 	Session.set('activeSection', 'anagraphicTab');
 	Session.set('typeIsSet', false);
-	Session.set('upFiles', []);
+	//Session.set('upFiles', []);
+	Session.set('usingCustomaryUnits', false);
 };
 
 Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
@@ -285,6 +286,40 @@ Template.physicsDescriptionSection.events({
 	}
 });
 
+Template.dimensionsTemplate.getValue = function(field) {
+
+	var value = parseInt(this[field], 10);
+
+	if(isNaN(value))
+		return "";
+
+	var round = function(elem) {
+		return +(Math.round(elem + "e+2")  + "e-2");
+	};
+
+	if(Session.get('usingCustomaryUnits'))
+		return round(value / 2.54);
+	else return round(value);
+};
+
+Template.unitsSelection.isActive = function(unit) {
+	var customary = Session.get("usingCustomaryUnits");
+
+	if(customary && unit === 'in' || unit === 'cm')
+		return "active";
+	else return "";
+};
+
+Template.unitsSelection.events({
+	'change': function(evt, templ) {
+
+		if(evt.currentTarget.getAttribute('data-unit') === "cm")
+			Session.set('usingCustomaryUnits', false);
+		else Session.set('usingCustomaryUnits', true);
+
+	}
+});
+
 Template.environmentSection.isChecked = function() {
 	// all sections are rendered when the form is activated,
 	// this should be changed! (add an #if in the main template 
@@ -378,6 +413,37 @@ Template.attachmentsSection.events({
 	}
 });
 
+function convertTo(unit, current) {
+	var computation;
+
+	var round = function(elem) {
+		return +(Math.round(elem + "e+2")  + "e-2");
+	};
+
+	if(unit === 'cm') {
+		computation = function(elem) {
+			return round(round(elem) * 2.54);
+		};
+	}
+	else if(unit === 'in') {
+		computation = function(elem) {
+			return round(round(elem) / 2.54);
+		};
+	}
+
+	var predicate = function(elem) {
+		elem.height = computation(parseInt(elem.height, 10));
+		elem.length = computation(parseInt(elem.length, 10));
+		elem.depth =  computation(parseInt(elem.depth, 10));
+	};
+
+	predicate(current);
+
+	_.each(current.objects, predicate);
+
+	return current;
+}
+
 function showMainPane() {
 	$('a[href="#main').tab('show');
 }
@@ -404,6 +470,17 @@ function updateSessionData(newData) {
 			// the corresponding object must already exist in the 
 			// data context, so I just assign the new value
 			current[mainField][index][customField] = newData[field];
+
+			if(Session.get('usingCustomaryUnits') &&
+				field.substring(field.length - 6) === "height" ||
+				field.substring(field.length - 6) === "length" ||
+				field.substring(field.length - 5) === "depth") {
+
+				var value1 = parseInt(current[mainField][index][customField], 10);
+
+				if(!isNaN(value1))
+					current[mainField][index][customField] = value1 * 2.54;
+			}
 		} // following if condition is too long, refactor
 		else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema()[field].type()) && !Array.isArray(newData[field])) {
 			// If for the current field the schema expects an array of objects 
@@ -425,6 +502,17 @@ function updateSessionData(newData) {
 			current[field] = newData[field];
 		}
 	}
+
+	if(Session.get('usingCustomaryUnits') &&
+			field === "height" ||
+			field === "length" ||
+			field === "depth") {
+
+			var value = parseInt(current[field], 10);
+
+			if(!isNaN(value))
+				current[field] = value * 2.54;
+		}
 
 	// save the modified object
 	Session.set('currentArtwork', current);

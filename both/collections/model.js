@@ -100,18 +100,21 @@ Schemas.ArtworkEssentials = new SimpleSchema({
     },
     height: {
         type: Number,
+        decimal: true,
         label: "Height",
         min: 1,
         optional: true
     },
     length: {
         type: Number,
+        decimal: true,
         label: "Length",
         min: 1,
         optional: true
     },
     depth: {
         type: Number,
+        decimal: true,
         label: "Depth",
         min: 1,
         optional: true

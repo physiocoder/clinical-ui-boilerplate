@@ -195,9 +195,26 @@
           {{/if}}
         </div>
       </div>
-      <label>
-        <input class="multiple-checkbox" type="checkbox" value="multiple" {{isChecked}}>
-        Opera multipla
+      <div>
+        <label>
+          <input class="multiple-checkbox" type="checkbox" value="multiple" {{isChecked}}>
+          Opera multipla
+        </label>
+        {{> unitsSelection}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="unitsSelection">
+  <div id="unitsSelection">
+    <label>Unit:</label>
+    <div class="btn-group" data-toggle="buttons">
+      <label class="btn btn-primary {{isActive 'cm'}}">
+        <input type="radio" data-unit="cm"> cm
+      </label>
+      <label class="btn btn-primary {{isActive 'in'}}">
+        <input type="radio" data-unit="in"> in
       </label>
     </div>
   </div>
@@ -207,16 +224,16 @@
   <div class="dimensionsTemplate">
     <div class="form-group field-height {{fieldValidity heightField }}">
       <label class="control-label" for="heightElem">Height {{errMsg heightField}}</label>
-      <input type="text" class="form-control" id="heightElem" placeholder="Height in cm" value="{{heightVal}}"
+      <input type="text" class="form-control" id="heightElem" placeholder="Height in {{unit}}" value="{{getValue 'heightVal'}}"
         data-schemafield="{{heightField}}" maxlength=10>
     </div>
     <div class="form-group field-length {{fieldValidity lengthField }}">
       <label class="control-label" for="lengthElem">Length {{errMsg lengthField}}</label>
-      <input type="text" class="form-control" id="lengthElem" placeholder="Length in cm" value="{{lengthVal}}" data-schemafield="{{lengthField}}" maxlength=10>
+      <input type="text" class="form-control" id="lengthElem" placeholder="Length in {{unit}}" value="{{getValue 'lengthVal'}}" data-schemafield="{{lengthField}}" maxlength=10>
     </div>
     <div class="form-group field-depth {{fieldValidity depthField }}">
       <label class="control-label" for="depthElem">Depth {{errMsg depthField}}</label>
-      <input type="text" class="form-control" id="depthElem" placeholder="Depth in cm" value="{{depthVal}}" data-schemafield="{{depthField}}" maxlength=10>
+      <input type="text" class="form-control" id="depthElem" placeholder="Depth in {{unit}}" value="{{getValue 'depthVal'}}" data-schemafield="{{depthField}}" maxlength=10>
     </div>
   </div>
 </template>
