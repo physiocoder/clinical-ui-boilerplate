@@ -31,7 +31,7 @@ Template.anagraphicArtworkForm.contextArtwork = function() {
         base: false,
         manuals: false,
         covers: false,
-        "case": false,
+        "case": false, // 'case' is a reserved word
         belts: false,
         site: "",
         city: "",

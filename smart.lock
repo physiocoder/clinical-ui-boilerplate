@@ -147,8 +147,8 @@
       },
       "http-methods": {
         "git": "https://github.com/CollectionFS/Meteor-http-methods.git",
-        "tag": "v0.0.22",
-        "commit": "5b0f7723f49436b8a0a930f284ed05f0b26021fe"
+        "tag": "v0.0.23",
+        "commit": "8e555d953f1a2dfdfe983e58b65bd6054a840dde"
       },
       "numeral": {
         "git": "https://github.com/vsivsi/meteor-numeral.git",

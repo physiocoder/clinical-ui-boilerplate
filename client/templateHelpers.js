@@ -21,3 +21,13 @@ UI.registerHelper('errMsg', function(field) {
 UI.registerHelper('getThumbURL', function() {
 	return this.url({store: 'atcs_thumbs_cloud'});
 });
+
+UI.registerHelper('optionIsSelected', function(field) {
+	var current = Session.get('currentArtwork');
+
+	if(this.id === undefined && current[field] === "")
+		return "selected";
+	else if(this.id == current[field]) // this.id is Number and current[field] is String, exploit coercion!
+		return "selected";
+	else return "";
+});

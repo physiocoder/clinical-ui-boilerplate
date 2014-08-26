@@ -31,10 +31,10 @@ Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
 Template.anagraphicArtworkWizard.events({
 	'click .back': function(evt, templ) {
 		var inDatabase = Artworks.findOne({_id: Session.get('selectedArtworkId')});
+		var current = Session.get('currentArtwork');
 
 		var goBack = function(result) {
 			if(result) {
-				var current = Session.get('currentArtwork');
 				//removeOrphanAttachmentsOnBack(current);
 				ArtworksValidationContext.resetValidation();
 				closeForm();
@@ -42,10 +42,10 @@ Template.anagraphicArtworkWizard.events({
 			}
 		};
 
-		if(!_.isEqual(inDatabase, this)) {
-			bootbox.confirm("Unsaved updates will be discarded. Do you really want to go back?", goBack);
+		if(_.isEqual(inDatabase, current)) {
+			goBack(true);
 		}
-		else goBack(true);
+		else bootbox.confirm("Unsaved updates will be discarded. Do you really want to go back?", goBack);
 	},
 	'click .create': function() {
 		var data = Session.get("currentArtwork");
@@ -90,7 +90,7 @@ Template.anagraphicArtworkWizard.events({
 		// constructing the object to pass to validateOne(obj, key)
 		var fieldValuePair = {};
 		fieldValuePair[field] = value;
-
+		
 		// update the data context
 		updateSessionData(fieldValuePair);
 
@@ -114,7 +114,7 @@ Template.anagraphicArtworkWizard.events({
 
 		ArtworksValidationContext.resetValidation();
 		// usual clean
-		Schemas.Artwork.clean(toSave);
+		Schemas.Artwork.clean(toSave, {removeEmptyStrings: false});
 		ArtworksValidationContext.validate(toSave);
 
 		if(ArtworksValidationContext.invalidKeys().length > 0) {
@@ -153,14 +153,6 @@ Template.anagraphicArtworkWizard.events({
 
 Template.anagraphicSection.artworkTypes = function() {
 	return artworkType;
-};
-
-Template.anagraphicSection.isSelectedHelper = function(context, current, field) {
-	return isSelected(context, current, field);
-};
-
-Template.materialSection.isSelectedHelper = function(context,current,field) {
-	return isSelected(context, current, field);
 };
 
 Template.materialSection.artworkMaterials = function() {
@@ -233,23 +225,20 @@ Template.physicsDescriptionSection.events({
 			bootbox.confirm("Proceeding, all objects will be removed.", function(result) {
 				if (result) {
 					updateStatus(false);
-					//Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: false}});
 
 					// Remove objects
 					updateSessionData({objects: []});
-					//Artworks.update(Session.get('selectedArtworkId'), {$unset: {objects: ""}});
+
 					showMainPane();
 				}
 				else {
 					// if the user aborts operation, set checkbox to true (it was true before checking)
 					updateStatus(true);
-					//var n = Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: true}});
 				}
 			});
 		}
 		else {
 			updateStatus(true);
-			//Artworks.update(Session.get('selectedArtworkId'), {$set: {multiple: true}});
 		}
 	},
 	'click .add-object': function(evt, templ) {
@@ -418,7 +407,7 @@ function updateSessionData(newData) {
 		} // following if condition is too long, refactor
 		else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema()[field].type()) && !Array.isArray(newData[field])) {
 			// If for the current field the schema expects an array of objects 
-			// but a single objects is passed, I add the object to the current array
+			// but a single object is passed, I add the object to the current array
 			var elems = [];
 			if(current[field] !== undefined)
 				// use .slice() to achieve deep copy
@@ -426,7 +415,15 @@ function updateSessionData(newData) {
 			elems.push(newData[field]);
 			current[field] = elems;
 		}
-		else current[field] = newData[field];
+		else {
+			// if the type changes, reset material and technique
+			if(field === "type" && newData[field] !== current[field]) {
+				current["material"] = "";
+				current["technique"] = "";
+			}
+
+			current[field] = newData[field];
+		}
 	}
 
 	// save the modified object
@@ -522,25 +519,6 @@ function showPrevTab() {
 
 	Session.set('activeSection', prev);
 	setSectionFocus(prev);
-}
-
-function isSelected(context, current, field) {
-	// refactor
-	// all sections are rendered when the form is activated,
-	// this should be changed! (add an #if in the main template 
-	// with a helper to check for activeSection) <- no more
-	Session.get('activeSection');
-	if(context === null)
-		return '';
-
-	var fieldIndex = parseInt(context[field], 10);
-
-	if(current === "none" && isNaN(fieldIndex))
-		return 'selected';
-	else if(fieldIndex === current)
-		return 'selected';
-	else
-		return '';
 }
 
 // is there a good way to unify the following two functions?
