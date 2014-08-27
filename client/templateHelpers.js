@@ -25,9 +25,9 @@ UI.registerHelper('getThumbURL', function() {
 UI.registerHelper('optionIsSelected', function(field) {
 	var current = Session.get('currentArtwork');
 
-	if(this.id === undefined && current[field] === "")
-		return "selected";
-	else if(this.id == current[field]) // this.id is Number and current[field] is String, exploit coercion!
+	// NOTE: current[field] could be either a String or an Array, in either case
+	// the indexOf() method is defined and the result is the wanted behaviour
+	if(this.id !== undefined && current[field].indexOf(this.id.toString()) > -1)
 		return "selected";
 	else return "";
 });

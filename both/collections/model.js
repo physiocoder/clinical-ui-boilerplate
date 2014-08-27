@@ -54,12 +54,12 @@ Schemas.ArtworkEssentials = new SimpleSchema({
         max: 200
     },
     material: {
-        type: String,
+        type: [String],
         label: "Material",
         optional: true
     },
     technique: {
-        type: String,
+        type: [String],
         label: "Technique",
         optional: true
     },

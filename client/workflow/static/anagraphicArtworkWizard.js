@@ -78,15 +78,29 @@ Template.anagraphicArtworkWizard.events({
 	// ***** Validation events *****/
 	// The change event fires when we leave the element and its content has changed
 	'change .form-control, change .form-checkbox': function(evt, templ) {
+
+		var target = evt.currentTarget;
+
 		// extracting field name from data-schemafield attribute
-		var field = evt.currentTarget.getAttribute('data-schemafield');
-		var inputType = evt.currentTarget.getAttribute('type');
-		
+		var field = target.getAttribute('data-schemafield');
+		var inputType = target.type;//('type');
+
+		// if the input is a checkbox we want to get its checked state,
+		// for a ,ultiple select we want the selected elements and for 
+		// the other inputs we simply get the value
 		var value;
 		if(inputType === "checkbox")
-			value = evt.currentTarget.checked;
-		else
-			value = evt.currentTarget.value;
+			value = target.checked;
+		else if(inputType === "select-multiple") {
+			var ops = _.filter(target.options, function(elem) {
+				if(elem.selected)
+					return true;
+			});
+			value = _.map(ops, function(elem) {
+				return elem.value;
+			});
+		}
+		else value = target.value;
 
 		// constructing the object to pass to validateOne(obj, key)
 		var fieldValuePair = {};
@@ -154,6 +168,10 @@ Template.anagraphicArtworkWizard.events({
 
 Template.anagraphicSection.artworkTypes = function() {
 	return artworkType;
+};
+
+Template.materialSection.rendered = function() {
+	$('.multiselect').multiselect();
 };
 
 Template.materialSection.artworkMaterials = function() {
@@ -495,8 +513,21 @@ function updateSessionData(newData) {
 		else {
 			// if the type changes, reset material and technique
 			if(field === "type" && newData[field] !== current[field]) {
-				current["material"] = "";
-				current["technique"] = "";
+				current["material"] = [];
+				current["technique"] = [];
+
+				try {
+					// the multiselect elements must be cleared programmatically
+					// via the provided methods
+					var techSelect = $('.multiselect.technique');
+					techSelect.multiselect('deselect', techSelect.val());
+					var matSelect = $('.multiselect.material');
+					matSelect.multiselect('deselect', matSelect.val());
+				}
+				catch(e) {
+					// if no values where selected an exception is thrown
+					// in such a case we don't need to do anything, just relax :)
+				}
 			}
 
 			current[field] = newData[field];
