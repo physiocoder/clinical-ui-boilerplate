@@ -1,0 +1,30 @@
+<template name="exhibitionsWizardContainer">
+  <div id="exhibitionsWizardContainer" class="page">
+    <div class="content">
+      <div class="col col-xs-8 col-xs-offset-2">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            Exhibitions Wizard
+          </div>
+          <div class="panel-body">
+          	{{> exhibitionsWizard}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="exhibitionsWizard">
+	<div id="exhibitionsWizard">
+		<div class="form-group {{fieldValidity 'name'}}">
+	      <label class="control-label" for="nameElem">Name {{errMsg 'name'}}</label>
+	      <input type="text" class="form-control" id="nameElem" placeholder="Name..." value="{{name}}" data-schemafield="name" autofocus maxlength=20>
+    	</div>
+    	<div class="form-group {{fieldValidity 'organizer'}}">
+	      <label class="control-label" for="organizerElem">Organizer {{errMsg 'organizer'}}</label>
+	      <input type="text" class="form-control" id="organizerElem" placeholder="Organizer..." value="{{organizer}}" data-schemafield="organizer" autofocus maxlength=20>
+    	</div>
+	</div>
+</template>
+

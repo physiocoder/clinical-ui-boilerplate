@@ -1,0 +1,50 @@
+<template name="exhibitions">
+  <div id="exhibitionsList" class="page">
+    <div class="content">
+      <div class="col col-xs-8 col-xs-offset-2">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            Exhibitions
+          </div>
+          <div class="panel-body">
+            {{> addExhibition}}
+            {{> exhibitionsList}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="exhibitionsList">
+  <div id="exhibitionsList">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Organizer</th>
+          <th>Venue</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each exhibitions}}
+          {{> exhibitionsListItem}}
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template name="exhibitionsListItem">
+  <tr>
+    <td>{{name}}</td>
+    <td>{{organizer}}</td>
+    <td>{{venue}}</td>
+    <td>{{date}}</td>
+  </tr>
+</template>
+
+<template name="addExhibition">
+  <button id="addExhibition" class="add-exhibition btn btn-primary">New exhibition</button>
+</template>

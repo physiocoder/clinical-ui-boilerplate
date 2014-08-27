@@ -6,11 +6,24 @@ Meteor.publish('artworks', function() {
 	return Artworks.find();
 });
 
+Meteor.publish('exhibitions', function() {
+	return Exhibitions.find();
+});
+
 Meteor.publish('attachments', function() {
 	return Attachments.find();
 });
 
 Artworks.allow({
+    update: function(userId) {
+        return userId;
+    },
+    remove: function(userId) {
+        return userId;
+    }
+});
+
+Exhibitions.allow({
     update: function(userId) {
         return userId;
     },

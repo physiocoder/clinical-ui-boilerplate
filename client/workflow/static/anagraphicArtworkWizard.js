@@ -431,37 +431,6 @@ Template.attachmentsSection.events({
 	}
 });
 
-function convertTo(unit, current) {
-	var computation;
-
-	var round = function(elem) {
-		return +(Math.round(elem + "e+2")  + "e-2");
-	};
-
-	if(unit === 'cm') {
-		computation = function(elem) {
-			return round(round(elem) * 2.54);
-		};
-	}
-	else if(unit === 'in') {
-		computation = function(elem) {
-			return round(round(elem) / 2.54);
-		};
-	}
-
-	var predicate = function(elem) {
-		elem.height = computation(parseInt(elem.height, 10));
-		elem.length = computation(parseInt(elem.length, 10));
-		elem.depth =  computation(parseInt(elem.depth, 10));
-	};
-
-	predicate(current);
-
-	_.each(current.objects, predicate);
-
-	return current;
-}
-
 function showMainPane() {
 	$('a[href="#main').tab('show');
 }
@@ -489,6 +458,7 @@ function updateSessionData(newData) {
 			// data context, so I just assign the new value
 			current[mainField][index][customField] = newData[field];
 
+			// if customary units are used, convert values before saving
 			if(Session.get('usingCustomaryUnits') &&
 				field.substring(field.length - 6) === "height" ||
 				field.substring(field.length - 6) === "length" ||
@@ -534,6 +504,7 @@ function updateSessionData(newData) {
 		}
 	}
 
+	// if customary units are used, convert values before saving
 	if(Session.get('usingCustomaryUnits') &&
 			field === "height" ||
 			field === "length" ||

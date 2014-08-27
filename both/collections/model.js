@@ -1,5 +1,6 @@
 Anagraphics = new Meteor.Collection('anagraphics');
 Artworks = new Meteor.Collection('artworks');
+Exhibitions = new Meteor.Collection('exhibitions');
 
 Schemas = {};
 
@@ -211,72 +212,7 @@ Artworks.attachSchema(Schemas.Artwork);
 
 ArtworksValidationContext = Schemas.Artwork.namedContext("artworksContext");
 
-/**
- * Useful method to validate the fields of a given object
- * one by one. This solves the problem of directly validating
- * an object against the whole schema using validate(obj).
- * As it relies on validateOne(), all validation context properties
- * and reactivity are preserved.
- * @param  {Object} obj - Object to validate
- * @param  {Object} context - Simple-Schema validation context
- * @param  {Object} options - Options to pass to mySchema.clean(obj, options)
- */
-validateObj = function(obj, context, schema) {
-    for(var field in obj) {
-
-        var fieldValuePair = {};
-
-        // Internally, Simple Schema treats arrays with a Mongo-style notation.
-        // To use the validateOne() with arrays, we should then validate each 
-        // element of the array passing the various fields one by one with
-        // Mongo-style notation
-        if(obj[field] instanceof Array) {
-            var l = field.length;
-            for(var i = 0; i < l; i++) {
-                for(var internalField in obj[field][i]) {
-                    fieldValuePair = {};
-                    fieldValuePair[field + ".$." + internalField]  = obj[field][i][internalField];
-                    validateField(fieldValuePair, context, schema);
-                }
-            }
-        }
-        else {
-            fieldValuePair = {};
-            fieldValuePair[field]  = obj[field];
-            validateField(fieldValuePair, context, schema);
-        }
-    }
-};
-
-/**
- * Used by validateObj()
- * @param  {Object} fieldValuePair - Name and value of field to validate
- * @param  {Object} context - Simple-Schema validation context
- * @param  {Object} options - Options to pass to mySchema.clean(fieldValuePair, options)
- */
-var validateField = function(fieldValuePair, context, schema) {
-    var options = {};
-    var fieldName = Object.keys(fieldValuePair)[0];
-
-    // By default, the clean() method removes empty strings from
-    // the object to validate. As we are doing a one by one validation,
-    // we don't want this to happen if the field to validate is a required
-    // field, so that the validateOne() can invalidate such field.
-    // On the contrary, if the field to validate is optional, we want
-    // the clean() method to remove it from the object so that the validateOne()
-    // would validate it (no value is an acceptable value).
-    if($.inArray(fieldName, schema.requiredSchemaKeys()) >= 0)
-        options = {removeEmptyStrings: false};
-    else
-        options = {removeEmptyStrings: true};
-
-    
-    schema.clean(fieldValuePair, options);
-    context.validateOne(fieldValuePair, fieldName);
-};
-
-
-localStore = [
+var localStore = [
         new FS.Store.FileSystem("attachments", {
             path: "~/repo/clinical-ui-boilerplate/memorart_uploads/attachments/raw",
             transformWrite: function(fileObj, readStream, writeStream) {
@@ -311,7 +247,7 @@ localStore = [
     ];
 
 
-s3Store = [
+var s3Store = [
   new FS.Store.S3("attachments_cloud", {
     folder: "/artwork_img/fullsize",
     // region: "eu-west-1", //optional in most cases
@@ -390,3 +326,24 @@ Attachments = new FS.Collection("attachments", {
         },
     stores: s3Store
 });
+
+Schemas.Exhibitions = new SimpleSchema({
+    name: {
+        type: String,
+        label: "Exhibition name",
+    },
+    organizer: {
+        type: String,
+        label: "Exhibition organizer"
+    },
+    venue: {
+        type: String,
+        label: "Venue"
+    },
+    date: {
+        type: String,
+        label: "Earliest and latest date"
+    }
+});
+
+Exhibitions.attachSchema(Schemas.Exhibitions);

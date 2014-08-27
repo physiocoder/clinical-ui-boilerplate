@@ -2,15 +2,6 @@ hideFooter = function() {
   return $('footer').addClass("hide");
 };
 
-/**
- * Set an element as invisible but still taking space in the page
- * (present in the DOM Tree)
- * @param  {string} selector - Any valid css selector
- */
-hideElement = function (selector) {
-  $(selector).css('visibility', 'hidden');
-};
-
 function fadeContentIn(context) {
   console.log("In fadeContentIn()");
   //console.log("Template: " + Router.current().lookupTemplate());
@@ -223,6 +214,31 @@ Router.map(function() {
     },
     waitOn: function() {
       return [Meteor.subscribe('artworks'), Meteor.subscribe('attachments')];
+    }
+  });
+  this.route('exhibitions', {
+    path: '/exhibitions',
+    template: 'exhibitions',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      setPageTitle("Exhibitions");
+    },
+    waitOn: function() {
+      return Meteor.subscribe('exhibitions');
+    }
+  });
+  this.route('exhibitionsWizard', {
+    path: '/exhibitions/:_id',
+    template: 'exhibitionsWizardContainer',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      setPageTitle("Exhibitions");
+    },
+    waitOn: function() {
+      return Meteor.subscribe('exhibitions', this.params._id);
+    },
+    data: function() {
+      Exhibitions.findOne(this.params._id);
     }
   });
 });
