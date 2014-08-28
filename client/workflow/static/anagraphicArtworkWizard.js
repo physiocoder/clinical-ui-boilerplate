@@ -38,7 +38,7 @@ Template.anagraphicArtworkWizard.events({
 	},
 	'click .create': function() {
 		if(!Meteor.maWizard.create())
-			setSectionFocus('anagraphicTab');
+			Router.go('/artworks/' + Meteor.maWizard.getDataContext()._id);
 	},
 	'click .prev': function() {
 		showPrevTab();
@@ -50,43 +50,7 @@ Template.anagraphicArtworkWizard.events({
 	// ***** Validation events *****/
 	// The change event fires when we leave the element and its content has changed
 	'change .form-control, change .form-checkbox': function(evt, templ) {
-
-		var target = evt.currentTarget;
-
-		// extracting field name from data-schemafield attribute
-		var field = target.getAttribute('data-schemafield');
-		var inputType = target.type;//('type');
-
-		// if the input is a checkbox we want to get its checked state,
-		// for a ,ultiple select we want the selected elements and for 
-		// the other inputs we simply get the value
-		var value;
-		if(inputType === "checkbox")
-			value = target.checked;
-		else if(inputType === "select-multiple") {
-			var ops = _.filter(target.options, function(elem) {
-				if(elem.selected)
-					return true;
-			});
-			value = _.map(ops, function(elem) {
-				return elem.value;
-			});
-		}
-		else value = target.value;
-
-		// constructing the object to pass to validateOne(obj, key)
-		var fieldValuePair = {};
-		fieldValuePair[field] = value;
-		
-		// update the data context
-		updateSessionData(fieldValuePair);
-
-		// clean the object "to avoid any avoidable validation errors" 
-		// [cit. aldeed - Simple-Schema author]
-		Schemas.Artwork.clean(fieldValuePair, {removeEmptyStrings: false});
-		ArtworksValidationContext.validateOne(fieldValuePair, field);
-
-		return true;
+		Meteor.maWizard.saveHTMLElement(evt.currentTarget);
 	},
 	'click .tab-selector': function(evt, templ) {
 		var selection = evt.currentTarget.getAttribute('data-selection');
@@ -94,17 +58,11 @@ Template.anagraphicArtworkWizard.events({
 		setSectionFocus(selection);
 	},
 	'click .save': function() {
-		var current = Meteor.maWizard.getDataContext();
-		// up-to-date data are already in the session variable, just validate
-		// the entire object without the _id field
-		var toSave = _.omit(current, '_id');
-
-		ArtworksValidationContext.resetValidation();
-		// usual clean
-		Schemas.Artwork.clean(toSave, {removeEmptyStrings: false});
-		ArtworksValidationContext.validate(toSave);
-
-		if(ArtworksValidationContext.invalidKeys().length > 0) {
+		if(Meteor.maWizard.saveToDatabase()) {
+			Router.go('/artworks');
+			Meteor.maWizard.discard();
+		}
+		else {
 			// show the section to let the user correct highlighted values
 			var selectors = $('.tab-selector');
 			var n = selectors.length;
@@ -117,16 +75,6 @@ Template.anagraphicArtworkWizard.events({
 					break;
 				}
 			}
-		}
-		else {
-			//removeOrphanAttachmentsOnSave(current);
-			Artworks.update(current._id, {$set: toSave}, function(error, result) {
-				// something went wrong... 
-				// TODO: add a callback that saves the datacontext in order not
-				// to lose changes
-			});
-
-			closeForm();
 		}
 	},
 	'click .delete': function() {
@@ -207,7 +155,7 @@ Template.physicsDescriptionSection.events({
 		var isChecked = evt.currentTarget.checked;
 
 		var updateStatus = function(isMultiple) {
-			updateSessionData({multiple: isMultiple});
+			Meteor.maWizard.updateContext({multiple: isMultiple});
 		};
 
 		var current = Meteor.maWizard.getDataContext();
@@ -218,7 +166,7 @@ Template.physicsDescriptionSection.events({
 					updateStatus(false);
 
 					// Remove objects
-					updateSessionData({objects: []});
+					Meteor.maWizard.updateContext({objects: []});
 
 					showMainPane();
 				}
@@ -260,7 +208,7 @@ Template.physicsDescriptionSection.events({
 			depth: ""
 		};
 
-		updateSessionData({objects: newObj});
+		Meteor.maWizard.updateContext({objects: newObj});
 
 		// let the user insert values for the new object <- doesn't work
 		$('a[href=#' + newObj.id + 'Pane]').tab('show');
@@ -380,7 +328,7 @@ Template.attachmentsSection.events({
 
 			// add the new attachment id to the data context
 			var newAtc = {id: FSFile._id};
-			updateSessionData({attachments: newAtc});
+			Meteor.maWizard.updateContext({attachments: newAtc});
 		};
 
 		FS.Utility.eachFile(event, function(file) {
@@ -407,91 +355,6 @@ function showMainPane() {
 	$('a[href="#main').tab('show');
 }
 
-// Temporarily saves data in a session variable to exploit free
-// reactivity. On global Save, the session variable (which is an 
-// object) will be read and changes will be written to the database
-function updateSessionData(newData) {
-	var current = Meteor.maWizard.getDataContext();
-	var schema = Schemas.Artwork;
-
-	// apply changes to current object
-	for(var field in newData) {
-
-		var dotIndex = field.indexOf(".");
-
-		if(dotIndex > -1 && field[dotIndex + 2] === '.') {
-			// we are dealing with a field of the type 'mainField.$.customField',
-			// which is a field of a custom object saved in an array named mainField
-			var mainField = field.substring(0, dotIndex);
-			var index = field.substr(dotIndex + 1,1);
-			var customField = field.substring(dotIndex + 3);
-
-			// the corresponding object must already exist in the 
-			// data context, so I just assign the new value
-			current[mainField][index][customField] = newData[field];
-
-			// if customary units are used, convert values before saving
-			if(Session.get('usingCustomaryUnits') &&
-				field.substring(field.length - 6) === "height" ||
-				field.substring(field.length - 6) === "length" ||
-				field.substring(field.length - 5) === "depth") {
-
-				var value1 = parseInt(current[mainField][index][customField], 10);
-
-				if(!isNaN(value1))
-					current[mainField][index][customField] = value1 * 2.54;
-			}
-		} // following if condition is too long, refactor
-		else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema()[field].type()) && !Array.isArray(newData[field])) {
-			// If for the current field the schema expects an array of objects 
-			// but a single object is passed, I add the object to the current array
-			var elems = [];
-			if(current[field] !== undefined)
-				// use .slice() to achieve deep copy
-				elems = current[field].slice(0);
-			elems.push(newData[field]);
-			current[field] = elems;
-		}
-		else {
-			// if the type changes, reset material and technique
-			if(field === "type" && newData[field] !== current[field]) {
-				current["material"] = [];
-				current["technique"] = [];
-
-				try {
-					// the multiselect elements must be cleared programmatically
-					// via the provided methods
-					var techSelect = $('.multiselect.technique');
-					techSelect.multiselect('deselect', techSelect.val());
-					var matSelect = $('.multiselect.material');
-					matSelect.multiselect('deselect', matSelect.val());
-				}
-				catch(e) {
-					// if no values where selected an exception is thrown
-					// in such a case we don't need to do anything, just relax :)
-				}
-			}
-
-			current[field] = newData[field];
-		}
-	}
-
-	// if customary units are used, convert values before saving
-	if(Session.get('usingCustomaryUnits') &&
-			field === "height" ||
-			field === "length" ||
-			field === "depth") {
-
-			var value = parseInt(current[field], 10);
-
-			if(!isNaN(value))
-				current[field] = value * 2.54;
-		}
-
-	// save the modified object
-	Session.set('currentArtwork', current);
-}
-
 function removeElemFromSessionDataArray(elemRef, arrayName) {
 	var current = Meteor.maWizard.getDataContext();
 
@@ -512,7 +375,7 @@ function removeElemFromSessionDataArray(elemRef, arrayName) {
 	var data = {};
 	data[arrayName] = current[arrayName];
 	// update session variable (seems useless, but reactivity...)
-	updateSessionData(data);
+	Meteor.maWizard.updateContext(data);
 }
 
 function setSectionFocus(section) {
