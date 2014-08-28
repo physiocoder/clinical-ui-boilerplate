@@ -83,8 +83,7 @@ Template.anagraphicArtworkListItem.itemIsActive = function(_id) {
 Template.anagraphicArtworkList.events({
   'click a': function(evt, templ) {
     var id = evt.currentTarget.getAttribute('value');
-    Session.set('selectedArtworkId', id);
-    Session.set('anagraphicArtworkFormIsActive', true);
+    Router.go('/artworks/' + id);
   }
 });
 

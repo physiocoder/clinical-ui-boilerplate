@@ -1,7 +1,7 @@
 UI.registerHelper('fieldValidity', function(field) {
 	if(field === undefined)
 		return '';
-	var validationResult = ArtworksValidationContext.keyIsInvalid(field);
+	var validationResult = Meteor.maWizard.getValidationContext().keyIsInvalid(field);
 	if(validationResult)
 		return 'has-error';
 	else
@@ -11,7 +11,7 @@ UI.registerHelper('fieldValidity', function(field) {
 UI.registerHelper('errMsg', function(field) {
 	if(field === undefined)
 		return '';
-	var msg = ArtworksValidationContext.keyErrorMessage(field);
+	var msg = Meteor.maWizard.getValidationContext().keyErrorMessage(field);
 	if(msg === "")
 		return "";
 	else
@@ -23,11 +23,11 @@ UI.registerHelper('getThumbURL', function() {
 });
 
 UI.registerHelper('optionIsSelected', function(field) {
-	var current = Session.get('currentArtwork');
-
+	var current = Meteor.maWizard.getDataContext();
+//debugger;
 	// NOTE: current[field] could be either a String or an Array, in either case
 	// the indexOf() method is defined and the result is the wanted behaviour
-	if(this.id !== undefined && current[field].indexOf(this.id.toString()) > -1)
+	if(this.id !== undefined)// && current[field].indexOf(this.id.toString()) > -1)
 		return "selected";
 	else return "";
 });

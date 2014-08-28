@@ -203,17 +203,39 @@ Router.map(function() {
       return Meteor.subscribe('users');
     }
   });
-  this.route('anagraphicArtwork', {
-    path: '/anagraphicartwork',
+  this.route('artworks', {
+    path: '/artworks',
     template: 'anagraphicArtwork',
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
-      setPageTitle("Artwork's anagraphic");
-      Session.set('selectedArtwork','add');
-      Session.set('anagraphicArtworkFormIsActive', false);
+      setPageTitle("Artworks");
     },
     waitOn: function() {
       return [Meteor.subscribe('artworks'), Meteor.subscribe('attachments')];
+    }
+  });
+  this.route('artworksWizard', {
+    path: '/artworks/:_id',
+    template: 'anagraphicArtworkWizardContainer',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      setPageTitle("Artworks");
+
+      var _id;
+
+      if(this.params._id === 'add')
+        _id = undefined;
+      else
+        _id = this.params._id;
+
+      Meteor.maWizard.configure({collection: Artworks, id: _id});
+    },
+    waitOn: function() {
+      return [Meteor.subscribe('artworks', this.params._id), Meteor.subscribe('attachments')];
+    },
+    data: function() {
+      if(this.ready())
+        return Meteor.maWizard.getDataContext();
     }
   });
   this.route('exhibitions', {
@@ -233,12 +255,22 @@ Router.map(function() {
     yieldTemplates: getYieldTemplates(),
     onBeforeAction: function() {
       setPageTitle("Exhibitions");
+
+      var _id;
+      
+      if(this.params._id === 'add')
+          _id = undefined;
+        else
+          _id = this.params._id;
+
+      Meteor.maWizard.configure({collection: Exhibitions, id: _id});
     },
     waitOn: function() {
       return Meteor.subscribe('exhibitions', this.params._id);
     },
     data: function() {
-      Exhibitions.findOne(this.params._id);
+      if(this.ready())
+        return Meteor.maWizard.getDataContext();
     }
   });
 });

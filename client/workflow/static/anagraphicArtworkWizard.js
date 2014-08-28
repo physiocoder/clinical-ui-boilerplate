@@ -1,10 +1,3 @@
-Template.anagraphicArtworkWizard.anagraphicSectionIsValid = function() {
-	if(Session.get('selectedArtworkId') === 'add')
-		return false;
-	else
-		return true;
-};
-
 Template.anagraphicArtworkWizard.isTabActive = function(tab) {
 	if(Session.equals('activeSection', tab))
 		return "active";
@@ -31,42 +24,21 @@ Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
 
 Template.anagraphicArtworkWizard.events({
 	'click .back': function(evt, templ) {
-		var inDatabase = Artworks.findOne({_id: Session.get('selectedArtworkId')});
-		var current = Session.get('currentArtwork');
-
 		var goBack = function(result) {
 			if(result) {
-				//removeOrphanAttachmentsOnBack(current);
-				ArtworksValidationContext.resetValidation();
-				closeForm();
-				updateSessionData({_id: ""});
+				Meteor.maWizard.discard();
+				Router.go('/artworks');
 			}
 		};
 
-		if(_.isEqual(inDatabase, current)) {
-			goBack(true);
+		if(Meteor.maWizard.changed()) {
+			bootbox.confirm("Unsaved updates will be discarded. Do you really want to go back?", goBack);
 		}
-		else bootbox.confirm("Unsaved updates will be discarded. Do you really want to go back?", goBack);
+		else goBack(true);
 	},
 	'click .create': function() {
-		var data = Session.get("currentArtwork");
-
-		// the clean method performs useful operations to avoid
-		// tricky validation errors (like conversion of String 
-		// to Number when it is meaningful)
-		Schemas.Artwork.clean(data);
-
-		if(ArtworksValidationContext.validate(data)) {
-			var selectedArtworkId = Artworks.insert(data, function(error, result) {
-				if(error !== undefined)
-					console.log("Error on insert", error);
-			});
-
-			Session.set('selectedArtworkId', selectedArtworkId);
-		}
-		else {
+		if(!Meteor.maWizard.create())
 			setSectionFocus('anagraphicTab');
-		}
 	},
 	'click .prev': function() {
 		showPrevTab();
@@ -122,7 +94,7 @@ Template.anagraphicArtworkWizard.events({
 		setSectionFocus(selection);
 	},
 	'click .save': function() {
-		var current = Session.get('currentArtwork');
+		var current = Meteor.maWizard.getDataContext();
 		// up-to-date data are already in the session variable, just validate
 		// the entire object without the _id field
 		var toSave = _.omit(current, '_id');
@@ -158,7 +130,7 @@ Template.anagraphicArtworkWizard.events({
 		}
 	},
 	'click .delete': function() {
-		var result = Artworks.remove(Session.get('selectedArtworkId'), function(error, result) {
+		var result = Artworks.remove(Meteor.maWizard.getDataContext()._id, function(error, result) {
 			console.log("Error on remove: " + error);
 			console.log("Removed elements: " + result);
 		});
@@ -200,7 +172,7 @@ Template.accessoriesSection.accessories = function() {
 };
 
 Template.accessoriesSection.isChecked = function(artworkContext) {
-	var current = Session.get("currentArtwork");
+	var current = Meteor.maWizard.getDataContext();
 	if(current[this])
 		return 'checked';
 	else
@@ -238,7 +210,7 @@ Template.physicsDescriptionSection.events({
 			updateSessionData({multiple: isMultiple});
 		};
 
-		var current = Session.get("currentArtwork");
+		var current = Meteor.maWizard.getDataContext();
 
 		if(!isChecked && current.objects.length !== 0) {
 			bootbox.confirm("Proceeding, all objects will be removed.", function(result) {
@@ -261,7 +233,7 @@ Template.physicsDescriptionSection.events({
 		}
 	},
 	'click .add-object': function(evt, templ) {
-		var current = Session.get('currentArtwork');
+		var current = Meteor.maWizard.getDataContext();
 		
 		// returns a random number between 0-999
 		var getNewId = function() {
@@ -356,7 +328,7 @@ Template.attachmentsSection.created = function() {
 };
 
 Template.attachmentsSection.attachments = function() {
-	var current = Session.get('currentArtwork');
+	var current = Meteor.maWizard.getDataContext();
 	var ids = _.map(current.attachments, function(elem) {
 		return elem.id;
 	});
@@ -439,7 +411,7 @@ function showMainPane() {
 // reactivity. On global Save, the session variable (which is an 
 // object) will be read and changes will be written to the database
 function updateSessionData(newData) {
-	var current = Session.get('currentArtwork');
+	var current = Meteor.maWizard.getDataContext();
 	var schema = Schemas.Artwork;
 
 	// apply changes to current object
@@ -521,7 +493,7 @@ function updateSessionData(newData) {
 }
 
 function removeElemFromSessionDataArray(elemRef, arrayName) {
-	var current = Session.get('currentArtwork');
+	var current = Meteor.maWizard.getDataContext();
 
 	var predicate = function(obj) {
 			// here coercion is useful
@@ -613,7 +585,7 @@ function showPrevTab() {
 
 // is there a good way to unify the following two functions?
 function removeOrphanAttachmentsOnBack(context) {
-	var oldList = _.map(Artworks.findOne(Session.get('selectedArtworkId')).attachments, function(elem) {
+	var oldList = _.map(Artworks.findOne(Meteor.maWizard.getDataContext()._id).attachments, function(elem) {
 			return elem.id;
 		});
 	var newList = _.map(context.attachments, function(elem) { return elem.id; });
@@ -627,7 +599,7 @@ function removeOrphanAttachmentsOnBack(context) {
 }
 
 function removeOrphanAttachmentsOnSave(context) {
-	var oldList = _.map(Artworks.findOne(Session.get('selectedArtworkId')).attachments, function(elem) {
+	var oldList = _.map(Artworks.findOne(Meteor.maWizard.getDataContext()._id).attachments, function(elem) {
 			return elem.id;
 		});
 	var newList = _.map(context.attachments, function(elem) { return elem.id; });

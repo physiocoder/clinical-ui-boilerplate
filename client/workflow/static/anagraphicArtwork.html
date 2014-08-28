@@ -8,15 +8,9 @@
               Artwork's anagraphic
             </div>
             <div class="panel-body">
-              {{#if formShouldBeVisible}}
-              <div class="col col-xs-12 animated fadeIn">
-                {{> anagraphicArtworkForm}}
-              </div>
-              {{else}}
               <div class="col col-xs-12 animated fadeIn">
                 {{> anagraphicArtworkList}}
               </div>
-              {{/if}}
             </div>
           </div>
         </div>
@@ -29,7 +23,7 @@
   <div class="list-group">
     <a class="list-group-item" value='add'>Add artwork...</a>
     {{#each artworks}}
-    {{> anagraphicArtworkListItem}}
+      {{> anagraphicArtworkListItem}}
     {{/each}}
   </div>
 </template>
@@ -45,7 +39,7 @@
 <template name="anagraphicArtworkForm">
   <div id="anagraphicArtworkForm">
     {{#with contextArtwork}}
-    {{> anagraphicArtworkWizard}}
+      {{> anagraphicArtworkWizard}}
     {{/with}}
   </div>
 </template>
