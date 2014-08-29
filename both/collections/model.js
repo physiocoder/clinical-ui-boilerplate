@@ -129,9 +129,6 @@ Schemas.ArtworkEssentials = new SimpleSchema({
         type: [Object],
         label: "Ojects of multiple artworks",
         optional: true,
-        custom: function() {
-            return true;
-        }
     },
     'objects.$.id': {
         type: Number,
@@ -343,6 +340,11 @@ Schemas.Exhibitions = new SimpleSchema({
     date: {
         type: String,
         label: "Earliest and latest date"
+    },
+    artworks: {
+        type: [String],
+        label: "Artworks",
+        optional: true
     }
 });
 

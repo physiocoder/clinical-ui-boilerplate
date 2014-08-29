@@ -1,3 +1,11 @@
+Template.exhibitionsWizard.rendered = function() {
+	//$('.multiselect').multiselect();
+};
+
+Template.exhibitionsWizard.artworks = function() {
+	return Artworks.find({}).fetch();
+};
+
 Template.exhibitionsWizard.events({
 	'click .cancel, click .back': function(evt, templ) {
 		// this was copy-pasted, unify with artworksWizard
@@ -29,5 +37,8 @@ Template.exhibitionsWizard.events({
 	},
 	'change .form-control': function(evt, templ) {
 		Meteor.maWizard.saveHTMLElement(evt.currentTarget);
+	},
+	'click .switch': function(evt, templ) {
+		Router.go('/artworks/add');
 	}
 });

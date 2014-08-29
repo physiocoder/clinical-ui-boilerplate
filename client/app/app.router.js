@@ -266,7 +266,7 @@ Router.map(function() {
       Meteor.maWizard.configure({collection: Exhibitions, id: _id});
     },
     waitOn: function() {
-      return Meteor.subscribe('exhibitions', this.params._id);
+      return [Meteor.subscribe('exhibitions', this.params._id), Meteor.subscribe('artworks')];
     },
     data: function() {
       if(this.ready())
