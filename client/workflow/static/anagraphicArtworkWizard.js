@@ -37,7 +37,7 @@ Template.anagraphicArtworkWizard.events({
 		else goBack(true);
 	},
 	'click .create': function() {
-		if(!Meteor.maWizard.create())
+		if(Meteor.maWizard.create())
 			Router.go('/artworks/' + Meteor.maWizard.getDataContext()._id);
 	},
 	'click .prev': function() {
@@ -92,24 +92,25 @@ Template.materialSection.rendered = function() {
 };
 
 Template.materialSection.artworkMaterials = function() {
-	// the following should never be true as type is a mandatory field
-	if(!this.type) {
-		console.log("Data on database are inconsistent!");
-		return [];
-	}
+	var current = Meteor.maWizard.getDataContext();
 
-	return _.map(artworkTypeLookUp[this.type].materials, function(elem) {
-		return {name: elem.name, id: elem.id};
-	});
+	if(current)
+		return _.map(artworkTypeLookUp[current.type].materials, function(elem) {
+			return {name: elem.name, id: elem.id};
+		});
+	else
+		return [];
 };
 
 Template.materialSection.artworkTechniques = function() {
-	// the following should never be true as type is a mandatory field
-	if(!this.type) return [];
+	var current = Meteor.maWizard.getDataContext();
 
-	return _.map(artworkTypeLookUp[this.type].tecnica, function(elem) {
-		return {name: elem.name, id: elem.id};
-	});
+	if(current)
+		return _.map(artworkTypeLookUp[current.type].tecnica, function(elem) {
+			return {name: elem.name, id: elem.id};
+		});
+	else
+		return [];
 };
 
 Template.accessoriesSection.accessories = function() {
@@ -281,7 +282,7 @@ Template.attachmentsSection.attachments = function() {
 			return elem.id;
 		});
 	else ids = [];
-	
+
 	var FSFiles = Attachments.find({_id: {$in: ids}}).fetch();
 
 	return _.map(FSFiles, function(elem) {

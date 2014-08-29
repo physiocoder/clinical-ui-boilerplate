@@ -137,17 +137,22 @@ function maWizard() {
 				if(field === "type" && newData[field] !== current[field]) {
 					current["material"] = [];
 					current["technique"] = [];
-
+debugger;
 					try {
 						// the multiselect elements must be cleared programmatically
 						// via the provided methods
 						var techSelect = $('.multiselect.technique');
-						techSelect.multiselect('deselect', techSelect.val());
+						var techVal = techSelect.val();
+						if(techVal)
+							techSelect.multiselect('deselect', techVal);
 						var matSelect = $('.multiselect.material');
-						matSelect.multiselect('deselect', matSelect.val());
+						var matVal = matSelect.val();
+						if(matVal)
+							matSelect.multiselect('deselect', matVal);
+						//$('.multiselect').multiselect('refresh');
 					}
 					catch(e) {
-						// if no values where selected an exception is thrown
+						// if no values where selected an exception is thrown;
 						// in such a case we don't need to do anything, just relax :)
 					}
 				}

@@ -211,7 +211,7 @@ Router.map(function() {
       setPageTitle("Artworks");
     },
     waitOn: function() {
-      return [Meteor.subscribe('artworks'), Meteor.subscribe('attachments')];
+      return Meteor.subscribe('artworks', {fields: {title: 1, authors: 1}});
     }
   });
   this.route('artworksWizard', {

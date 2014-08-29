@@ -27,7 +27,7 @@ UI.registerHelper('optionIsSelected', function(field) {
 //debugger;
 	// NOTE: current[field] could be either a String or an Array, in either case
 	// the indexOf() method is defined and the result is the wanted behaviour
-	if(this.id !== undefined)// && current[field].indexOf(this.id.toString()) > -1)
+	if(this.id !== undefined && current && current[field].indexOf(this.id.toString()) > -1)
 		return "selected";
 	else return "";
 });
