@@ -10,7 +10,10 @@ Template.exhibitionsList.events({
 	'click .list-item': function(evt, templ) {
 		var id = evt.currentTarget.getAttribute('data-ref');
 		Router.go('/exhibitions/' + id);
-	},
+	}
+});
+
+Template.addExhibition.events({
 	'click .add-exhibition': function(evt,templ) {
 		Router.go('/exhibitions/add');
 	}

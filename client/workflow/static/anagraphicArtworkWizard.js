@@ -23,7 +23,7 @@ Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
 };
 
 Template.anagraphicArtworkWizard.events({
-	'click .back': function(evt, templ) {
+	'click .back, click .cancel': function(evt, templ) {
 		var goBack = function(result) {
 			if(result) {
 				Meteor.maWizard.discard();

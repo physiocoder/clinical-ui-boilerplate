@@ -63,12 +63,12 @@
     </div>
     <ul class="pager wizard col-xs-9 pull-right">
       {{#if _id}}
-        {{> deleteArtwork}}
+        {{> delete}}
         {{> backToList}}
-        <button class="save btn btn-default">Save</button>
+        {{> save}}
       {{else}}
-        <button class="back btn">Cancel</button>
-        <button class="create btn btn-default">Create artwork</button>
+        {{> cancel}}
+        {{> create}}
       {{/if}}
     </ul>
   </div>
@@ -76,10 +76,6 @@
 
 <template name="deleteArtwork">
   <button id="deleteArtwork" class="delete btn btn-danger">Delete artwork</button>
-</template>
-
-<template name="backToList">
-  <button id="backToList" class="back btn btn-default">Back to list</button>
 </template>
 
 <template name="anagraphicSection">
