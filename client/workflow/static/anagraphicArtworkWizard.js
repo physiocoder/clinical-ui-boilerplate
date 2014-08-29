@@ -94,7 +94,7 @@ Template.materialSection.rendered = function() {
 Template.materialSection.artworkMaterials = function() {
 	var current = Meteor.maWizard.getDataContext();
 
-	if(current)
+	if(current && current._id)
 		return _.map(artworkTypeLookUp[current.type].materials, function(elem) {
 			return {name: elem.name, id: elem.id};
 		});
@@ -105,7 +105,7 @@ Template.materialSection.artworkMaterials = function() {
 Template.materialSection.artworkTechniques = function() {
 	var current = Meteor.maWizard.getDataContext();
 
-	if(current)
+	if(current && current._id)
 		return _.map(artworkTypeLookUp[current.type].tecnica, function(elem) {
 			return {name: elem.name, id: elem.id};
 		});

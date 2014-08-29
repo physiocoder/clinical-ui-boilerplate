@@ -10,7 +10,25 @@ function maWizard() {
 	var isInDatabase;
 
 	var buildObjectFromSchema = function() {
+		var obj = {};
 
+		_.each(schema.firstLevelSchemaKeys(), function(key) {
+			var keyValue;
+			var keyType = schema.schema()[key].type();
+
+			if(typeof keyType === 'string' || typeof keyType === 'number')
+				keyValue = "";
+			else if(typeof keyType === 'boolean')
+				keyValue = false;
+			else if(Array.isArray(keyType))
+				keyValue = [];
+
+			obj[key] = keyValue;
+		});
+
+		obj["_id"] = undefined;
+
+		return obj;
 	};
 
 	this.setDataContext = function(context) {
@@ -137,7 +155,7 @@ function maWizard() {
 				if(field === "type" && newData[field] !== current[field]) {
 					current["material"] = [];
 					current["technique"] = [];
-debugger;
+
 					try {
 						// the multiselect elements must be cleared programmatically
 						// via the provided methods
@@ -240,42 +258,10 @@ debugger;
 		validationContext = schema.namedContext();
 
 		// if no id is specified I am adding a new object
-		if(conf.id === undefined) {
-			// refactor!
-			// implement buildObjectFromSchema() and substitute
-			contextObj = {
-				_id: undefined,
-				inventory: "",
-				title: "",
-				authors: "",
-				description: "",
-				dating: "",
-				type: "",
-				material: [],
-				technique: [],
-				frame: false,
-				mount: false,
-				base: false,
-				manuals: false,
-				covers: false,
-				"case": false, // 'case' is a reserved word
-				belts: false,
-				site: "",
-				city: "",
-				UVP: "",
-				RH: "",
-				temperature: "",
-				lux: "",
-				AMO: "",
-				height: "",
-				length: "",
-				depth: "",
-				multiple: false,
-				objects: [],
-				attachments: []
-			};
-		}
-		else contextObj = collection.findOne(conf.id);
+		if(conf.id === undefined)
+			contextObj = buildObjectFromSchema();
+		else
+			contextObj = collection.findOne(conf.id);
 
 		this.setDataContext(contextObj);
 	};
