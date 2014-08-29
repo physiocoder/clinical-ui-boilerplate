@@ -78,11 +78,8 @@ Template.anagraphicArtworkWizard.events({
 		}
 	},
 	'click .delete': function() {
-		var result = Artworks.remove(Meteor.maWizard.getDataContext()._id, function(error, result) {
-			console.log("Error on remove: " + error);
-			console.log("Removed elements: " + result);
-		});
-		if(result) closeForm();
+		if(Meteor.maWizard.removeFromDatabase())
+			Router.go('/artworks');
 	}
 });
 
@@ -121,7 +118,7 @@ Template.accessoriesSection.accessories = function() {
 
 Template.accessoriesSection.isChecked = function(artworkContext) {
 	var current = Meteor.maWizard.getDataContext();
-	if(current[this])
+	if(current && current[this])
 		return 'checked';
 	else
 		return '';
@@ -277,9 +274,14 @@ Template.attachmentsSection.created = function() {
 
 Template.attachmentsSection.attachments = function() {
 	var current = Meteor.maWizard.getDataContext();
-	var ids = _.map(current.attachments, function(elem) {
-		return elem.id;
-	});
+	var ids;
+
+	if(current !== undefined)
+		ids = _.map(current.attachments, function(elem) {
+			return elem.id;
+		});
+	else ids = [];
+	
 	var FSFiles = Attachments.find({_id: {$in: ids}}).fetch();
 
 	return _.map(FSFiles, function(elem) {

@@ -33,7 +33,7 @@ function maWizard() {
 		var inputType = elem.type;//('type');
 
 		// if the input is a checkbox we want to get its checked state,
-		// for a ,ultiple select we want the selected elements and for 
+		// for a multiple select we want the selected elements and for 
 		// the other inputs we simply get the value
 		var value;
 		if(inputType === "checkbox")
@@ -198,7 +198,10 @@ function maWizard() {
 	};
 
 	this.removeFromDatabase = function() {
-
+		return collection.remove(this.getDataContext()._id, function(error, result) {
+			console.log("Error on remove: " + error);
+			console.log("Removed elements: " + result);
+		});
 	};
 
 	this.existsInDatabase = function() {
