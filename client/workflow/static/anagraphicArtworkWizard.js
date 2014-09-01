@@ -50,6 +50,15 @@ Template.anagraphicArtworkWizard.events({
 	'change [data-ma-wizard-control]': function(evt, templ) {
 		Meteor.maWizard.saveHTMLElement(evt.currentTarget);
 	},
+	'change [data-conversion]': function(evt, templ) {
+		if(Session.get('usingCustomaryUnits')) {
+			var fieldValuePair = Meteor.maWizard.parseHTMLElement(evt.currentTarget);
+			fieldValuePair.setValue(fieldValuePair.getValue() * 2.54);
+			Meteor.maWizard.processFieldValuePair(fieldValuePair);
+		}
+		else Meteor.maWizard.saveHTMLElement(evt.currentTarget);
+
+	},
 	'click .tab-selector': function(evt, templ) {
 		var selection = evt.currentTarget.getAttribute('data-selection');
 		Session.set('activeSection', selection);
@@ -90,8 +99,14 @@ Template.materialSection.rendered = function() {
 
 	this.autorun(function() {
 		var current = Meteor.maWizard.getDataContext();
-		ms.multiselect('destroy');
-		ms.multiselect();
+
+		// here we use a timeout to be sure that all the helpers
+		// that react to the data context changes are executed before
+		// rebuilding the multiselect, in order to be sure that the
+		// HTML code has already been updated
+		setTimeout(function() {
+			ms.multiselect('rebuild');
+		}, 0);
 	});
 };
 

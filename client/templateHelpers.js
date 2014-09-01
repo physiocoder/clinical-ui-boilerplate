@@ -25,9 +25,21 @@ UI.registerHelper('getThumbURL', function() {
 UI.registerHelper('optionIsSelected', function(field) {
 	var current = Meteor.maWizard.getDataContext();
 
+	// sometimes I have this.id (Number), sometimes this._id (String),
+	// so I should get the right field and datatype
+	var id = this.id;
+
+	if(this._id !== undefined)
+		id = this._id;
+
+	if(id === undefined)
+		return "";
+	else
+		id = id.toString();
+
 	// NOTE: current[field] could be either a String or an Array, in either case
 	// the indexOf() method is defined and the result is the wanted behaviour
-	if(this.id !== undefined && current && current[field].indexOf(this.id.toString()) > -1)
+	if(current && current[field].indexOf(id) > -1)
 		return "selected";
 	else return "";
 });

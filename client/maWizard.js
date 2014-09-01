@@ -139,19 +139,6 @@ function maWizard() {
 				// data context, so I just assign the new value
 				current[mainField][index][customField] = newData[field];
 
-				var ors = (
-					field.substring(field.length - 6) === "height" ||
-					field.substring(field.length - 6) === "length" ||
-					field.substring(field.length - 5) === "depth"
-				);
-
-				// if customary units are used, convert values before saving
-				if(Session.get('usingCustomaryUnits') && ors) {
-					var value1 = parseInt(current[mainField][index][customField], 10);
-
-					if(!isNaN(value1))
-						current[mainField][index][customField] = value1 * 2.54;
-				}
 			} // following if condition is too long, refactor
 			else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema()[field].type()) && !Array.isArray(newData[field])) {
 				// If for the current field the schema expects an array of objects 
@@ -191,16 +178,6 @@ function maWizard() {
 				current[field] = newData[field];
 			}
 		}
-
-		var ors = (field === "height" || field === "length" || field === "depth");
-
-		// if customary units are used, convert values before saving
-		if(Session.get('usingCustomaryUnits') && ors) {
-				var value = parseInt(current[field], 10);
-
-				if(!isNaN(value))
-					current[field] = value * 2.54;
-			}
 
 		// save the modified object
 		Meteor.maWizard.setDataContext(current);
@@ -282,9 +259,8 @@ function FieldValuePair(field, value) {
 	var _field = field;
 	var _value = value;
 
-	var _setValue = function(val, self) {
-		_value = value;
-		return self;
+	var _setValue = function(val) {
+		_value = val;
 	};
 
 	this.getValue = function() { return _value; };
