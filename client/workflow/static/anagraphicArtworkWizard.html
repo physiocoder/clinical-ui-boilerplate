@@ -63,12 +63,12 @@
     </div>
     <ul class="pager wizard col-xs-9 pull-right">
       {{#if _id}}
-        {{> delete}}
-        {{> backToList}}
-        {{> save}}
+        {{> maWizardDelete}}
+        {{> maWizardBackToList}}
+        {{> maWizardSave}}
       {{else}}
-        {{> cancel}}
-        {{> create}}
+        {{> maWizardCancel}}
+        {{> maWizardCreate}}
       {{/if}}
     </ul>
   </div>

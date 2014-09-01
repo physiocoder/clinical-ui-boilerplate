@@ -21,7 +21,7 @@ Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
 };
 
 Template.anagraphicArtworkWizard.events({
-	'click .back, click .cancel': function(evt, templ) {
+	'click [data-ma-wizard-backToList], click [data-ma-wizard-cancel]': function(evt, templ) {
 		var goBack = function(result) {
 			if(result) {
 				Meteor.maWizard.discard();
@@ -34,7 +34,7 @@ Template.anagraphicArtworkWizard.events({
 		}
 		else goBack(true);
 	},
-	'click .create': function() {
+	'click [data-ma-wizard-create]': function() {
 		if(Meteor.maWizard.create())
 			Router.go('/artworks/' + Meteor.maWizard.getDataContext()._id);
 	},
@@ -64,7 +64,7 @@ Template.anagraphicArtworkWizard.events({
 		Session.set('activeSection', selection);
 		setSectionFocus(selection);
 	},
-	'click .save': function() {
+	'click [data-ma-wizard-save]': function() {
 		if(Meteor.maWizard.saveToDatabase()) {
 			Router.go('/artworks');
 			Meteor.maWizard.discard();
@@ -84,7 +84,7 @@ Template.anagraphicArtworkWizard.events({
 			}
 		}
 	},
-	'click .delete': function() {
+	'click [data-ma-wizard-delete]': function() {
 		if(Meteor.maWizard.removeFromDatabase())
 			Router.go('/artworks');
 	}
@@ -98,7 +98,7 @@ Template.materialSection.rendered = function() {
 	var ms = $('.multiselect');
 
 	this.autorun(function() {
-		var current = Meteor.maWizard.getDataContext();
+		Meteor.maWizard.getDataContext();
 
 		// here we use a timeout to be sure that all the helpers
 		// that react to the data context changes are executed before
