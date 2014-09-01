@@ -7,8 +7,6 @@ Template.anagraphicArtworkWizard.isTabActive = function(tab) {
 
 Template.anagraphicArtworkWizard.created = function() {
 	Session.set('activeSection', 'anagraphicTab');
-	Session.set('typeIsSet', false);
-	//Session.set('upFiles', []);
 	Session.set('usingCustomaryUnits', false);
 };
 

@@ -45,10 +45,14 @@ function maWizard() {
 		return validationContext;
 	};
 
+	this.buildFieldValuePair = function(field, value) {
+		return new FieldValuePair(field, value);
+	};
+
 	this.parseHTMLElement = function(elem) {
 		// extracting field name from data-schemafield attribute
 		var field = elem.getAttribute('data-schemafield');
-		var inputType = elem.type;//('type');
+		var inputType = elem.type;
 
 		// if the input is a checkbox we want to get its checked state,
 		// for a multiple select we want the selected elements and for 
@@ -68,8 +72,7 @@ function maWizard() {
 		else value = elem.value;
 
 		// constructing the object to pass to validateOne(obj, key)
-		var fieldValuePair = {};
-		fieldValuePair[field] = value;
+		var fieldValuePair = this.buildFieldValuePair(field, value);
 		
 		return fieldValuePair;
 	};
@@ -77,14 +80,22 @@ function maWizard() {
 	this.saveHTMLElement = function(elem) {
 		var toSave = this.parseHTMLElement(elem);
 
+		this.processFieldValuePair(toSave);
+	};
+
+	this.processFieldValuePair = function(fieldValuePair) {
+		var field = fieldValuePair.getFieldName();
+		var value = fieldValuePair.getValue();
+		
+		var plainObj = {};
+		plainObj[field] = value;
 		// update the data context
-		Meteor.maWizard.updateContext(toSave);
+		Meteor.maWizard.updateContext(plainObj);
 
 		// clean the object "to avoid any avoidable validation errors" 
 		// [cit. aldeed - Simple-Schema author]
-		schema.clean(toSave, {removeEmptyStrings: false});
-		// TODO: rework this!!!!
-		validationContext.validateOne(toSave, Object.keys(toSave)[0]);
+		schema.clean(plainObj, {removeEmptyStrings: false});
+		validationContext.validateOne(plainObj, field);
 	};
 
 	this.create = function() {
@@ -265,6 +276,23 @@ function maWizard() {
 
 		this.setDataContext(contextObj);
 	};
+}
+
+function FieldValuePair(field, value) {
+	var _field = field;
+	var _value = value;
+
+	var _setValue = function(val, self) {
+		_value = value;
+		return self;
+	};
+
+	this.getValue = function() { return _value; };
+	this.setValue = function(val) {
+		return _setValue(val);
+	};
+
+	this.getFieldName = function() { return _field; };
 }
 
 Meteor.startup(function() {
