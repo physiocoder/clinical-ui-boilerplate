@@ -139,12 +139,14 @@ function maWizard() {
 				// data context, so I just assign the new value
 				current[mainField][index][customField] = newData[field];
 
-				// if customary units are used, convert values before saving
-				if(Session.get('usingCustomaryUnits') &&
+				var ors = (
 					field.substring(field.length - 6) === "height" ||
 					field.substring(field.length - 6) === "length" ||
-					field.substring(field.length - 5) === "depth") {
+					field.substring(field.length - 5) === "depth"
+				);
 
+				// if customary units are used, convert values before saving
+				if(Session.get('usingCustomaryUnits') && ors) {
 					var value1 = parseInt(current[mainField][index][customField], 10);
 
 					if(!isNaN(value1))
@@ -190,12 +192,10 @@ function maWizard() {
 			}
 		}
 
-		// if customary units are used, convert values before saving
-		if(Session.get('usingCustomaryUnits') &&
-				field === "height" ||
-				field === "length" ||
-				field === "depth") {
+		var ors = (field === "height" || field === "length" || field === "depth");
 
+		// if customary units are used, convert values before saving
+		if(Session.get('usingCustomaryUnits') && ors) {
 				var value = parseInt(current[field], 10);
 
 				if(!isNaN(value))

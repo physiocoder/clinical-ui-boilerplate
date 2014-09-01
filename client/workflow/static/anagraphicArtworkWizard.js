@@ -47,7 +47,7 @@ Template.anagraphicArtworkWizard.events({
 	
 	// ***** Validation events *****/
 	// The change event fires when we leave the element and its content has changed
-	'change .form-control, change .form-checkbox': function(evt, templ) {
+	'change .ma-wizard-control': function(evt, templ) {
 		Meteor.maWizard.saveHTMLElement(evt.currentTarget);
 	},
 	'click .tab-selector': function(evt, templ) {
