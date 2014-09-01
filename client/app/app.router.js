@@ -24,9 +24,19 @@ function fadeContentIn(context) {
   });
 }
 
-/*Router.onAfterAction = function() {
-  fadeContentIn(this);
-};*/
+Router.configure({
+  onBeforeAction: function(pause) {
+    // see: https://github.com/EventedMind/iron-router/issues/554
+    // see also: https://groups.google.com/forum/#!topic/meteor-talk/lK3v9ZxIbco
+    // see also: http://stackoverflow.com/questions/23038436/iron-router-wait-on-collection-findone-as-data-object-before-render
+    // see also: http://matthewfieger.com/posts/me/2014/06/14/loading-template-in-iron-router.html
+    if (!this.ready()) {
+        this.render('spinner');
+        this.renderRegions();
+        pause();
+    }
+  }
+});
 
 //--------------------------------------------------------------
 // Accounts Entry Routes
@@ -221,14 +231,17 @@ Router.map(function() {
     onBeforeAction: function() {
       setPageTitle("Artworks");
 
-      var _id;
+      if(this.ready()) {
+        var _id;
 
-      if(this.params._id === 'add')
-        _id = undefined;
-      else
-        _id = this.params._id;
+        if(this.params._id === 'add')
+          _id = undefined;
+        else
+          _id = this.params._id;
 
-      Meteor.maWizard.configure({collection: Artworks, id: _id});
+        Meteor.maWizard.configure({collection: Artworks, id: _id});
+      }
+
     },
     waitOn: function() {
       return [Meteor.subscribe('artworks', this.params._id), Meteor.subscribe('attachments')];
@@ -256,17 +269,20 @@ Router.map(function() {
     onBeforeAction: function() {
       setPageTitle("Exhibitions");
 
-      var _id;
+      if(this.ready()) {
+        var _id;
       
-      if(this.params._id === 'add')
-          _id = undefined;
-        else
-          _id = this.params._id;
+        if(this.params._id === 'add')
+            _id = undefined;
+          else
+            _id = this.params._id;
 
-      Meteor.maWizard.configure({collection: Exhibitions, id: _id});
+        Meteor.maWizard.configure({collection: Exhibitions, id: _id});
+      }
+
     },
     waitOn: function() {
-      return [Meteor.subscribe('exhibitions', this.params._id), Meteor.subscribe('artworks')];
+      return [Meteor.subscribe('exhibitions', this.params._id), Meteor.subscribe('artworks', {fields: {title: 1, author: 1}})];
     },
     data: function() {
       if(this.ready())

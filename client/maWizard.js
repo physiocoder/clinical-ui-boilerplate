@@ -265,7 +265,7 @@ function maWizard() {
 			schema = collection.simpleSchema();
 		else
 			schema = conf.schema;
-
+		
 		validationContext = schema.namedContext();
 
 		// if no id is specified I am adding a new object
