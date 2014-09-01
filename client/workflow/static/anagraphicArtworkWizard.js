@@ -47,7 +47,7 @@ Template.anagraphicArtworkWizard.events({
 	
 	// ***** Validation events *****/
 	// The change event fires when we leave the element and its content has changed
-	'change .ma-wizard-control': function(evt, templ) {
+	'change [data-ma-wizard-control]': function(evt, templ) {
 		Meteor.maWizard.saveHTMLElement(evt.currentTarget);
 	},
 	'click .tab-selector': function(evt, templ) {
@@ -86,7 +86,13 @@ Template.anagraphicSection.artworkTypes = function() {
 };
 
 Template.materialSection.rendered = function() {
-	$('.multiselect').multiselect();
+	var ms = $('.multiselect');
+
+	this.autorun(function() {
+		var current = Meteor.maWizard.getDataContext();
+		ms.multiselect('destroy');
+		ms.multiselect();
+	});
 };
 
 Template.materialSection.artworkMaterials = function() {

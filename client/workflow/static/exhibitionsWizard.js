@@ -1,5 +1,10 @@
 Template.exhibitionsWizard.rendered = function() {
-	//$('.multiselect').multiselect();
+	var ms = $('.multiselect');
+
+	this.autorun(function() {
+		ms.multiselect('destroy');
+		ms.multiselect();
+	});
 };
 
 Template.exhibitionsWizard.artworks = function() {
