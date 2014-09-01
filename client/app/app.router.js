@@ -239,7 +239,7 @@ Router.map(function() {
         else
           _id = this.params._id;
 
-        Meteor.maWizard.configure({collection: Artworks, id: _id});
+        Meteor.maWizard.init({collection: Artworks, id: _id});
       }
 
     },
@@ -277,7 +277,7 @@ Router.map(function() {
           else
             _id = this.params._id;
 
-        Meteor.maWizard.configure({collection: Exhibitions, id: _id});
+        Meteor.maWizard.init({collection: Exhibitions, id: _id});
       }
 
     },
