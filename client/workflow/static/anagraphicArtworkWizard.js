@@ -10,6 +10,10 @@ Template.anagraphicArtworkWizard.created = function() {
 	Session.set('usingCustomaryUnits', false);
 };
 
+Template.anagraphicArtworkWizard.rendered = function() {
+	Meteor.maWizard.setOnSaveFailure(onSaveFailure);
+};
+
 Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
 	var section = Session.get('activeSection');
 	if(navBtn === 'prev' && section === 'anagraphicTab')
@@ -21,34 +25,11 @@ Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
 };
 
 Template.anagraphicArtworkWizard.events({
-	'click [data-ma-wizard-backToList], click [data-ma-wizard-cancel]': function(evt, templ) {
-		var goBack = function(result) {
-			if(result) {
-				Meteor.maWizard.discard();
-				Router.go('/artworks');
-			}
-		};
-
-		if(Meteor.maWizard.changed()) {
-			bootbox.confirm("Unsaved updates will be discarded. Do you really want to go back?", goBack);
-		}
-		else goBack(true);
-	},
-	'click [data-ma-wizard-create]': function() {
-		if(Meteor.maWizard.create())
-			Router.go('/artworks/' + Meteor.maWizard.getDataContext()._id);
-	},
 	'click .prev': function() {
 		showPrevTab();
 	},
 	'click .next': function() {
 		showNextTab();
-	},
-	
-	// ***** Validation events *****/
-	// The change event fires when we leave the element and its content has changed
-	'change [data-ma-wizard-control]': function(evt, templ) {
-		Meteor.maWizard.saveHTMLElement(evt.currentTarget);
 	},
 	'change [data-conversion]': function(evt, templ) {
 		if(Session.get('usingCustomaryUnits')) {
@@ -64,29 +45,8 @@ Template.anagraphicArtworkWizard.events({
 		Session.set('activeSection', selection);
 		setSectionFocus(selection);
 	},
-	'click [data-ma-wizard-save]': function() {
-		if(Meteor.maWizard.saveToDatabase()) {
-			Router.go('/artworks');
-			Meteor.maWizard.discard();
-		}
-		else {
-			// show the section to let the user correct highlighted values
-			var selectors = $('.tab-selector');
-			var n = selectors.length;
-			for(var i = 0; i < n; i++) {
-				var section = selectors[i].getAttribute('data-selection');
-				var errors = $("#" + section + " .has-error").length;
-				if(errors > 0) {
-					Session.set('activeSection', section);
-					setSectionFocus(section);
-					break;
-				}
-			}
-		}
-	},
-	'click [data-ma-wizard-delete]': function() {
-		if(Meteor.maWizard.removeFromDatabase())
-			Router.go('/artworks');
+	'change [data-ma-wizard-control]': function(evt, templ) {
+		Meteor.maWizard.saveHTMLElement(evt.currentTarget);
 	}
 });
 
@@ -414,6 +374,21 @@ function setSectionFocus(section) {
 	setTimeout(function(elem) {
 		elem.focus();
 	}, 300, elemToFocus);
+}
+
+function onSaveFailure() {
+	// show the section to let the user correct highlighted values
+	var selectors = $('.tab-selector');
+	var n = selectors.length;
+	for(var i = 0; i < n; i++) {
+		var section = selectors[i].getAttribute('data-selection');
+		var errors = $("#" + section + " .has-error").length;
+		if(errors > 0) {
+			Session.set('activeSection', section);
+			setSectionFocus(section);
+			break;
+		}
+	}
 }
 
 function closeForm() {

@@ -2,6 +2,9 @@ function maWizard() {
 	var dataContext;
 	var dataContextDep = new Deps.Dependency;
 
+	var onSaveFailure;
+	var onSaveFailureDep = new Deps.Dependency();
+
 	var collection;
 	var schema;
 
@@ -222,12 +225,13 @@ function maWizard() {
 	this.changed = function() {
 		var inDatabase = collection.findOne({_id: this.getDataContext()._id});
 
-		return !_.isEqual(inDatabase, this.getDataContext());
+		return inDatabase && !_.isEqual(inDatabase, this.getDataContext());
 	};
 
 	this.discard = function() {
 		// TODO: remove orphan attachments files!!!
 		this.setDataContext(undefined);
+		validationContext.resetValidation();
 	};
 
 	this.init = function(conf) {
@@ -245,6 +249,11 @@ function maWizard() {
 
 		validationContext = schema.namedContext();
 
+		if(conf.baseRoute === undefined)
+			this.baseRoute = "";
+		else
+			this.baseRoute = conf.baseRoute;
+
 		// if no id is specified I am adding a new object
 		if(conf.id === undefined)
 			contextObj = buildObjectFromSchema();
@@ -252,6 +261,16 @@ function maWizard() {
 			contextObj = collection.findOne(conf.id);
 
 		this.setDataContext(contextObj);
+	};
+
+	this.setOnSaveFailure = function(callback) {
+		onSaveFailure = callback;
+		onSaveFailureDep.changed();
+	};
+
+	this.getOnSaveFailure = function() {
+		onSaveFailureDep.depend();
+		return onSaveFailure;
 	};
 }
 
