@@ -44,30 +44,11 @@ Template.anagraphicArtworkWizard.events({
 		var selection = evt.currentTarget.getAttribute('data-selection');
 		Session.set('activeSection', selection);
 		setSectionFocus(selection);
-	},
-	'change [data-ma-wizard-control]': function(evt, templ) {
-		Meteor.maWizard.saveHTMLElement(evt.currentTarget);
 	}
 });
 
 Template.anagraphicSection.artworkTypes = function() {
 	return artworkType;
-};
-
-Template.materialSection.rendered = function() {
-	var ms = $('.multiselect');
-
-	this.autorun(function() {
-		Meteor.maWizard.getDataContext();
-
-		// here we use a timeout to be sure that all the helpers
-		// that react to the data context changes are executed before
-		// rebuilding the multiselect, in order to be sure that the
-		// HTML code has already been updated
-		setTimeout(function() {
-			ms.multiselect('rebuild');
-		}, 0);
-	});
 };
 
 Template.materialSection.artworkMaterials = function() {
@@ -94,14 +75,6 @@ Template.materialSection.artworkTechniques = function() {
 
 Template.accessoriesSection.accessories = function() {
 	return Schemas.Accessories.firstLevelSchemaKeys();
-};
-
-Template.accessoriesSection.isChecked = function(artworkContext) {
-	var current = Meteor.maWizard.getDataContext();
-	if(current && current[this])
-		return 'checked';
-	else
-		return '';
 };
 
 // this relates to the checbox for multiple artworks
@@ -234,18 +207,6 @@ Template.unitsSelection.events({
 
 	}
 });
-
-Template.environmentSection.isChecked = function() {
-	// all sections are rendered when the form is activated,
-	// this should be changed! (add an #if in the main template 
-	// with a helper to check for activeSection)
-	if(this === null)
-		return "";
-	if(this.UVP)
-		return "checked";
-	else
-		return "";
-};
 
 Template.attachmentsSection.created = function() {
 	// during upload, files ID are stored in this array

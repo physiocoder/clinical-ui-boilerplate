@@ -239,7 +239,7 @@ Router.map(function() {
         else
           _id = this.params._id;
 
-        Meteor.maWizard.init({collection: Artworks, id: _id, baseRoute: "artworks"});
+        Meteor.maWizard.init({collection: Artworks, id: _id, baseRoute: "artworks", template: this.route.options.template});
       }
 
     },
@@ -276,8 +276,8 @@ Router.map(function() {
             _id = undefined;
           else
             _id = this.params._id;
-
-        Meteor.maWizard.init({collection: Exhibitions, id: _id, baseRoute: "exhibitions"});
+console.log("In exhibitions wizard");
+        Meteor.maWizard.init({collection: Exhibitions, id: _id, baseRoute: "exhibitions", template: this.route.options.template});
       }
 
     },

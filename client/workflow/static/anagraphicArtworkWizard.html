@@ -74,67 +74,21 @@
   </div>
 </template>
 
-<template name="deleteArtwork">
-  <button id="deleteArtwork" class="delete btn btn-danger">Delete artwork</button>
-</template>
-
 <template name="anagraphicSection">
   <div id="anagraphicSection" class="form-group">
-    <div class="form-group field-inventory {{fieldValidity 'inventory'}}">
-      <label class="control-label" for="inventoryElem">Inventory {{errMsg 'inventory'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="inventoryElem" placeholder="Inventory" value="{{inventory}}" data-schemafield="inventory" autofocus maxlength=20>
-    </div>
-    <div class="form-group field-title {{fieldValidity 'title'}}">
-      <label class="control-label" for="titleElem">Title {{errMsg 'title'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="titleElem" placeholder="Title" value="{{title}}" data-schemafield="title" maxlength=200>
-    </div>
-    <div class="form-group field-authors {{fieldValidity 'authors'}}">
-      <label class="control-label" for="authorsElem">Author(s) {{errMsg 'authors'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="authorsElem" placeholder="Author" value="{{authors}}" data-schemafield="authors" maxlength=20>
-    </div>
-    <div class="form-group field-description {{fieldValidity 'description'}}">
-      <label class="control-label" for="descriptionElem">Description {{errMsg 'description'}}</label>
-      <textarea class="form-control " data-ma-wizard-control id="descriptionElem" placeholder="Description..." value="{{description}}" data-schemafield="description" maxlength=200></textarea>
-    </div>
-    <div class="form-group field-dating {{fieldValidity 'dating'}}">
-      <label class="control-label" for="datingElem">Dating {{errMsg 'dating'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="datingElem" placeholder="Ex. 1893, III sec., First half 1900..." value="{{dating}}" data-schemafield="dating" maxlength=20>
-    </div>
-    <div class="form-group field-type {{fieldValidity 'type'}}">
-      <label class="control-label" for="typeElem">Artwork type {{errMsg 'type'}}</label>
-      <select id="typeElem" required autocomplete="off" class="form-control " data-ma-wizard-control data-schemafield="type">
-        <option {{optionIsSelected 'type'}} disabled selected value="">(Select artwork type)</option>
-        {{#each artworkTypes}}
-        <option value="{{id}}" {{optionIsSelected "type"}}>{{name}}</option>
-        {{/each}}
-      </select>
-    </div>
+    {{> maWizardTextInput field="inventory" label="Inventory" placeholder="Inventory..."}}
+    {{> maWizardTextInput field="title" label="Title" placeholder="Title..."}}
+    {{> maWizardTextInput field="authors" label="Author(s)" placeholder="Author(s)..."}}
+    {{> maWizardTextarea field="description" label="description" placeholder="Description..."}}
+    {{> maWizardTextInput field="dating" label="Dating" placeholder="Ex. 1893, III sec., First half 1900..."}}
+    {{> maWizardSelect field="type" label="Artwork type" placeholder="Select artwork type" values=artworkTypes}}
   </div>
 </template>
 
 <template name="materialSection">
   <div id="materialSection">
-    <div class="form-group {{fieldValidity 'material'}}">
-      <label class="control-label" for="materialElem">Artwork material {{errMsg 'material'}}</label>
-      <div id="materialElem">
-        <select class="multiselect form-control material" data-ma-wizard-control multiple="multiple" data-schemafield="material">
-          <!--option {{optionIsSelected "material"}} disabled value="">(Select artwork material)</option-->
-          {{#each artworkMaterials}}
-            <option {{optionIsSelected "material"}} value="{{id}}">{{name}}</option>
-          {{/each}}
-        </select>
-      </div>
-    </div>
-    <div class="form-group {{fieldValidity 'technique'}}">
-      <label class="control-label" for="techniqueElem">Artwork technique {{errMsg 'technique'}}</label>
-      <div id="techniqueElem">
-        <select class="multiselect form-control technique" multiple="multiple" data-ma-wizard-control data-schemafield="technique">
-          {{#each artworkTechniques}}
-            <option {{optionIsSelected "technique"}} value="{{id}}">{{name}}</option>
-          {{/each}}
-        </select>
-      </div>
-    </div>
+    {{> maWizardMultiselect field="material" label="Artwork material" values=artworkMaterials}}
+    {{> maWizardMultiselect field="technique" label="Artwork technique" values=artworkTechniques}}
     {{> accessoriesSection}}
   </div>
 </template>
@@ -143,12 +97,7 @@
   <div id="accessorySection">
     <label>Accessories</label>
     {{#each accessories}}
-    <div class="checkbox">
-      <label>
-        <input class="form-checkbox " data-ma-wizard-control type="checkbox" {{isChecked  this}} data-schemafield="{{this}}">
-        {{this}}
-      </label>
-    </div>
+      {{> maWizardCheckbox field=this label=this}}
     {{/each}}
   </div>
 </template>
@@ -160,14 +109,14 @@
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="#main" role="tab" data-toggle="tab">Main</a></li>
           {{#if isMultiple}}
-          {{#each objects}}
-          <li><a href="#{{id}}Pane" class="object-tab" role="tab" data-toggle="tab">{{objNum}}</a></li>
-          {{/each}}
-          <li>
-            <a class="add-object" role="tab" data-toggle="tab">
-              <span class="glyphicon glyphicon-plus"></span>
-            </a>
-          </li>
+            {{#each objects}}
+              <li><a href="#{{id}}Pane" class="object-tab" role="tab" data-toggle="tab">{{objNum}}</a></li>
+            {{/each}}
+            <li>
+              <a class="add-object" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-plus"></span>
+              </a>
+            </li>
           {{/if}}
         </ul>
         <div class="tab-content">
@@ -258,36 +207,13 @@
 
 <template name="environmentSection">
   <div id="environmentSection">
-    <div class="form-group field-site {{fieldValidity 'site'}}">
-      <label class="control-label" for="siteElem">Site {{errMsg 'site'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="siteElem" placeholder="Site" value="{{site}}" data-schemafield="site" maxlength=20>
-    </div>
-    <div class="form-group field-city {{fieldValidity 'city'}}">
-      <label class="control-label" for="cityElem">City {{errMsg 'city'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="cityElem" placeholder="City" value="{{city}}" data-schemafield="city" maxlength=20>
-    </div>
-    <div class="checkbox">
-      <label>
-        <input id="UVPElem" type="checkbox" value="UVP" data-schemafield="UVP" {{isChecked}}>
-        UV protection
-      </label>
-    </div>
-    <div class="form-group field-rh {{fieldValidity 'RH'}}">
-      <label class="control-label" for="RHElem">Relative humidity {{errMsg 'RH'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="RHElem" placeholder="Relative humidity" value="{{RH}}" data-schemafield="RH" maxlength=20>
-    </div>
-    <div class="form-group field-temperature {{fieldValidity 'temperature'}}">
-      <label class="control-label" for="temperatureElem">Temperature {{errMsg 'temperature'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="temperatureElem" placeholder="Temperature" value="{{temperature}}" data-schemafield="temperature" maxlength=20>
-    </div>
-    <div class="form-group field-lux {{fieldValidity 'lux'}}">
-      <label class="control-label" for="luxElem">Lux {{errMsg 'lux'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="luxElem" placeholder="Lux" value="{{lux}}" data-schemafield="lux" maxlength=20>
-    </div>
-    <div class="form-group field-amo {{fieldValidity 'AMO'}}">
-      <label class="control-label" for="AMOElem">Adesione Microbica Oraria {{errMsg 'AMO'}}</label>
-      <input type="text" class="form-control " data-ma-wizard-control id="AMOElem" placeholder="AMO" value="{{AMO}}" data-schemafield="AMO" maxlength=20>
-    </div>
+    {{> maWizardTextInput field="site" label="Site" placeholder="Site..."}}
+    {{> maWizardTextInput field="city" label="City" placeholder="City..."}}
+    {{> maWizardCheckbox field="UVP" label="UV protection"}}
+    {{> maWizardTextInput field="RH" label="Relative humidity" placeholder="Relative humidity..."}}
+    {{> maWizardTextInput field="temperature" label="Temperature" placeholder="Temperature..."}}
+    {{> maWizardTextInput field="lux" label="Lux" placeholder="Lux..."}}
+    {{> maWizardTextInput field="AMO" label="Adesione Microbica Oraria" placeholder="AMO"}}
   </div>
 </template>
 
@@ -355,10 +281,7 @@
     <p><strong>Filename:</strong> {{name}}</p>
     <p><strong>Type:</strong> {{type}}</p>
     <p><strong>Size:</strong> {{size}} Bytes</p>
-    <div class="form-group {{fieldValidity descFieldStr}}">
-      <label class="control-label" for="atcDesc">Description {{errMsg descFieldStr}}</label>
-      <textarea class="form-control " data-ma-wizard-control id="atcDesc" placeholder="Description..." value="{{description}}" data-schemafield="{{descFieldStr}}" maxlength=200></textarea>
-    </div>
+    {{> maWizardTextarea field=descFieldStr label="Description" placeholder="Description..."}}
   </div>
 </template>
 

@@ -17,3 +17,52 @@
 <template name="maWizardBackToList">
   <button class="btn btn-default" data-ma-wizard-backToList>Back to list</button>
 </template>
+
+<template name="maWizardTextInput">
+	<div class="form-group {{fieldValidity field}}">
+      <label class="control-label">{{label}} {{errMsg field}}</label>
+      <input type="text" class="form-control " data-ma-wizard-control placeholder={{placeholder}} value="{{getFieldValue field}}" data-schemafield={{field}} autofocus maxlength=20>
+    </div>
+</template>
+
+<template name="maWizardTextarea">
+	<div class="form-group {{fieldValidity field}}">
+      <label class="control-label">{{label}} {{errMsg field}}</label>
+      <textarea class="form-control " data-ma-wizard-control placeholder={{placeholder}} value="{{getFieldValue field}}" data-schemafield={{field}} maxlength=200></textarea>
+    </div>
+</template>
+
+<template name="maWizardSelect">
+	<div class="form-group field-type {{fieldValidity field}}">
+      <label class="control-label">{{label}} {{errMsg field}}</label>
+      <select required autocomplete="off" class="form-control " data-ma-wizard-control data-schemafield={{field}}>
+        <option {{optionIsSelected field}} disabled selected value="">{{placeholder}}</option>
+        {{#each values}}
+          <option value="{{id}}" {{optionIsSelected ../field}}>{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+</template>
+
+<template name="maWizardMultiselect">
+	<div class="form-group {{fieldValidity field}}">
+      <label class="control-label">{{label}} {{errMsg field}}</label>
+      <div>
+        <select class="multiselect form-control {{field}}" data-ma-wizard-control multiple="multiple" data-schemafield={{field}}>
+          <!--option {{optionIsSelected "material"}} disabled value="">(Select artwork material)</option-->
+          {{#each values}}
+            <option {{optionIsSelected ../field}} value="{{id}}">{{name}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+</template>
+
+<template name="maWizardCheckbox">
+	<div class="checkbox">
+      <label>
+        <input class="form-checkbox " data-ma-wizard-control type="checkbox" {{isChecked  this.field}} data-schemafield={{field}}>
+        {{label}}
+      </label>
+    </div>
+</template>

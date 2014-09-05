@@ -12,6 +12,8 @@ function maWizard() {
 
 	var isInDatabase;
 
+	var initializedTemplates = [];
+
 	var buildObjectFromSchema = function() {
 		var obj = {};
 
@@ -222,7 +224,7 @@ function maWizard() {
 
 	};
 
-	this.changed = function() {
+	this.hasChanged = function() {
 		var inDatabase = collection.findOne({_id: this.getDataContext()._id});
 
 		return inDatabase && !_.isEqual(inDatabase, this.getDataContext());
@@ -261,6 +263,59 @@ function maWizard() {
 			contextObj = collection.findOne(conf.id);
 
 		this.setDataContext(contextObj);
+
+		// there's no way to unbind events attached to templates via Meteor APIs,
+		// so I keep in memory which templates I have already initialized in order
+		// not to add handlers more than once
+		if(conf.template && (initializedTemplates.indexOf(conf.template) === -1)) {
+			this.setStandardEventHandlers(conf.template);
+			initializedTemplates.push(conf.template);
+		}
+	};
+
+	this.setStandardEventHandlers = function(templ) {
+		var backToBase = function(evt, templ) {
+			var goBack = function(result) {
+				if(result) {
+					Meteor.maWizard.discard();
+					Router.go(Meteor.maWizard.baseRoute);
+				}
+			};
+
+			if(Meteor.maWizard.hasChanged()) {
+				bootbox.confirm("Unsaved updates will be discarded. Do you really want to go back?", goBack);
+			}
+			else goBack(true);
+		};
+
+		Template[templ].events({
+			'change [data-ma-wizard-control]': function(evt, templ) {
+				Meteor.maWizard.saveHTMLElement(evt.currentTarget);
+			},
+			'click [data-ma-wizard-save]': function(evt, templ) {
+				if(Meteor.maWizard.saveToDatabase()) {
+					Router.go(Meteor.maWizard.baseRoute);
+					Meteor.maWizard.discard();
+				}
+				else {
+					var onSaveFailure = Meteor.maWizard.getOnSaveFailure();
+
+					if(onSaveFailure === undefined || (typeof onSaveFailure !== "function")) {
+						bootbox.alert("Cannot save to database! Check inserted data");
+					}
+					else onSaveFailure();
+				}
+			},
+			'click [data-ma-wizard-cancel], click [data-ma-wizard-backToList]': backToBase,
+			'click [data-ma-wizard-create]': function(evt, templ) {
+				if(Meteor.maWizard.create())
+					Router.go(Meteor.maWizard.baseRoute + "/" + Meteor.maWizard.getDataContext()._id);
+			},
+			'click [data-ma-wizard-delete]': function(evt,templ) {
+				if(Meteor.maWizard.removeFromDatabase())
+					Router.go(Meteor.maWizard.baseRoute);
+			}
+		});
 	};
 
 	this.setOnSaveFailure = function(callback) {

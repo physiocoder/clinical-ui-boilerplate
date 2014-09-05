@@ -1,3 +1,12 @@
+UI.registerHelper('getFieldValue', function(field) {
+	var current = Meteor.maWizard.getDataContext();
+
+	if(current)
+		return current[field];
+	else
+		return "";
+});
+
 UI.registerHelper('fieldValidity', function(field) {
 	if(field === undefined)
 		return '';
@@ -39,7 +48,7 @@ UI.registerHelper('optionIsSelected', function(field) {
 
 	// NOTE: current[field] could be either a String or an Array, in either case
 	// the indexOf() method is defined and the result is the wanted behaviour
-	if(current && current[field].indexOf(id) > -1)
+	if(current && current[field] && current[field].indexOf(id) > -1)
 		return "selected";
 	else return "";
 });
