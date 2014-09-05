@@ -50,6 +50,13 @@ function maWizard() {
 		return validationContext;
 	};
 
+	this.getSchemaObj = function() {
+		if(schema)
+			return schema.schema();
+
+		return undefined;
+	};
+
 	this.buildFieldValuePair = function(field, value) {
 		return new FieldValuePair(field, value);
 	};
@@ -344,6 +351,71 @@ function FieldValuePair(field, value) {
 
 	this.getFieldName = function() { return _field; };
 }
+
+UI.registerHelper('maWizardGetFieldValue', function(field) {
+	var current = Meteor.maWizard.getDataContext();
+
+	if(current)
+		return current[field];
+	else
+		return "";
+});
+
+// to use for String only, not for Number
+UI.registerHelper('maWizardMaxLength', function(field) {
+	var schema = Meteor.maWizard.getSchemaObj();
+
+	// if the field is of the type mainField.N.field we
+	// must replace the number N with $
+	var normField = field.replace(/\.\d\./, ".$.");
+
+	if(schema && schema[normField]['max'])
+		return schema[normField]['max'];
+	
+	return -1;
+});
+
+UI.registerHelper('maWizardFieldValidity', function(field) {
+	if(field === undefined)
+		return '';
+	var validationResult = Meteor.maWizard.getValidationContext().keyIsInvalid(field);
+	if(validationResult)
+		return 'has-error';
+	else
+		return '';
+});
+
+UI.registerHelper('maWizardErrMsg', function(field) {
+	if(field === undefined)
+		return '';
+	var msg = Meteor.maWizard.getValidationContext().keyErrorMessage(field);
+	if(msg === "")
+		return "";
+	else
+		return " - " + msg;
+});
+
+UI.registerHelper('maWizardOptionIsSelected', function(field) {
+	var current = Meteor.maWizard.getDataContext();
+
+	// sometimes I have this.id (Number), sometimes this._id (String),
+	// so I should get the right field and datatype
+	var id = this.id;
+
+	if(this._id !== undefined)
+		id = this._id;
+
+	if(id === undefined)
+		return "";
+	else
+		id = id.toString();
+
+	// NOTE: current[field] could be either a String or an Array, in either case
+	// the indexOf() method is defined and the result is the wanted behaviour
+	if(current && current[field] && current[field].indexOf(id) > -1)
+		return "selected";
+	else return "";
+});
 
 Meteor.startup(function() {
 	Meteor.maWizard = new maWizard();

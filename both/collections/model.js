@@ -26,7 +26,7 @@ Schemas.ArtworkEssentials = new SimpleSchema({
     inventory: {
         type: String,
         label: "Inventory",
-        max: 20
+        max: 10
     },
     title: {
         type: String,
