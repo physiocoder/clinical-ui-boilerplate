@@ -14,8 +14,28 @@ function maWizard() {
 
 	var initializedTemplates = [];
 
+	var customValidator = function() {
+        var self = this;
+        
+        var contained = _.every(this.value, function(elem) {
+            return self.definition.mawizard.allowedValues().indexOf(elem) > -1;
+        });
+
+        if(contained) return true;
+        else return "notAllowed";
+    };
+
+	var setCustomValidation = function() {
+		var schemaObj = schema.schema();
+		for(var fieldObj in schemaObj) {
+			if(schemaObj[fieldObj].mawizard && schemaObj[fieldObj].mawizard.allowedValues) {
+				schemaObj[fieldObj].custom = customValidator;
+			}
+		}
+	};
+
 	var getDefaultValue = function(key) {
-		var keyType = schema.schema()[key].type();
+		var keyType = schema.schema(key).type();
 
 		// for numbers an empty string is returned and the clean() method
 		// will perform the appropriate normalization
@@ -163,7 +183,7 @@ function maWizard() {
 				current[mainField][index][customField] = newData[field];
 
 			} // following if condition is too long, refactor
-			else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema()[field].type()) && !Array.isArray(newData[field])) {
+			else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema(field).type()) && !Array.isArray(newData[field])) {
 				// If for the current field the schema expects an array of objects 
 				// but a single object is passed, I add the object to the current array
 				var elems = [];
@@ -246,6 +266,8 @@ function maWizard() {
 			schema = collection.simpleSchema();
 		else
 			schema = conf.schema;
+
+		setCustomValidation();
 
 		validationContext = schema.namedContext();
 

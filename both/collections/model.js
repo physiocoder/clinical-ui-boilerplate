@@ -65,7 +65,14 @@ Schemas.ArtworkEssentials = new SimpleSchema({
     material: {
         type: [String],
         label: "Material",
-        optional: true
+        optional: true,
+        mawizard: {
+            allowedValues: function() {
+                return _.map(artworkTypeLookUp[Meteor.maWizard.getDataContext().type].materials, function(elem) {
+                    return elem.id.toString();
+                });
+            }
+        }
     },
     technique: {
         type: [String],
