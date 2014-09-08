@@ -2,6 +2,11 @@ Anagraphics = new Meteor.Collection('anagraphics');
 Artworks = new Meteor.Collection('artworks');
 Exhibitions = new Meteor.Collection('exhibitions');
 
+// extending SimpleSchema for usage with maWizard
+SimpleSchema.extendOptions({
+    mawizard: Match.Optional(Object),
+});
+
 Schemas = {};
 
 Schemas.User = new SimpleSchema({
@@ -52,7 +57,10 @@ Schemas.ArtworkEssentials = new SimpleSchema({
     type: {
         type: String,
         label: "Artwork type",
-        max: 200
+        max: 200,
+        mawizard: {
+            dependencies: ["material", "technique"]
+        }
     },
     material: {
         type: [String],

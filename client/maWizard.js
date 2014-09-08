@@ -14,21 +14,24 @@ function maWizard() {
 
 	var initializedTemplates = [];
 
+	var getDefaultValue = function(key) {
+		var keyType = schema.schema()[key].type();
+
+		// for numbers an empty string is returned and the clean() method
+		// will perform the appropriate normalization
+		if(typeof keyType === 'string' || typeof keyType === 'number')
+			return "";
+		else if(typeof keyType === 'boolean')
+			return false;
+		else if(Array.isArray(keyType))
+			return [];
+	};
+
 	var buildObjectFromSchema = function() {
 		var obj = {};
 
 		_.each(schema.firstLevelSchemaKeys(), function(key) {
-			var keyValue;
-			var keyType = schema.schema()[key].type();
-
-			if(typeof keyType === 'string' || typeof keyType === 'number')
-				keyValue = "";
-			else if(typeof keyType === 'boolean')
-				keyValue = false;
-			else if(Array.isArray(keyType))
-				keyValue = [];
-
-			obj[key] = keyValue;
+			obj[key] = getDefaultValue(key);
 		});
 
 		obj["_id"] = undefined;
@@ -55,6 +58,10 @@ function maWizard() {
 			return schema.schema();
 
 		return undefined;
+	};
+
+	this.getSchema = function() {
+		return schema;
 	};
 
 	this.buildFieldValuePair = function(field, value) {
@@ -135,6 +142,10 @@ function maWizard() {
 	this.updateContext = function(newData) {
 		var current = dataContext;
 
+		var resetField = function(key) {
+			current[key] = getDefaultValue(key);
+		};
+
 		// apply changes to current object
 		for(var field in newData) {
 
@@ -162,32 +173,12 @@ function maWizard() {
 				elems.push(newData[field]);
 				current[field] = elems;
 			}
-			else {
-				// if the type changes, reset material and technique
-				if(field === "type" && newData[field] !== current[field]) {
-					current["material"] = [];
-					current["technique"] = [];
+			else current[field] = newData[field];
 
-					try {
-						// the multiselect elements must be cleared programmatically
-						// via the provided methods
-						var techSelect = $('.multiselect.technique');
-						var techVal = techSelect.val();
-						if(techVal)
-							techSelect.multiselect('deselect', techVal);
-						var matSelect = $('.multiselect.material');
-						var matVal = matSelect.val();
-						if(matVal)
-							matSelect.multiselect('deselect', matVal);
-						//$('.multiselect').multiselect('refresh');
-					}
-					catch(e) {
-						// if no values where selected an exception is thrown;
-						// in such a case we don't need to do anything, just relax :)
-					}
-				}
-
-				current[field] = newData[field];
+			// check for dependencies
+			if(Meteor.maWizard.getSchema().getDefinition(field).mawizard) {
+				var deps = Meteor.maWizard.getSchema().getDefinition(field).mawizard.dependencies;
+				_.each(deps, resetField);
 			}
 		}
 
