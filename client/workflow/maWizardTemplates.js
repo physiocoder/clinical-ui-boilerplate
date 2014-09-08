@@ -14,6 +14,12 @@ Template.maWizardMultiselect.rendered = function() {
 	});
 };
 
+Template.maWizardMultiselect.allowedValuesFromSchema = function(field) {
+	return _.map(Meteor.maWizard.getSchemaObj()[field].mawizard.allowedValues(), function(elem) {
+		return {name: elem.name, id: elem.id};
+	});
+};
+
 Template.maWizardCheckbox.isChecked = function(field) {
 	var current = Meteor.maWizard.getDataContext();
 	if(current && current[field])

@@ -16,9 +16,11 @@ function maWizard() {
 
 	var customValidator = function() {
         var self = this;
-        
+
         var contained = _.every(this.value, function(elem) {
-            return self.definition.mawizard.allowedValues().indexOf(elem) > -1;
+            return _.map(self.definition.mawizard.allowedValues(), function(elem) {
+				return elem.id.toString();
+            }).indexOf(elem) > -1;
         });
 
         if(contained) return true;

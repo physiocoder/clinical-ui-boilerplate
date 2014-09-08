@@ -87,8 +87,8 @@
 
 <template name="materialSection">
   <div id="materialSection">
-    {{> maWizardMultiselect field="material" label="Artwork material" values=artworkMaterials}}
-    {{> maWizardMultiselect field="technique" label="Artwork technique" values=artworkTechniques}}
+    {{> maWizardMultiselect field="material" label="Artwork material"}}
+    {{> maWizardMultiselect field="technique" label="Artwork technique" allowedValues=artworkTechniques}}
     {{> accessoriesSection}}
   </div>
 </template>

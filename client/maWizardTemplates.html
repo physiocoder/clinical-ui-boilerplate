@@ -49,10 +49,15 @@
       <label class="control-label">{{label}} {{maWizardErrMsg field}}</label>
       <div>
         <select class="multiselect form-control {{field}}" data-ma-wizard-control multiple="multiple" data-schemafield={{field}}>
-          <!--option {{maWizardOptionIsSelected "material"}} disabled value="">(Select artwork material)</option-->
-          {{#each values}}
-            <option {{maWizardOptionIsSelected ../field}} value="{{id}}">{{name}}</option>
-          {{/each}}
+          {{#if allowedValues}}
+            {{#each allowedValues}}
+              <option {{maWizardOptionIsSelected ../field}} value="{{id}}">{{name}}</option>
+            {{/each}}
+          {{else}}
+            {{#each allowedValuesFromSchema field}}
+              <option {{maWizardOptionIsSelected ../field}} value="{{id}}">{{name}}</option>
+            {{/each}}
+          {{/if}}
         </select>
       </div>
     </div>

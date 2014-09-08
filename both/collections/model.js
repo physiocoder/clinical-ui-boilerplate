@@ -69,7 +69,7 @@ Schemas.ArtworkEssentials = new SimpleSchema({
         mawizard: {
             allowedValues: function() {
                 return _.map(artworkTypeLookUp[Meteor.maWizard.getDataContext().type].materials, function(elem) {
-                    return elem.id.toString();
+                    return {name: elem.name, id: elem.id.toString()};
                 });
             }
         }
