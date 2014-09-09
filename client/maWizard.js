@@ -18,9 +18,11 @@ function maWizard() {
         var self = this;
 
         var contained = _.every(this.value, function(elem) {
-            return _.map(self.definition.mawizard.allowedValues(), function(elem) {
+			var ids = _.map(getSimpleSchemaAllowedValues(self.key), function(elem) {
 				return elem.id.toString();
-            }).indexOf(elem) > -1;
+            });
+
+            return ids.indexOf(elem) > -1;
         });
 
         if(contained) return true;
@@ -75,9 +77,11 @@ function maWizard() {
 		return validationContext;
 	};
 
-	this.getSchemaObj = function() {
+	this.getSchemaObj = function(field) {
+		// field could be undefined, case in which the whole schema
+		// object is returned
 		if(schema)
-			return schema.schema();
+			return schema.schema(field);
 
 		return undefined;
 	};
@@ -431,6 +435,45 @@ UI.registerHelper('maWizardOptionIsSelected', function(field) {
 		return "selected";
 	else return "";
 });
+
+UI.registerHelper('maWizardAllowedValuesFromSchema', function(field) {
+	return getSimpleSchemaAllowedValues(field);
+});
+
+function getSimpleSchemaAllowedValues(field) {
+	// SS stands for SimpleSchema
+	var fieldSS = Meteor.maWizard.getSchemaObj(field);
+	var maWizardSS = fieldSS.mawizard;
+
+	if(!(maWizardSS && maWizardSS.allowedValues) && fieldSS.allowedValues)
+		return normalizeAllowedValues(fieldSS.allowedValues());
+	
+	if(maWizardSS && maWizardSS.allowedValues)
+		return normalizeAllowedValues(maWizardSS.allowedValues());
+
+	return [];
+}
+
+function normalizeAllowedValues(values) {
+	if(typeof values === 'string')
+		return [{name: values, id: values}];
+
+	return _.map(values, function(elem) {
+		var obj = {};
+
+		if(elem.name)
+			obj.name = elem.name;
+		else
+			obj.name = elem;
+
+		if(elem.id)
+			obj.id = elem.id.toString();
+		else
+			obj.id = elem.toString();
+
+		return obj;
+	});
+}
 
 Meteor.startup(function() {
 	Meteor.maWizard = new maWizard();

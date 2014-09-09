@@ -37,9 +37,15 @@
       <label class="control-label">{{label}} {{maWizardErrMsg field}}</label>
       <select required autocomplete="off" class="form-control " data-ma-wizard-control data-schemafield={{field}}>
         <option {{maWizardOptionIsSelected field}} disabled selected value="">{{placeholder}}</option>
-        {{#each values}}
-          <option value="{{id}}" {{maWizardOptionIsSelected ../field}}>{{name}}</option>
-        {{/each}}
+        {{#if values}}
+          {{#each values}}
+            <option value="{{id}}" {{maWizardOptionIsSelected ../field}}>{{name}}</option>
+          {{/each}}
+        {{else}}
+          {{#each maWizardAllowedValuesFromSchema field}}
+            <option value="{{id}}" {{maWizardOptionIsSelected ../field}}>{{name}}</option>
+          {{/each}}
+        {{/if}}
       </select>
     </div>
 </template>
@@ -54,7 +60,7 @@
               <option {{maWizardOptionIsSelected ../field}} value="{{id}}">{{name}}</option>
             {{/each}}
           {{else}}
-            {{#each allowedValuesFromSchema field}}
+            {{#each maWizardAllowedValuesFromSchema field}}
               <option {{maWizardOptionIsSelected ../field}} value="{{id}}">{{name}}</option>
             {{/each}}
           {{/if}}

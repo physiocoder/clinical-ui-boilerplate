@@ -47,10 +47,6 @@ Template.anagraphicArtworkWizard.events({
 	}
 });
 
-Template.anagraphicSection.artworkTypes = function() {
-	return artworkType;
-};
-
 Template.materialSection.artworkMaterials = function() {
 	var current = Meteor.maWizard.getDataContext();
 

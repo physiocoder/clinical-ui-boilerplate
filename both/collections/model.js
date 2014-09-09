@@ -59,7 +59,10 @@ Schemas.ArtworkEssentials = new SimpleSchema({
         label: "Artwork type",
         max: 200,
         mawizard: {
-            dependencies: ["material", "technique"]
+            dependencies: ["material", "technique"],
+            allowedValues: function() {
+                return artworkType;
+            }
         }
     },
     material: {
