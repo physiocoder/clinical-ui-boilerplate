@@ -1,4 +1,4 @@
-function maWizard() {
+maWizard = function() {
 	var dataContext;
 	var dataContextDep = new Deps.Dependency;
 
