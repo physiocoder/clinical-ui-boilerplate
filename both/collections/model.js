@@ -27,7 +27,7 @@ Schemas.User = new SimpleSchema({
     }
 });
 
-Schemas.ArtworkEssentials = new SimpleSchema({
+Schemas.ArtworkEssentials = new maSimpleSchema({
     inventory: {
         type: String,
         label: "Inventory",
@@ -58,29 +58,32 @@ Schemas.ArtworkEssentials = new SimpleSchema({
         type: String,
         label: "Artwork type",
         max: 200,
-        mawizard: {
-            dependencies: ["material", "technique"],
-            allowedValues: function() {
-                return artworkType;
-            }
+        maDependencies: ["material", "technique"],
+        maAllowedValues: function() {
+            return _.map(artworkType, function(elem) {
+                return {label: elem.name, value: elem.id};
+            });
         }
     },
     material: {
         type: [String],
         label: "Material",
         optional: true,
-        mawizard: {
-            allowedValues: function() {
-                return _.map(artworkTypeLookUp[Meteor.maWizard.getDataContext().type].materials, function(elem) {
-                    return {name: elem.name, id: elem.id.toString()};
-                });
-            }
+        maAllowedValues: function(getFieldValue) {
+            return _.map(artworkTypeLookUp[getFieldValue("type")].materials, function(elem) {
+                return {label: elem.name, value: elem.id.toString()};
+            });
         }
     },
     technique: {
         type: [String],
         label: "Technique",
-        optional: true
+        optional: true,
+        maAllowedValues: function(getFieldValue) {
+            return _.map(artworkTypeLookUp[getFieldValue("type")].tecnica, function(elem) {
+                return {label: elem.name, value: elem.id.toString()};
+            });
+        }
     },
     site: {
         type: String,
@@ -189,7 +192,7 @@ Schemas.ArtworkEssentials = new SimpleSchema({
     }
 });
 
-Schemas.Accessories = new SimpleSchema({
+Schemas.Accessories = new maSimpleSchema({
     frame: {
         type: Boolean,
         label: "Frame - accessory",
@@ -220,7 +223,7 @@ Schemas.Accessories = new SimpleSchema({
     }
 });
 
-Schemas.Artwork = new SimpleSchema([Schemas.ArtworkEssentials, Schemas.Accessories]);
+Schemas.Artwork = new maSimpleSchema([Schemas.ArtworkEssentials, Schemas.Accessories]);
 
 Anagraphics.attachSchema(Schemas.User);
 Artworks.attachSchema(Schemas.Artwork);

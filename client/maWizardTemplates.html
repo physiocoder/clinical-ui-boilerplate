@@ -39,11 +39,11 @@
         <option {{maWizardOptionIsSelected field}} disabled selected value="">{{placeholder}}</option>
         {{#if values}}
           {{#each values}}
-            <option value="{{id}}" {{maWizardOptionIsSelected ../field}}>{{name}}</option>
+            <option value="{{value}}" {{maWizardOptionIsSelected ../field}}>{{label}}</option>
           {{/each}}
         {{else}}
           {{#each maWizardAllowedValuesFromSchema field}}
-            <option value="{{id}}" {{maWizardOptionIsSelected ../field}}>{{name}}</option>
+            <option value="{{value}}" {{maWizardOptionIsSelected ../field}}>{{label}}</option>
           {{/each}}
         {{/if}}
       </select>
@@ -57,11 +57,11 @@
         <select class="multiselect form-control {{field}}" data-ma-wizard-control multiple="multiple" data-schemafield={{field}}>
           {{#if allowedValues}}
             {{#each allowedValues}}
-              <option {{maWizardOptionIsSelected ../field}} value="{{id}}">{{name}}</option>
+              <option {{maWizardOptionIsSelected ../field}} value="{{value}}">{{label}}</option>
             {{/each}}
           {{else}}
             {{#each maWizardAllowedValuesFromSchema field}}
-              <option {{maWizardOptionIsSelected ../field}} value="{{id}}">{{name}}</option>
+              <option {{maWizardOptionIsSelected ../field}} value="{{value}}">{{label}}</option>
             {{/each}}
           {{/if}}
         </select>

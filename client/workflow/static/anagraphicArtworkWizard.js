@@ -47,28 +47,6 @@ Template.anagraphicArtworkWizard.events({
 	}
 });
 
-Template.materialSection.artworkMaterials = function() {
-	var current = Meteor.maWizard.getDataContext();
-
-	if(current && current._id)
-		return _.map(artworkTypeLookUp[current.type].materials, function(elem) {
-			return {name: elem.name, id: elem.id};
-		});
-	else
-		return [];
-};
-
-Template.materialSection.artworkTechniques = function() {
-	var current = Meteor.maWizard.getDataContext();
-
-	if(current && current._id)
-		return _.map(artworkTypeLookUp[current.type].tecnica, function(elem) {
-			return {name: elem.name, id: elem.id};
-		});
-	else
-		return [];
-};
-
 Template.accessoriesSection.accessories = function() {
 	return Schemas.Accessories.firstLevelSchemaKeys();
 };
@@ -227,35 +205,6 @@ Template.attachmentsSection.attachments = function() {
 		elem['description'] = current.attachments[index].description;
 		return elem;
 	});
-};
-
-// following helper is not used anymore
-Template.attachmentsSection.upFiles = function() {
-	// get the template instance
-	// WARNING: in date 21 Aug 2014 the method UI._templateInstance()
-	// is not reported in the official documentation. While the functionality
-	// will be provided for sure, it is not sure that the method name will remain
-	// unchanged. If this breaks, check Documentation to access template instance.
-	var inst = UI._templateInstance();
-
-	var upFiles = inst.upFiles;
-
-	// get FS.File objects whose _id is stored in upFiles template variable
-	var upFSFiles = Attachments.find({}).fetch();
-
-	_.each(upFSFiles, function(elem) {
-		var index = $.inArray(elem._id, upFiles);
-		// if the file is present in upFiles but isUploaded()
-		// returns true, then the upload is finished and we
-		// should remove the file's id from upFiles
-		if(index > -1 && elem.isUploaded()) {
-			// remove file's id from upFiles
-			upFiles.splice(index, 1);
-
-			// TODO: add growl notification 
-		}
-	});
-	return upFSFiles;
 };
 
 Template.attachmentsSection.events({

@@ -134,13 +134,17 @@ maWizard = function() {
 		
 		var plainObj = {};
 		plainObj[field] = value;
-		// update the data context
-		Meteor.maWizard.updateContext(plainObj);
 
 		// clean the object "to avoid any avoidable validation errors" 
 		// [cit. aldeed - Simple-Schema author]
 		schema.clean(plainObj, {removeEmptyStrings: false});
-		validationContext.validateOne(plainObj, field);
+
+		// update the data context
+		Meteor.maWizard.updateContext(plainObj);
+
+		// passing the whole dataContext but validating just the right field,
+		// we perform the validation we want being able to deal with dependencies
+		validationContext.validateOne(dataContext, field);
 	};
 
 	this.create = function() {
@@ -202,8 +206,8 @@ maWizard = function() {
 			else current[field] = newData[field];
 
 			// check for dependencies
-			if(Meteor.maWizard.getSchema().getDefinition(field).mawizard) {
-				var deps = Meteor.maWizard.getSchema().getDefinition(field).mawizard.dependencies;
+			var deps = Meteor.maWizard.getSchema().getDefinition(field).maDependencies;
+			if(deps) {
 				_.each(deps, resetField);
 			}
 		}
@@ -231,6 +235,8 @@ maWizard = function() {
 			return false;
 		else
 			return collection.update(current._id, {$set: toSave}, function(error, result) {
+				if(error)
+					console.log("Error on save", error);
 				// something went wrong... 
 				// TODO: add a callback that saves the datacontext in order not
 				// to lose changes
@@ -303,8 +309,8 @@ maWizard = function() {
 		var backToBase = function(evt, templ) {
 			var goBack = function(result) {
 				if(result) {
-					Meteor.maWizard.discard();
 					Router.go(Meteor.maWizard.baseRoute);
+					Meteor.maWizard.discard();
 				}
 			};
 
@@ -353,7 +359,7 @@ maWizard = function() {
 		onSaveFailureDep.depend();
 		return onSaveFailure;
 	};
-}
+};
 
 function FieldValuePair(field, value) {
 	var _field = field;
@@ -417,21 +423,11 @@ UI.registerHelper('maWizardErrMsg', function(field) {
 UI.registerHelper('maWizardOptionIsSelected', function(field) {
 	var current = Meteor.maWizard.getDataContext();
 
-	// sometimes I have this.id (Number), sometimes this._id (String),
-	// so I should get the right field and datatype
-	var id = this.id;
-
-	if(this._id !== undefined)
-		id = this._id;
-
-	if(id === undefined)
-		return "";
-	else
-		id = id.toString();
+	var value = this.value;
 
 	// NOTE: current[field] could be either a String or an Array, in either case
 	// the indexOf() method is defined and the result is the wanted behaviour
-	if(current && current[field] && current[field].indexOf(id) > -1)
+	if(current && current[field] && current[field].indexOf(value) > -1)
 		return "selected";
 	else return "";
 });
@@ -441,38 +437,31 @@ UI.registerHelper('maWizardAllowedValuesFromSchema', function(field) {
 });
 
 function getSimpleSchemaAllowedValues(field) {
-	// SS stands for SimpleSchema
-	var fieldSS = Meteor.maWizard.getSchemaObj(field);
-	var maWizardSS = fieldSS.mawizard;
+	var maAllowedValues = Meteor.maWizard.getSchemaObj(field).maAllowedValues;
+	var allowedValues = Meteor.maWizard.getSchemaObj(field).allowedValues;
 
-	if(!(maWizardSS && maWizardSS.allowedValues) && fieldSS.allowedValues)
-		return normalizeAllowedValues(fieldSS.allowedValues());
-	
-	if(maWizardSS && maWizardSS.allowedValues)
-		return normalizeAllowedValues(maWizardSS.allowedValues());
+	if(maAllowedValues) {
+		var getFieldValue = function(field) {
+			return Meteor.maWizard.getDataContext()[field];
+		};
+
+		return maAllowedValues(getFieldValue);
+	}
+
+	if(allowedValues) {
+		var toNormalize;
+
+		if(typeof allowedValues === 'function')
+			toNormalize = allowedValues();
+		else
+			toNormalize = allowedValues;
+
+		return _.map(allowedValues, function(elem) {
+			return {label: elem, value: label};
+		});
+	}
 
 	return [];
-}
-
-function normalizeAllowedValues(values) {
-	if(typeof values === 'string')
-		return [{name: values, id: values}];
-
-	return _.map(values, function(elem) {
-		var obj = {};
-
-		if(elem.name)
-			obj.name = elem.name;
-		else
-			obj.name = elem;
-
-		if(elem.id)
-			obj.id = elem.id.toString();
-		else
-			obj.id = elem.toString();
-
-		return obj;
-	});
 }
 
 Meteor.startup(function() {
