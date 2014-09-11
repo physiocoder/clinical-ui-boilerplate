@@ -1,5 +1,5 @@
 Template.exhibitionsWizard.rendered = function() {
-	Meteor.maWizard.setOnSaveFailure(onSaveFailure);
+	maWizard.setOnSaveFailure(onSaveFailure);
 };
 
 Template.exhibitionsWizard.artworks = function() {

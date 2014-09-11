@@ -239,7 +239,7 @@ Router.map(function() {
         else
           _id = this.params._id;
 
-        Meteor.maWizard.init({collection: Artworks, id: _id, baseRoute: "artworks", template: this.route.options.template});
+        maWizard.init({collection: Artworks, id: _id, baseRoute: "artworks", template: this.route.options.template});
       }
 
     },
@@ -248,7 +248,7 @@ Router.map(function() {
     },
     data: function() {
       if(this.ready())
-        return Meteor.maWizard.getDataContext();
+        return maWizard.getDataContext();
     }
   });
   this.route('exhibitions', {
@@ -276,8 +276,8 @@ Router.map(function() {
             _id = undefined;
           else
             _id = this.params._id;
-console.log("In exhibitions wizard");
-        Meteor.maWizard.init({collection: Exhibitions, id: _id, baseRoute: "exhibitions", template: this.route.options.template});
+          
+        maWizard.init({collection: Exhibitions, id: _id, baseRoute: "exhibitions", template: this.route.options.template});
       }
 
     },
@@ -286,7 +286,7 @@ console.log("In exhibitions wizard");
     },
     data: function() {
       if(this.ready())
-        return Meteor.maWizard.getDataContext();
+        return maWizard.getDataContext();
     }
   });
 });

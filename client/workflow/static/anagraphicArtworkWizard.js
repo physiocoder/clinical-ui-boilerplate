@@ -11,7 +11,7 @@ Template.anagraphicArtworkWizard.created = function() {
 };
 
 Template.anagraphicArtworkWizard.rendered = function() {
-	Meteor.maWizard.setOnSaveFailure(onSaveFailure);
+	maWizard.setOnSaveFailure(onSaveFailure);
 };
 
 Template.anagraphicArtworkWizard.navigatorHidden = function(navBtn) {
@@ -33,11 +33,11 @@ Template.anagraphicArtworkWizard.events({
 	},
 	'change [data-conversion]': function(evt, templ) {
 		if(Session.get('usingCustomaryUnits')) {
-			var fieldValuePair = Meteor.maWizard.parseHTMLElement(evt.currentTarget);
+			var fieldValuePair = maWizard.parseHTMLElement(evt.currentTarget);
 			fieldValuePair.setValue(fieldValuePair.getValue() * 2.54);
-			Meteor.maWizard.processFieldValuePair(fieldValuePair);
+			maWizard.processFieldValuePair(fieldValuePair);
 		}
-		else Meteor.maWizard.saveHTMLElement(evt.currentTarget);
+		else maWizard.saveHTMLElement(evt.currentTarget);
 
 	},
 	'click .tab-selector': function(evt, templ) {
@@ -79,10 +79,10 @@ Template.physicsDescriptionSection.events({
 		var isChecked = evt.currentTarget.checked;
 
 		var updateStatus = function(isMultiple) {
-			Meteor.maWizard.updateContext({multiple: isMultiple});
+			maWizard.updateContext({multiple: isMultiple});
 		};
 
-		var current = Meteor.maWizard.getDataContext();
+		var current = maWizard.getDataContext();
 
 		if(!isChecked && current.objects.length !== 0) {
 			bootbox.confirm("Proceeding, all objects will be removed.", function(result) {
@@ -90,7 +90,7 @@ Template.physicsDescriptionSection.events({
 					updateStatus(false);
 
 					// Remove objects
-					Meteor.maWizard.updateContext({objects: []});
+					maWizard.updateContext({objects: []});
 
 					showMainPane();
 				}
@@ -105,7 +105,7 @@ Template.physicsDescriptionSection.events({
 		}
 	},
 	'click .add-object': function(evt, templ) {
-		var current = Meteor.maWizard.getDataContext();
+		var current = maWizard.getDataContext();
 		
 		// returns a random number between 0-999
 		var getNewId = function() {
@@ -132,7 +132,7 @@ Template.physicsDescriptionSection.events({
 			depth: ""
 		};
 
-		Meteor.maWizard.updateContext({objects: newObj});
+		maWizard.updateContext({objects: newObj});
 
 		// let the user insert values for the new object <- doesn't work
 		$('a[href=#' + newObj.id + 'Pane]').tab('show');
@@ -188,7 +188,7 @@ Template.attachmentsSection.created = function() {
 };
 
 Template.attachmentsSection.attachments = function() {
-	var current = Meteor.maWizard.getDataContext();
+	var current = maWizard.getDataContext();
 	var ids;
 
 	if(current !== undefined)
@@ -216,7 +216,7 @@ Template.attachmentsSection.events({
 
 			// add the new attachment id to the data context
 			var newAtc = {id: FSFile._id};
-			Meteor.maWizard.updateContext({attachments: newAtc});
+			maWizard.updateContext({attachments: newAtc});
 		};
 
 		FS.Utility.eachFile(event, function(file) {
@@ -244,7 +244,7 @@ function showMainPane() {
 }
 
 function removeElemFromSessionDataArray(elemRef, arrayName) {
-	var current = Meteor.maWizard.getDataContext();
+	var current = maWizard.getDataContext();
 
 	var predicate = function(obj) {
 			// here coercion is useful
@@ -263,7 +263,7 @@ function removeElemFromSessionDataArray(elemRef, arrayName) {
 	var data = {};
 	data[arrayName] = current[arrayName];
 	// update session variable (seems useless, but reactivity...)
-	Meteor.maWizard.updateContext(data);
+	maWizard.updateContext(data);
 }
 
 function setSectionFocus(section) {
@@ -351,7 +351,7 @@ function showPrevTab() {
 
 // is there a good way to unify the following two functions?
 function removeOrphanAttachmentsOnBack(context) {
-	var oldList = _.map(Artworks.findOne(Meteor.maWizard.getDataContext()._id).attachments, function(elem) {
+	var oldList = _.map(Artworks.findOne(maWizard.getDataContext()._id).attachments, function(elem) {
 			return elem.id;
 		});
 	var newList = _.map(context.attachments, function(elem) { return elem.id; });
@@ -365,7 +365,7 @@ function removeOrphanAttachmentsOnBack(context) {
 }
 
 function removeOrphanAttachmentsOnSave(context) {
-	var oldList = _.map(Artworks.findOne(Meteor.maWizard.getDataContext()._id).attachments, function(elem) {
+	var oldList = _.map(Artworks.findOne(maWizard.getDataContext()._id).attachments, function(elem) {
 			return elem.id;
 		});
 	var newList = _.map(context.attachments, function(elem) { return elem.id; });

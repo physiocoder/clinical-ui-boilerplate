@@ -2,7 +2,7 @@ Template.maWizardMultiselect.rendered = function() {
 	var ms = $('.multiselect');
 
 	this.autorun(function() {
-		Meteor.maWizard.getDataContext();
+		maWizard.getDataContext();
 
 		// here we use a timeout to be sure that all the helpers
 		// that react to the data context changes are executed before
@@ -14,7 +14,7 @@ Template.maWizardMultiselect.rendered = function() {
 	});
 };
 Template.maWizardCheckbox.isChecked = function(field) {
-	var current = Meteor.maWizard.getDataContext();
+	var current = maWizard.getDataContext();
 	if(current && current[field])
 		return 'checked';
 	else
