@@ -6,6 +6,9 @@
     "bowser": {},
     "font-awesome": {},
     "iron-router": {},
-    "collectionFS": {}
+    "collectionFS": {},
+    "ma:simple-schema": {
+    	git: "https://github.com/doubleslashG/ma-simple-schema.git"
+    }
   }
 }
