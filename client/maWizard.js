@@ -63,7 +63,7 @@ function maWizardConstructor() {
 	var buildObjectFromSchema = function() {
 		var obj = {};
 
-		_.each(schema.firstLevelSchemaKeys(), function(key) {
+		_.each(schema.objectKeys(), function(key) {
 			obj[key] = getDefaultValue(key);
 		});
 
@@ -246,7 +246,7 @@ function maWizardConstructor() {
 				current[mainField][index][customField] = newData[field];
 
 			} // following if condition is too long, refactor
-			else if(_.contains(schema.firstLevelSchemaKeys(), field) && Array.isArray(schema.schema(field).type()) && !Array.isArray(newData[field])) {
+			else if(_.contains(schema.objectKeys(), field) && Array.isArray(schema.schema(field).type()) && !Array.isArray(newData[field])) {
 				// If for the current field the schema expects an array of objects 
 				// but a single object is passed, I add the object to the current array
 				var elems = [];

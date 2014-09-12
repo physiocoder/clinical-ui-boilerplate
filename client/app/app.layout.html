@@ -12,14 +12,10 @@
 
   <div class="hidden">{{resized}}</div>
   <div id="appLayout">
-    {{> errorPanel }}
-    {{> westPanel }}
     {{> yield region='header' }}
-    {{> inPageAlert }}
     <div id="templateWrapper">
       {{> yield}}
     </div>
-    {{> eastPanel }}
     {{> yield region='footer' }}
   </div>
 </template>

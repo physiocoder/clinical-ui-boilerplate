@@ -36,24 +36,26 @@
           <div class="tab-pane {{isTabActive 'anagraphicTab'}}" id="anagraphicTab">
             {{> anagraphicSection}}
           </div>
-          <div class="tab-pane {{isTabActive 'materialTab'}}" id="materialTab">
-            {{> materialSection}}
-          </div>
-          <div class="tab-pane {{isTabActive 'physicsDescTab'}}" id="physicsDescTab">
-            {{> physicsDescriptionSection}}
-          </div>
-          <div class="tab-pane {{isTabActive 'environmentTab'}}" id="environmentTab">
-            {{> environmentSection}}
-          </div>
-          <div class="tab-pane {{isTabActive 'attachmentsTab'}}" id="attachmentsTab">
-            {{> attachmentsSection}}
-          </div>
-          <div class="tab-pane {{isTabActive 'referentsTab'}}" id="referentsTab">
-            6
-          </div>
-          <div class="tab-pane {{isTabActive 'expositionTab'}}" id="expositionTab">
-            7
-          </div>
+          {{#if _id}}
+            <div class="tab-pane {{isTabActive 'materialTab'}}" id="materialTab">
+              {{> materialSection}}
+            </div>
+            <div class="tab-pane {{isTabActive 'physicsDescTab'}}" id="physicsDescTab">
+              {{> physicsDescriptionSection}}
+            </div>
+            <div class="tab-pane {{isTabActive 'environmentTab'}}" id="environmentTab">
+              {{> environmentSection}}
+            </div>
+            <div class="tab-pane {{isTabActive 'attachmentsTab'}}" id="attachmentsTab">
+              {{> attachmentsSection}}
+            </div>
+            <div class="tab-pane {{isTabActive 'referentsTab'}}" id="referentsTab">
+              6
+            </div>
+            <div class="tab-pane {{isTabActive 'expositionTab'}}" id="expositionTab">
+              7
+            </div>
+          {{/if}}
         </div>
         {{#if _id}}
           <button class="prev btn btn-default pull-left {{navigatorHidden 'prev'}}">Prev</button>

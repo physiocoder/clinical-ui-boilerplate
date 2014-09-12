@@ -5,18 +5,7 @@
     "mousetrap": {},
     "bowser": {},
     "font-awesome": {},
-    "iron-router": {
-      "git": "https://github.com/EventedMind/iron-router.git",
-      "tag": "v0.8.2",
-      "commit": "05415a8891ea87a00fb1e2388585f2ca5a38e0da"
-    },
-    "collection2": {
-      "git": "https://github.com/aldeed/meteor-collection2.git",
-      "tag": "v0.4.3",
-      "commit": "cb470de2cfeebeccbf76d4cc0a39ad4afc76d553"
-    },
-    "collectionFS": {},
-    "cfs-ui": {},
-    "cfs-s3": {}
+    "iron-router": {},
+    "collectionFS": {}
   }
 }

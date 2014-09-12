@@ -47,25 +47,12 @@ Router.onBeforeAction(function() {
     'entryResetPasswordRoute'
   ]
 });
-Router.onBeforeAction(function() {
-  if(!bowser.webkit){
-    this.render('browserNotSupportedPage');
-    this.pause();
-  }
-});
 
 //--------------------------------------------------------------
 // Routing Layout Helper Functions
 
 setPageTitle = function(newTitle) {
   document.title = newTitle;
-};
-checkBrowserIsSupported = function(scope) {
-  console.log('checkBrowserIsSupported');
-  if(!bowser.webkit){
-    scope.render('browserNotSupportedPage');
-    scope.pause();
-  }
 };
 
 checkUserHasEmployer = function(scope) {
