@@ -191,16 +191,16 @@
   <div class="dimensionsTemplate">
     <div class="form-group field-height {{maWizardFieldValidity heightField }}">
       <label class="control-label" for="heightElem">Height {{maWizardErrMsg heightField}}</label>
-      <input type="text" class="form-control " data-conversion id="heightElem" placeholder="Height in {{unit}}" value="{{getValue 'heightVal'}}"
+      <input type="text" class="form-control " data-conversion id="heightElem" placeholder="Height in {{unit}}" value="{{convertValue 'heightVal'}}"
         data-schemafield="{{heightField}}" maxlength=10>
     </div>
     <div class="form-group field-length {{maWizardFieldValidity lengthField }}">
       <label class="control-label" for="lengthElem">Length {{maWizardErrMsg lengthField}}</label>
-      <input type="text" class="form-control " data-conversion id="lengthElem" placeholder="Length in {{unit}}" value="{{getValue 'lengthVal'}}" data-schemafield="{{lengthField}}" maxlength=10>
+      <input type="text" class="form-control " data-conversion id="lengthElem" placeholder="Length in {{unit}}" value="{{convertValue 'lengthVal'}}" data-schemafield="{{lengthField}}" maxlength=10>
     </div>
     <div class="form-group field-depth {{maWizardFieldValidity depthField }}">
       <label class="control-label" for="depthElem">Depth {{maWizardErrMsg depthField}}</label>
-      <input type="text" class="form-control " data-conversion id="depthElem" placeholder="Depth in {{unit}}" value="{{getValue 'depthVal'}}" data-schemafield="{{depthField}}" maxlength=10>
+      <input type="text" class="form-control " data-conversion id="depthElem" placeholder="Depth in {{unit}}" value="{{convertValue 'depthVal'}}" data-schemafield="{{depthField}}" maxlength=10>
     </div>
   </div>
 </template>

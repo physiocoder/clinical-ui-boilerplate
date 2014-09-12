@@ -148,12 +148,19 @@ Template.physicsDescriptionSection.events({
 	}
 });
 
-Template.dimensionsTemplate.getValue = function(field) {
+Template.dimensionsTemplate.unit = function() {
+	if(Session.get('usingCustomaryUnits'))
+		return "in";
+	else
+		return "cm";
+};
+
+Template.dimensionsTemplate.convertValue = function(field) {
 
 	var value = parseInt(this[field], 10);
 
 	if(isNaN(value))
-		return "";
+		return this[field];
 
 	var round = function(elem) {
 		return +(Math.round(elem + "e+2")  + "e-2");
