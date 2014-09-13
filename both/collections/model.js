@@ -72,8 +72,8 @@ Schemas.ArtworkEssentials = new maSimpleSchema({
         // as the source of current set values for the schema fields is generally unknown,
         // maAllowedValues receives as parameter a function that given a field name returns
         // the current value
-        maAllowedValues: function(getFieldValue) {
-            return _.map(artworkTypeLookUp[getFieldValue("type")].materials, function(elem) {
+        maAllowedValues: function(getKeyValue) {
+            return _.map(artworkTypeLookUp[getKeyValue("type")].materials, function(elem) {
                 return {label: elem.name, value: elem.id.toString()};
             });
         }
@@ -82,8 +82,8 @@ Schemas.ArtworkEssentials = new maSimpleSchema({
         type: [String],
         label: "Technique",
         optional: true,
-        maAllowedValues: function(getFieldValue) {
-            return _.map(artworkTypeLookUp[getFieldValue("type")].tecnica, function(elem) {
+        maAllowedValues: function(getKeyValue) {
+            return _.map(artworkTypeLookUp[getKeyValue("type")].tecnica, function(elem) {
                 return {label: elem.name, value: elem.id.toString()};
             });
         }
