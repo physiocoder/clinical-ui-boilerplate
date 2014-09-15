@@ -346,12 +346,12 @@ function maWizardConstructor() {
 		else
 			schema = conf.schema;
 
-		setCustomValidation();
+		//setCustomValidation();
 
 		validationContext = schema.namedContext();
 
 		if(conf.baseRoute === undefined)
-			this.baseRoute = "";
+			this.baseRoute = "/";
 		else
 			this.baseRoute = conf.baseRoute;
 

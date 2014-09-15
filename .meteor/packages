@@ -15,4 +15,5 @@ aldeed:simple-schema
 aldeed:collection2
 cfs:filesystem
 ma:simple-schema
+ma:wizard
 
