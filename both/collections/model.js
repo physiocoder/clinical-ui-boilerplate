@@ -74,7 +74,7 @@ Schemas.ArtworkEssentials = new maSimpleSchema({
         // the current value
         maAllowedValues: function(getKeyValue) {
             if(getKeyValue("type") === undefined)
-                return "notAllowed";
+                return [];
 
             return _.map(artworkTypeLookUp[getKeyValue("type")].materials, function(elem) {
                 return {label: elem.name, value: elem.id.toString()};
@@ -87,8 +87,8 @@ Schemas.ArtworkEssentials = new maSimpleSchema({
         optional: true,
         maAllowedValues: function(getKeyValue) {
             if(getKeyValue("type") === undefined)
-                return "notAllowed";
-            
+                return [];
+
             return _.map(artworkTypeLookUp[getKeyValue("type")].tecnica, function(elem) {
                 return {label: elem.name, value: elem.id.toString()};
             });
