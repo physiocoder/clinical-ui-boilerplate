@@ -368,7 +368,12 @@ Schemas.Exhibitions = new SimpleSchema({
     artworks: {
         type: [String],
         label: "Artworks",
-        optional: true
+        optional: true,
+        maAllowedValues: function() {
+            return _.map(Artworks.find({}, {fields: {title: 1}}).fetch(), function(elem) {
+                return {label: elem.title, value: elem._id};
+            });
+        }
     }
 });
 
