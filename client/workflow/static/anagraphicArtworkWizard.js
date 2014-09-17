@@ -189,11 +189,6 @@ Template.unitsSelection.events({
 	}
 });
 
-Template.attachmentsSection.created = function() {
-	// during upload, files ID are stored in this array
-	this.upFiles = [];
-};
-
 Template.attachmentsSection.attachments = function() {
 	var current = maWizard.getDataContext();
 	var ids;
@@ -218,9 +213,6 @@ Template.attachmentsSection.events({
 	'change #fileinput': function(evt, templ) {
 		
 		var onInsertSuccess = function(FSFile) {
-			var upFiles = templ.upFiles;
-			upFiles.push(FSFile._id);
-
 			// add the new attachment id to the data context
 			var newAtc = {id: FSFile._id};
 			maWizard.updateContext({attachments: newAtc});

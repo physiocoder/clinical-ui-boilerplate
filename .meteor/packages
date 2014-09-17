@@ -16,4 +16,6 @@ aldeed:collection2
 cfs:filesystem
 ma:simple-schema
 ma:wizard
+cfs:graphicsmagick
+cfs:ui
 
