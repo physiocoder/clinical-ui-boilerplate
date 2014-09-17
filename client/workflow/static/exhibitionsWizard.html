@@ -17,17 +17,31 @@
 
 <template name="exhibitionsWizard">
 	<div id="exhibitionsWizard">
-    <div>
-      {{> maWizardTextInput field="name" label="Name" placeholder="Name..."}}
-      {{> maWizardTextInput field="organizer" label="Organizer" placeholder="Organizer..."}}
-      {{> maWizardTextInput field="venue" label="Venue" placeholder="Venue..."}}
-      {{> maWizardTextInput field="date" label="Date" placeholder="Date..."}}
-      {{> maWizardMultiselect field="artworks" label="Artworks"}}
-      
-      <button class="switch btn btn-primary">Switch to Add new artwork</button>
-
+    <div class="col-xs-12">
+      <ul class="nav nav-pills nav-stacked col-xs-3">
+        <li class="{{isTabActive 'anagraphicTab'}}"><a class="tab-selector" data-selection="anagraphicTab" data-toggle="tab">Anagrafica</a></li>
+        {{#if _id}}
+          <li class="{{isTabActive 'artworksTab'}}"><a class="tab-selector" data-selection="artworksTab" data-toggle="tab">Artworks</a></li>
+        {{/if}}
+      </ul>
+      <div class="tabbable tabs-left col-xs-9">
+        <div class="tab-content main">
+          <div class="tab-pane {{isTabActive 'anagraphicTab'}}" id="anagraphicTab">
+            {{> exhibitionAnagraphic}}
+          </div>
+          {{#if _id}}
+            <div class="tab-pane {{isTabActive 'artworksTab'}}" id="artworksTab">
+              {{> artworksTab}}
+            </div>
+          {{/if}}
+        </div>
+        {{#if _id}}
+          <button class="prev btn btn-default pull-left {{navigatorHidden 'prev'}}">Prev</button>
+          <button class="next btn btn-default pull-right {{navigatorHidden 'next'}}">Next</button>
+        {{/if}}
+      </div>
     </div>
-    <div>
+    <ul class="pager wizard col-xs-9 pull-right">
       {{#if _id}}
         {{> maWizardDelete}}
         {{> maWizardBackToList}}
@@ -36,6 +50,80 @@
         {{> maWizardCancel}}
         {{> maWizardCreate}}
       {{/if}}
+    </ul>
+  </div>
+</template>
+
+<template name="exhibitionAnagraphic">
+  <div>
+    {{> maWizardTextInput field="name" label="Name" placeholder="Name..."}}
+    {{> maWizardTextInput field="organizer" label="Organizer" placeholder="Organizer..."}}
+    {{> maWizardTextInput field="venue" label="Venue" placeholder="Venue..."}}
+    {{> maWizardTextInput field="date" label="Date" placeholder="Date..."}}
+  </div>
+</template>
+
+<template name="artworksTab">
+  <div id="artworksTab row">
+    <div>
+      {{#if inUpdateMode}}
+        <button class="btn btn-success ok">Ok</button>
+      {{else}}
+        <button class="btn btn-primary update">Add/remove artworks</button>
+      {{/if}}
     </div>
-	</div>
+    <div class="{{getDimension}}">
+    {{> currentArtworksTable}}   
+    </div>
+    {{#if inUpdateMode}}
+      <div class="col-xs-6">
+         {{> artworksUpdatingTable}}
+      </div>
+    {{/if}}
+  </div>
+</template>
+
+<template name="artworksListItem">
+  <tr class="list-item {{selectedIfParticipating _id}}" data-ref="{{_id}}">
+    <td>{{title}}</td>
+    <td>{{authors}}</td>
+  </tr>
+</template>
+
+<template name="currentArtworksTable">
+  <div id="currentArtworksTable">
+    <table>
+      <caption>Artworks in exhibition</caption>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each participatingArtworks}}
+          {{> artworksListItem}}
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template name="artworksUpdatingTable">
+  <div id="artworksUpdatingTable">
+    <table>
+      <caption>Artworks</caption>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each artworksList}}
+          {{> artworksListItem}}
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </template>

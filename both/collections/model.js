@@ -354,7 +354,7 @@ Attachments = new FS.Collection("attachments", {
     stores: s3Store
 });
 
-Schemas.Exhibitions = new SimpleSchema({
+Schemas.Exhibitions = new maSimpleSchema({
     name: {
         type: String,
         label: "Exhibition name",

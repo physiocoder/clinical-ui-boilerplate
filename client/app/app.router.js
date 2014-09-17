@@ -282,7 +282,7 @@ Router.map(function() {
 
     },
     waitOn: function() {
-      return [Meteor.subscribe('exhibitions', this.params._id), Meteor.subscribe('artworks', {fields: {title: 1, author: 1}})];
+      return [Meteor.subscribe('exhibitions', this.params._id), Meteor.subscribe('artworks', {fields: {title: 1, authors: 1}})];
     },
     data: function() {
       if(this.ready())
