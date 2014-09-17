@@ -14,8 +14,8 @@ mrt:bootstrap-3
 aldeed:simple-schema
 aldeed:collection2
 cfs:filesystem
-ma:simple-schema
-ma:wizard
 cfs:graphicsmagick
 cfs:ui
+ma:simple-schema
+ma:wizard
 
