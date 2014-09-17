@@ -40,3 +40,5 @@
 /micro-queue
 /lodash
 /collectionfs
+/ma:simple-schema
+/ma:wizard

@@ -1,14 +1,10 @@
 {
   "packages": {
-    "bootstrap-3": {},
-    "auto-nprogress": {},
-    "mousetrap": {},
-    "bowser": {},
-    "font-awesome": {},
-    "iron-router": {},
-    "collectionFS": {},
     "ma:simple-schema": {
-    	git: "https://github.com/doubleslashG/ma-simple-schema.git"
+    	"git": "https://github.com/doubleslashG/ma-simple-schema.git"
+    },
+    "ma:wizard": {
+        "git": "https://github.com/doubleslashG/ma-wizard.git"
     }
   }
 }
