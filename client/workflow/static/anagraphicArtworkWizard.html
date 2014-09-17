@@ -1,26 +1,27 @@
- <template name="anagraphicArtworkWizardContainer">
-  <div id="anagraphicArtwork" class="page">
-    <div class="content">
-
-      <div class="col col-xs-8 col-xs-offset-2">
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            Artwork's anagraphic
-          </div>
-          <div class="panel-body">
-            {{> anagraphicArtworkWizard}}
-          </div>
-        </div>
-      </div>
-
+<template name="anagraphicArtworkWizardContainer">
+  <div class="panel panel-inverse">
+    <div class="panel-heading">
+        <h4 class="panel-title">{{title}} / {{authors}}</h4>
+    </div>
+    <div class="panel-body">
+      {{> anagraphicArtworkWizard}}
+    </div>
+    <div class="panel-footer text-right">
+      {{#if _id}}
+          {{> maWizardDelete}}
+          {{> maWizardBackToList}}
+          {{> maWizardSave}}
+        {{else}}
+          {{> maWizardCancel}}
+          {{> maWizardCreate}}
+        {{/if}}
     </div>
   </div>
 </template>
 
 <template name="anagraphicArtworkWizard">
   <div id="anagraphicArtworkWizard">
-    <div class="col-xs-12">
-      <ul class="nav nav-pills nav-stacked col-xs-3">
+      <ul class="nav nav-tabs">
         <li class="{{isTabActive 'anagraphicTab'}}"><a class="tab-selector" data-selection="anagraphicTab" data-toggle="tab">Anagrafica</a></li>
         {{#if _id}}
           <li class="{{isTabActive 'materialTab'}}"><a class="tab-selector" data-selection="materialTab" data-toggle="tab">Materia e Tecnica</a></li>
@@ -31,7 +32,6 @@
           <li class="{{isTabActive 'expositionTab'}}"><a class="tab-selector" data-selection="expositionTab" data-toggle="tab">Esposizione</a></li>
         {{/if}}
       </ul>
-      <div class="tabbable tabs-left col-xs-9">
         <div class="tab-content main">
           <div class="tab-pane {{isTabActive 'anagraphicTab'}}" id="anagraphicTab">
             {{> anagraphicSection}}
@@ -61,18 +61,8 @@
           <button class="prev btn btn-default pull-left {{navigatorHidden 'prev'}}">Prev</button>
           <button class="next btn btn-default pull-right {{navigatorHidden 'next'}}">Next</button>
         {{/if}}
-      </div>
-    </div>
-    <ul class="pager wizard col-xs-9 pull-right">
-      {{#if _id}}
-        {{> maWizardDelete}}
-        {{> maWizardBackToList}}
-        {{> maWizardSave}}
-      {{else}}
-        {{> maWizardCancel}}
-        {{> maWizardCreate}}
-      {{/if}}
-    </ul>
+      <ul class="pager wizard">
+      </ul>
   </div>
 </template>
 
@@ -220,61 +210,56 @@
 </template>
 
 <template name="attachmentsSection">
-  <div class="col-xs-12" id="attachmentsSection">
-    <div class="row form-group">
-      <label for="fileinput">Attachments</label>
-      <span class="btn btn-default btn-file">
-        <i class="fa fa-cloud-upload"></i> Upload image...
-        <input id="fileinput" accept="image/*,.pdf" capture="camera" type="file">
-      </span>
-    </div>    
-    {{#each attachments}}
-      {{> attachmentSummary}}
-    {{/each}}
-  </div>
+  <table role="presentation" class="table table-striped">
+    <tbody class="files">
+      <tr class="template-upload fade in">
+        <span class="btn btn-default btn-file">
+          <i class="fa fa-cloud-upload"></i> Upload image...
+          <input id="fileinput" accept="image/*,.pdf" capture="camera" type="file">
+        </span>
+      </tr>
+      {{#each attachments}}
+        <tr class="template-upload fade in">
+          {{> attachmentSummary}}
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 </template>
 
 <template name="attachmentSummary">
-  <div id="attachmentSummary" class="col-xs-12 row">
-    <div class="col-xs-4">
-      {{#if this.isUploaded}}
-        {{#if getThumbURL}}
-          {{> attachmentThumb}}
-        {{else}}
-          <div>
-            Processing file...
-          </div>
-        {{/if}}
+  <td class="col-md-2">
+    {{#if this.isUploaded}}
+      {{#if getThumbURL}}
+        {{> attachmentThumb}}
       {{else}}
-        {{> attachmentProgress}}
+        <div>
+          Processing file...
+        </div>
       {{/if}}
-    </div>
-    <div class="col-xs-6">
-      {{> attachmentInfo}}
-    </div>
-    <div class="col-xs-2">
-      {{> removeAttachment}}
-    </div>
-  </div>
+    {{else}}
+      {{> attachmentProgress}}
+    {{/if}}
+  </td>
+  <td>
+    {{> attachmentInfo}}
+  </td>
+  <td>        
+    {{> removeAttachment}}
+  </td>
 </template>
 
 <template name="attachmentProgress">
-  <div id="attachmentProgress" class="row">
-    <div class="row">
-      <p class="col-xs-2">
-        {{this.uploadProgress}}%
-      </p>
-      {{> FS.UploadProgressBar bootstrap=true}}
-    </div>
-    <p class="row">
-      Uploading: {{this.name}}
-    </p>
+  <div id="attachmentProgress">
+      <p>{{this.uploadProgress}}%</p>
+      <p>{{> FS.UploadProgressBar bootstrap=true}}</p>
+      <p>Uploading: {{name}}</p>
   </div>
 </template>
 
 <template name="attachmentThumb">
   <div id="attachmentThumb">
-    <img src="{{getThumbURL}}" alt="">
+    <img class="img-responsive" src="{{getThumbURL}}" alt="">
   </div>
 </template>
 
@@ -288,5 +273,5 @@
 </template>
 
 <template name="removeAttachment">
-  <button class="remove-atc btn btn-danger" data-atcref="{{_id}}">Remove attachment</button>
+  <button class="remove-atc btn btn-danger" data-atcref="{{_id}}">Remove</button>
 </template>
