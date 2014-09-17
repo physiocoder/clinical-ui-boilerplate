@@ -66,10 +66,11 @@
     <ul class="pager wizard col-xs-9 pull-right">
       {{#if _id}}
         {{> maWizardDelete}}
-        {{> maWizardBackToList}}
-        {{> maWizardSave}}
+        {{> maWizardBack}}
+        {{> maWizardDiscard}}
+        {{> maWizardOk}}
       {{else}}
-        {{> maWizardCancel}}
+        {{> maWizardDiscard}}
         {{> maWizardCreate}}
       {{/if}}
     </ul>

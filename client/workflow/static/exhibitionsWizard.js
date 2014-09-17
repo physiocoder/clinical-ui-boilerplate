@@ -124,14 +124,24 @@ Template.artworksTab.events({
 });
 
 Template.artworksListItem.selectedIfParticipating = function() {
-	if(Session.get('inUpdateMode') && maWizard.getDataContext()['artworks'].indexOf(this._id) > -1)
+	var current = maWizard.getDataContext();
+
+	if(current === undefined)
+		return "";
+
+	if(Session.get('inUpdateMode') && current.artworks && current.artworks.indexOf(this._id) > -1)
 		return "selected";
 	else
 		return "";
 };
 
 Template.currentArtworksTable.participatingArtworks = function() {
-	return Artworks.find({ _id: {$in: maWizard.getDataContext()['artworks']}}, {fields: { title: 1, authors: 1}}).fetch();
+	var current = maWizard.getDataContext();
+
+	if(current === undefined || current.artworks === undefined)
+		return [];
+
+	return Artworks.find({ _id: {$in: current.artworks}}, {fields: { title: 1, authors: 1}}).fetch();
 };
 
 Template.currentArtworksTable.events({
@@ -168,6 +178,9 @@ Template.artworksUpdatingTable.events({
 		var current = maWizard.getDataContext()['artworks'];
 		var id = evt.currentTarget.getAttribute('data-ref');
 		var updated;
+
+		if(current === undefined)
+			current = [];
 
 		if(evt.currentTarget.classList.contains("selected")) {
 			// remove elem from 'artworks' array
