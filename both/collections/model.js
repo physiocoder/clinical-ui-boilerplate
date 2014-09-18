@@ -1,15 +1,32 @@
 Anagraphics = new Meteor.Collection('anagraphics');
 Artworks = new Meteor.Collection('artworks');
 Exhibitions = new Meteor.Collection('exhibitions');
+Schemas = new Meteor.Collection('schemas');
 
 // extending SimpleSchema for usage with maWizard
 SimpleSchema.extendOptions({
     mawizard: Match.Optional(Object),
 });
 
-Schemas = {};
+SchemaDefinitions = {};
 
-Schemas.User = new SimpleSchema({
+SchemaDefinitions.Schema = {
+    name: {
+        type: String,
+        label: "Name",
+        max: 20,
+    },
+    schema: {
+        type: Object,
+        label: "Schema definition",
+    },
+    visibleFields: {
+        type: [String],
+        label: "Fields to show"
+    }
+};
+
+SchemaDefinitions.User = {
     name: {
         type: String,
         label: "Name",
@@ -25,9 +42,9 @@ Schemas.User = new SimpleSchema({
 		label: "sex",
 		max: 1
     }
-});
+};
 
-Schemas.ArtworkEssentials = new maSimpleSchema({
+SchemaDefinitions.Artwork = {
     inventory: {
         type: String,
         label: "Inventory",
@@ -203,9 +220,9 @@ Schemas.ArtworkEssentials = new maSimpleSchema({
         label: "Attachment description",
         optional: true
     }
-});
+};
 
-Schemas.Accessories = new maSimpleSchema({
+SchemaDefinitions.Accessories = {
     frame: {
         type: Boolean,
         label: "Frame - accessory",
@@ -234,14 +251,12 @@ Schemas.Accessories = new maSimpleSchema({
         type: Boolean,
         label: "Belts - accessory",
     }
-});
+};
 
-Schemas.Artwork = new maSimpleSchema([Schemas.ArtworkEssentials, Schemas.Accessories]);
+SchemaDefinitions.Artwork = _.extend(SchemaDefinitions.Artwork, SchemaDefinitions.Accessories);
 
-Anagraphics.attachSchema(Schemas.User);
-Artworks.attachSchema(Schemas.Artwork);
-
-ArtworksValidationContext = Schemas.Artwork.namedContext("artworksContext");
+Anagraphics.attachSchema(new maSimpleSchema(SchemaDefinitions.User));
+Artworks.attachSchema(new maSimpleSchema(SchemaDefinitions.Artwork));
 
 var localStore = [
         new FS.Store.FileSystem("attachments", {
@@ -358,7 +373,7 @@ Attachments = new FS.Collection("attachments", {
     stores: s3Store
 });
 
-Schemas.Exhibitions = new maSimpleSchema({
+SchemaDefinitions.Exhibitions = {
     name: {
         type: String,
         label: "Exhibition name",
@@ -385,6 +400,6 @@ Schemas.Exhibitions = new maSimpleSchema({
             });
         }
     }
-});
+};
 
-Exhibitions.attachSchema(Schemas.Exhibitions);
+Exhibitions.attachSchema(new maSimpleSchema(SchemaDefinitions.Exhibitions));
