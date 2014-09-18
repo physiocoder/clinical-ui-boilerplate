@@ -73,16 +73,14 @@ Schemas.ArtworkEssentials = new maSimpleSchema({
         // maAllowedValues receives as parameter a function that given a field name returns
         // the current value
         maAllowedValues: function(getKeyValue) {
-            var type = getKeyValue("type");
-            if(type === undefined)
+            try {
+                return _.map(artworkTypeLookUp[getKeyValue("type")].materials, function(elem) {
+                    return {label: elem.name, value: elem.id.toString()};
+                });
+            }
+            catch(e) {
                 return [];
-
-            if(artworkTypeLookUp[type] === undefined)
-                return [];
-
-            return _.map(artworkTypeLookUp[type].materials, function(elem) {
-                return {label: elem.name, value: elem.id.toString()};
-            });
+            }
         }
     },
     technique: {
@@ -90,16 +88,14 @@ Schemas.ArtworkEssentials = new maSimpleSchema({
         label: "Technique",
         optional: true,
         maAllowedValues: function(getKeyValue) {
-            var type = getKeyValue("type");
-            if(type === undefined)
+            try {
+                return _.map(artworkTypeLookUp[getKeyValue("type")].tecnica, function(elem) {
+                    return {label: elem.name, value: elem.id.toString()};
+                });
+            }
+            catch(e) {
                 return [];
-
-            if(artworkTypeLookUp[type] === undefined)
-                return [];
-
-            return _.map(artworkTypeLookUp[type].tecnica, function(elem) {
-                return {label: elem.name, value: elem.id.toString()};
-            });
+            }
         }
     },
     site: {

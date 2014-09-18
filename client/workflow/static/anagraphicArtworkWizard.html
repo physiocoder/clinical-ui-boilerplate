@@ -21,50 +21,46 @@
 
 <template name="anagraphicArtworkWizard">
   <div id="anagraphicArtworkWizard">
-      <ul class="nav nav-tabs">
-        <li class="{{isTabActive 'anagraphicTab'}}"><a class="tab-selector" data-selection="anagraphicTab" data-toggle="tab">Anagrafica</a></li>
-        {{#if _id}}
-          <li class="{{isTabActive 'materialTab'}}"><a class="tab-selector" data-selection="materialTab" data-toggle="tab">Materia e Tecnica</a></li>
-          <li class="{{isTabActive 'physicsDescTab'}}"><a class="tab-selector" data-selection="physicsDescTab" data-toggle="tab">Descrizione fisica</a></li>
-          <li class="{{isTabActive 'environmentTab'}}"><a class="tab-selector" data-selection="environmentTab" data-toggle="tab">Ambiente e conservazione</a></li>
-          <li class="{{isTabActive 'attachmentsTab'}}"><a class="tab-selector" data-selection="attachmentsTab" data-toggle="tab">Allegati</a></li>
-          <li class="{{isTabActive 'referentsTab'}}"><a class="tab-selector" data-selection="referentsTab" data-toggle="tab">Referenti</a></li>
-          <li class="{{isTabActive 'expositionTab'}}"><a class="tab-selector" data-selection="expositionTab" data-toggle="tab">Esposizione</a></li>
-        {{/if}}
-      </ul>
-        <div class="tab-content main">
-          <div class="tab-pane {{isTabActive 'anagraphicTab'}}" id="anagraphicTab">
-            {{> anagraphicSection}}
-          </div>
-          {{#if _id}}
-            <div class="tab-pane {{isTabActive 'materialTab'}}" id="materialTab">
-              {{> materialSection}}
-            </div>
-            <div class="tab-pane {{isTabActive 'physicsDescTab'}}" id="physicsDescTab">
-              {{> physicsDescriptionSection}}
-            </div>
-            <div class="tab-pane {{isTabActive 'environmentTab'}}" id="environmentTab">
-              {{> environmentSection}}
-            </div>
-            <div class="tab-pane {{isTabActive 'attachmentsTab'}}" id="attachmentsTab">
-              {{> attachmentsSection}}
-            </div>
-            <div class="tab-pane {{isTabActive 'referentsTab'}}" id="referentsTab">
-              6
-            </div>
-            <div class="tab-pane {{isTabActive 'expositionTab'}}" id="expositionTab">
-              7
-            </div>
-          {{/if}}
+    <ul class="nav nav-tabs">
+      <li class="{{isTabActive 'anagraphicTab'}}"><a class="tab-selector" data-selection="anagraphicTab" data-toggle="tab">Anagrafica</a></li>
+      {{#if _id}}
+        <li class="{{isTabActive 'materialTab'}}"><a class="tab-selector" data-selection="materialTab" data-toggle="tab">Materia e Tecnica</a></li>
+        <li class="{{isTabActive 'physicsDescTab'}}"><a class="tab-selector" data-selection="physicsDescTab" data-toggle="tab">Descrizione fisica</a></li>
+        <li class="{{isTabActive 'environmentTab'}}"><a class="tab-selector" data-selection="environmentTab" data-toggle="tab">Ambiente e conservazione</a></li>
+        <li class="{{isTabActive 'attachmentsTab'}}"><a class="tab-selector" data-selection="attachmentsTab" data-toggle="tab">Allegati</a></li>
+        <li class="{{isTabActive 'referentsTab'}}"><a class="tab-selector" data-selection="referentsTab" data-toggle="tab">Referenti</a></li>
+        <li class="{{isTabActive 'expositionTab'}}"><a class="tab-selector" data-selection="expositionTab" data-toggle="tab">Esposizione</a></li>
+      {{/if}}
+    </ul>
+    <div class="tab-content main">
+      <div class="tab-pane {{isTabActive 'anagraphicTab'}}" id="anagraphicTab">
+        {{> anagraphicSection}}
+      </div>
+      {{#if _id}}
+        <div class="tab-pane {{isTabActive 'materialTab'}}" id="materialTab">
+          {{> materialSection}}
         </div>
-        {{#if _id}}
-          <button class="prev btn btn-default pull-left {{navigatorHidden 'prev'}}">Prev</button>
-          <button class="next btn btn-default pull-right {{navigatorHidden 'next'}}">Next</button>
-        {{/if}}
-<<<<<<< HEAD
-      </ul>
-=======
->>>>>>> 4b2376a0ff97bc36a52006d94ff0d951ab2df71a
+        <div class="tab-pane {{isTabActive 'physicsDescTab'}}" id="physicsDescTab">
+          {{> physicsDescriptionSection}}
+        </div>
+        <div class="tab-pane {{isTabActive 'environmentTab'}}" id="environmentTab">
+          {{> environmentSection}}
+        </div>
+        <div class="tab-pane {{isTabActive 'attachmentsTab'}}" id="attachmentsTab">
+          {{> attachmentsSection}}
+        </div>
+        <div class="tab-pane {{isTabActive 'referentsTab'}}" id="referentsTab">
+          6
+        </div>
+        <div class="tab-pane {{isTabActive 'expositionTab'}}" id="expositionTab">
+          7
+        </div>
+      {{/if}}
+    </div>
+    {{#if _id}}
+      <button class="prev btn btn-default pull-left {{navigatorHidden 'prev'}}">Prev</button>
+      <button class="next btn btn-default pull-right {{navigatorHidden 'next'}}">Next</button>
+    {{/if}}
   </div>
 </template>
 
