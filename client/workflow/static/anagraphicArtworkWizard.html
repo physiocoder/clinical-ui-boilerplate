@@ -8,11 +8,11 @@
     </div>
     <div class="panel-footer text-right">
       {{#if _id}}
-          {{> maWizardDelete}}
-          {{> maWizardBackToList}}
-          {{> maWizardSave}}
+          {{> maWizardDiscard}}
+          {{> maWizardBack}}
+          {{> maWizardOk}}
         {{else}}
-          {{> maWizardCancel}}
+          {{> maWizardDiscard}}
           {{> maWizardCreate}}
         {{/if}}
     </div>
@@ -62,22 +62,8 @@
           <button class="next btn btn-default pull-right {{navigatorHidden 'next'}}">Next</button>
         {{/if}}
 <<<<<<< HEAD
-      </div>
-    </div>
-    <ul class="pager wizard col-xs-9 pull-right">
-      {{#if _id}}
-        {{> maWizardDelete}}
-        {{> maWizardBack}}
-        {{> maWizardDiscard}}
-        {{> maWizardOk}}
-      {{else}}
-        {{> maWizardDiscard}}
-        {{> maWizardCreate}}
-      {{/if}}
-    </ul>
-=======
-      <ul class="pager wizard">
       </ul>
+=======
 >>>>>>> 4b2376a0ff97bc36a52006d94ff0d951ab2df71a
   </div>
 </template>
