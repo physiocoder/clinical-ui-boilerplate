@@ -1,0 +1,33 @@
+<template name="UISettings">
+  <div class="panel panel-inverse">
+    <div class="panel-heading">
+      <h4 class="panel-title">Schemas</h4>
+    </div>
+    <div class="panel-body">
+      {{> schemasList}}
+    </div>
+  </div>
+</template>
+
+<template name="schemasList">
+  <div id="schemasList">
+    <table>
+      <thead>
+        <tr>
+          <th>Schema</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each schemas}}
+          {{> schemasListItem}}
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template name="schemasListItem">
+  <tr class="list-item" data-ref="{{_id}}">
+    <td>{{name}}</td>
+  </tr>
+</template>

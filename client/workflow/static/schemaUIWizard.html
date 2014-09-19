@@ -1,10 +1,10 @@
-<template name="anagraphicArtworkWizardContainer">
+<template name="schemaUIContainer">
   <div class="panel panel-inverse">
     <div class="panel-heading">
         <h4 class="panel-title">{{title}} / {{authors}}</h4>
     </div>
     <div class="panel-body">
-      {{> anagraphicArtworkWizard}}
+      {{> schemaUIWizard}}
     </div>
     <div class="panel-footer text-right">
       {{#if _id}}
@@ -16,5 +16,11 @@
           {{> maWizardCreate}}
         {{/if}}
     </div>
+  </div>
+</template>
+
+<template name="schemaUIWizard">
+  <div id="schemaUIWizard">
+
   </div>
 </template>

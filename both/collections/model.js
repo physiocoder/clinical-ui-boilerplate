@@ -8,9 +8,7 @@ SimpleSchema.extendOptions({
     mawizard: Match.Optional(Object),
 });
 
-SchemaDefinitions = {};
-
-SchemaDefinitions.Schema = {
+schemaDef = {
     name: {
         type: String,
         label: "Name",
@@ -25,6 +23,10 @@ SchemaDefinitions.Schema = {
         label: "Fields to show"
     }
 };
+
+Schemas.attachSchema(new maSimpleSchema(schemaDef));
+
+SchemaDefinitions = {};
 
 SchemaDefinitions.User = {
     name: {
@@ -373,7 +375,7 @@ Attachments = new FS.Collection("attachments", {
     stores: s3Store
 });
 
-SchemaDefinitions.Exhibitions = {
+SchemaDefinitions.Exhibition = {
     name: {
         type: String,
         label: "Exhibition name",
@@ -402,4 +404,4 @@ SchemaDefinitions.Exhibitions = {
     }
 };
 
-Exhibitions.attachSchema(new maSimpleSchema(SchemaDefinitions.Exhibitions));
+Exhibitions.attachSchema(new maSimpleSchema(SchemaDefinitions.Exhibition));

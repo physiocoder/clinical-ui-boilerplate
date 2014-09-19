@@ -14,6 +14,10 @@ Meteor.publish('attachments', function() {
 	return Attachments.find();
 });
 
+Meteor.publish('schemas', function() {
+	return Schemas.find();
+});
+
 Artworks.allow({
     update: function(userId) {
         return userId;
@@ -49,3 +53,26 @@ Attachments.allow({
 		return userId;
 	}
 });
+
+Schemas.allow({
+    update: function(userId) {
+        return userId;
+    }
+});
+
+function saveSchemasToDatabase() {
+    for(var schemaName in SchemaDefinitions) {
+        if(!Schemas.findOne({name: schemaName})) {
+            var entry = {};
+            var currentSchema = SchemaDefinitions[schemaName];
+
+            entry.name = schemaName;
+            entry.schema = currentSchema;
+            entry.visibleFields = Object.keys(currentSchema);
+
+            Schemas.insert(entry);
+        }
+    }
+}
+
+saveSchemasToDatabase();

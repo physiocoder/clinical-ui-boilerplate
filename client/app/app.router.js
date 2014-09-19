@@ -289,4 +289,37 @@ Router.map(function() {
         return maWizard.getDataContext();
     }
   });
+  this.route('UI', {
+    path: '/settings/UI',
+    template: 'UISettings',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      setPageTitle("UI settings");
+    },
+    waitOn: function() {
+      return Meteor.subscribe('schemas', {fields: {name: 1}});
+    }
+  });
+  this.route('schemaUI', {
+    path: '/settings/UI/schema_:_id',
+    template: 'schemaUIContainer',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      setPageTitle("Schemas UI");
+
+      if(this.ready()) {
+        var _id = this.params._id;
+          
+        maWizard.init({collection: Schemas, id: _id, baseRoute: "/settings/UI", template: this.route.options.template});
+      }
+
+    },
+    waitOn: function() {
+      return [Meteor.subscribe('schemas', this.params._id)];
+    },
+    data: function() {
+      if(this.ready())
+        return maWizard.getDataContext();
+    }
+  });
 });
