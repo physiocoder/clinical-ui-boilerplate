@@ -1,0 +1,27 @@
+<template name="schemaTaxonomyContainer">
+  <div class="panel panel-inverse">
+    <div class="panel-heading">
+        <h4 class="panel-title">{{title}} / {{authors}}</h4>
+    </div>
+    <div class="panel-body">
+      {{> schemaTaxonomyWizard}}
+    </div>
+    <div class="panel-footer text-right">
+      {{#if _id}}
+          {{> maWizardDiscard}}
+          {{> maWizardBack}}
+          {{> maWizardOk}}
+        {{else}}
+          {{> maWizardDiscard}}
+          {{> maWizardCreate}}
+        {{/if}}
+    </div>
+  </div>
+</template>
+
+<template name="schemaTaxonomyWizard">
+  <h4>Fields</h4>
+  {{#each fields}}
+    <button class="btn btn-danger taxonomy-field" data-field="{{name}}">{{name}}</button>
+  {{/each}}
+</template>

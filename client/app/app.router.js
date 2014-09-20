@@ -327,4 +327,42 @@ Router.map(function() {
         return maWizard.getDataContext();
     }
   });
+  this.route('taxonomy', {
+    path: '/settings/taxonomy',
+    template: 'taxonomySettings',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      setPageTitle("Taxonomy settings");
+    },
+    waitOn: function() {
+      return Meteor.subscribe('schemas', {fields: {name: 1}});
+    }
+  });
+  this.route('schemaTaxonomy', {
+    path: '/settings/taxonomy/schema_:_id',
+    template: 'schemaTaxonomyContainer',
+    yieldTemplates: getYieldTemplates(),
+    onBeforeAction: function() {
+      setPageTitle("Schemas taxonomy");
+
+      if(this.ready()) {
+        var _id = this.params._id;
+          
+        maWizard.init({
+          collection: Taxonomies,
+          id: Taxonomies.find().fetch()[0]._id,
+          baseRoute: "/settings/taxonomy",
+          template: this.route.options.template
+        });
+      }
+
+    },
+    waitOn: function() {
+      return [Meteor.subscribe('taxonomies')];
+    },
+    data: function() {
+      if(this.ready())
+        return maWizard.getDataContext();
+    }
+  });
 });

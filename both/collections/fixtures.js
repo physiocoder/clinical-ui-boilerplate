@@ -1,3 +1,74 @@
+artworkTypeTaxonomy = [
+	{	id: 1,
+		name: "Dipinto",
+		technique: [
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6"
+			],
+		material: [
+			"1",
+			"2",
+			"3"
+		]
+	},
+	{ id: 2,
+		name: "Disegno",
+		technique: [
+			"1",
+			"2"
+		],
+		material: [
+			"1",
+			"2",
+			"3"
+		]
+	},
+	{ id: 3,
+		name: "Incisione",
+		technique: [
+			"1",
+			"2"
+		],
+		material: [
+			"1",
+			"2",
+			"3"
+		]
+	},
+	{ id: 4,
+		name: "Scultura",
+		technique: [
+			"1",
+			"2"
+		],
+		material: [
+			"1",
+			"2",
+			"3"
+		]
+	},
+	{ id: 5,
+		name: "Tessile",
+		technique: [
+			"1",
+			"2"
+		],
+		material: [
+			"1",
+			"2",
+			"3"
+		]
+	}
+];
+
+if(Taxonomies.find().fetch().length === 0)
+	Taxonomies.insert({type: artworkTypeTaxonomy});
+
+/************************* OLD FIXTURES STRUCTURE ************************************************/
 artworkType = [
 	{	id: 1,
 		name: "Dipinto",

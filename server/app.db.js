@@ -18,6 +18,10 @@ Meteor.publish('schemas', function() {
 	return Schemas.find();
 });
 
+Meteor.publish('taxonomies', function() {
+    return Taxonomies.find();
+});
+
 Artworks.allow({
     update: function(userId) {
         return userId;
@@ -56,6 +60,18 @@ Attachments.allow({
 
 Schemas.allow({
     update: function(userId) {
+        return userId;
+    }
+});
+
+Taxonomies.allow({
+    insert: function(userId) {
+        return userId;
+    },
+    update: function(userId) {
+        return userId;
+    },
+    remove: function(userId) {
         return userId;
     }
 });
