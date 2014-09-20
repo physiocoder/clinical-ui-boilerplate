@@ -310,7 +310,12 @@ Router.map(function() {
       if(this.ready()) {
         var _id = this.params._id;
           
-        maWizard.init({collection: Schemas, id: _id, baseRoute: "/settings/UI", template: this.route.options.template});
+        maWizard.init({
+          collection: Schemas,
+          id: _id,
+          baseRoute: "/settings/UI",
+          template: this.route.options.template
+        });
       }
 
     },

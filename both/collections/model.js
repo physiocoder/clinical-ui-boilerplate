@@ -8,23 +8,23 @@ SimpleSchema.extendOptions({
     mawizard: Match.Optional(Object),
 });
 
-schemaDef = {
+schemaDetails = {
     name: {
         type: String,
-        label: "Name",
+        label: "Schema name",
         max: 20,
-    },
-    schema: {
-        type: Object,
-        label: "Schema definition",
     },
     visibleFields: {
         type: [String],
         label: "Fields to show"
+    },
+    enabledFields: {
+        type: [String],
+        label: "Enabled fields"
     }
 };
 
-Schemas.attachSchema(new maSimpleSchema(schemaDef));
+Schemas.attachSchema(new maSimpleSchema(schemaDetails));
 
 SchemaDefinitions = {};
 

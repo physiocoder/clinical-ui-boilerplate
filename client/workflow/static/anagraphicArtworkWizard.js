@@ -48,7 +48,7 @@ Template.anagraphicArtworkWizard.events({
 });
 
 Template.accessoriesSection.accessories = function() {
-	return SchemaDefinitions.Accessories.objectKeys();
+	return Object.keys(SchemaDefinitions.Accessories);
 };
 
 // this relates to the checbox for multiple artworks

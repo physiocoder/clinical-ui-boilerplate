@@ -21,6 +21,29 @@
 
 <template name="schemaUIWizard">
   <div id="schemaUIWizard">
-
+    <table>
+      <thead>
+        <tr>
+          <th>Fields</th>
+          <th>Visibility</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each fields}}
+          {{> fieldsListItem}}
+        {{/each}}
+      </tbody>
+    </table>
   </div>
+</template>
+
+<template name="fieldsListItem">
+  <tr class="list-item">
+    <td>{{label}}</td>
+    <td>
+      <label>visible
+        <input class="form-checkbox" type="checkbox" {{isChecked}} {{isEnabled}}>
+      </label>
+    </td>
+  </tr>
 </template>

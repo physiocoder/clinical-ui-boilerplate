@@ -60,19 +60,19 @@ Schemas.allow({
     }
 });
 
-function saveSchemasToDatabase() {
+function saveSchemaDetailsToDatabase() {
     for(var schemaName in SchemaDefinitions) {
         if(!Schemas.findOne({name: schemaName})) {
             var entry = {};
-            var currentSchema = SchemaDefinitions[schemaName];
-
+	
             entry.name = schemaName;
-            entry.schema = currentSchema;
-            entry.visibleFields = Object.keys(currentSchema);
+            entry.visibleFields = Object.keys(SchemaDefinitions[schemaName]);
+            entry.enabledFields = entry.visibleFields;
 
             Schemas.insert(entry);
         }
     }
 }
 
-saveSchemasToDatabase();
+Schemas.remove({});
+saveSchemaDetailsToDatabase();

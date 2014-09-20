@@ -8,7 +8,7 @@ Template.schemasList.schemas = function() {
 
 Template.schemasList.events({
 	'click .list-item': function(evt, templ) {
-		var id = evt.currentTarget.getAttribute('data-ref');
-		Router.go('/settings/UI/schema_' + id);
+		var _id = evt.currentTarget.getAttribute('data-ref');
+		Router.go('/settings/UI/schema_' + _id);
 	}
 });
