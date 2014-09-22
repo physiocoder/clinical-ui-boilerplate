@@ -347,18 +347,18 @@ Router.map(function() {
 
       if(this.ready()) {
         var _id = this.params._id;
-          
+
         maWizard.init({
-          collection: Taxonomies,
-          id: Taxonomies.find().fetch()[0]._id,
-          baseRoute: "/settings/taxonomy",
+          collection: ArtworksTaxonomies,
+          id: ArtworksTaxonomies.find().fetch()[0]._id,
+          baseRoute: "/settings/taxonomy/",
           template: this.route.options.template
         });
       }
 
     },
     waitOn: function() {
-      return [Meteor.subscribe('taxonomies')];
+      return [Meteor.subscribe('artworks_taxonomies')];
     },
     data: function() {
       if(this.ready())

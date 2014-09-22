@@ -66,19 +66,18 @@
 
 <template name="anagraphicSection">
   <div id="anagraphicSection" class="form-group">
-    {{> maWizardTextInput field="inventory" label="Inventory" placeholder="Inventory..."}}
-    {{> maWizardTextInput field="title" label="Title" placeholder="Title..."}}
-    {{> maWizardTextInput field="authors" label="Author(s)" placeholder="Author(s)..."}}
-    {{> maWizardTextarea field="description" label="description" placeholder="Description..."}}
-    {{> maWizardTextInput field="dating" label="Dating" placeholder="Ex. 1893, III sec., First half 1900..."}}
-    {{> maWizardSelect field="type" label="Artwork type" placeholder="Select artwork type"}}
+    {{> maWizardTextInput field="inventory"}}
+    {{> maWizardTextInput field="authors"}}
+    {{> maWizardTextarea field="description"}}
+    {{> maWizardTextInput field="dating"}}
+    {{> maWizardSelect field="type"}}
   </div>
 </template>
 
 <template name="materialSection">
   <div id="materialSection">
-    {{> maWizardMultiselect field="material" label="Artwork material"}}
-    {{> maWizardMultiselect field="technique" label="Artwork technique"}}
+    {{> maWizardMultiselect field="material"}}
+    {{> maWizardMultiselect field="technique"}}
     {{> accessoriesSection}}
   </div>
 </template>
@@ -197,13 +196,13 @@
 
 <template name="environmentSection">
   <div id="environmentSection">
-    {{> maWizardTextInput field="site" label="Site" placeholder="Site..."}}
-    {{> maWizardTextInput field="city" label="City" placeholder="City..."}}
-    {{> maWizardCheckbox field="UVP" label="UV protection"}}
-    {{> maWizardTextInput field="RH" label="Relative humidity" placeholder="Relative humidity..."}}
-    {{> maWizardTextInput field="temperature" label="Temperature" placeholder="Temperature..."}}
-    {{> maWizardTextInput field="lux" label="Lux" placeholder="Lux..."}}
-    {{> maWizardTextInput field="AMO" label="Adesione Microbica Oraria" placeholder="AMO"}}
+    {{> maWizardTextInput field="site"}}
+    {{> maWizardTextInput field="city"}}
+    {{> maWizardCheckbox field="UVP"}}
+    {{> maWizardTextInput field="RH"}}
+    {{> maWizardTextInput field="temperature"}}
+    {{> maWizardTextInput field="lux"}}
+    {{> maWizardTextInput field="AMO"}}
   </div>
 </template>
 
@@ -266,7 +265,7 @@
     <p><strong>Filename:</strong> {{name}}</p>
     <p><strong>Type:</strong> {{type}}</p>
     <p><strong>Size:</strong> {{size}} Bytes</p>
-    {{> maWizardTextarea field=descFieldStr label="Description" placeholder="Description..."}}
+    {{> maWizardTextarea field=descFieldStr}}
   </div>
 </template>
 

@@ -18,8 +18,8 @@ Meteor.publish('schemas', function() {
 	return Schemas.find();
 });
 
-Meteor.publish('taxonomies', function() {
-    return Taxonomies.find();
+Meteor.publish('artworks_taxonomies', function() {
+    return ArtworksTaxonomies.find();
 });
 
 Artworks.allow({
@@ -64,7 +64,7 @@ Schemas.allow({
     }
 });
 
-Taxonomies.allow({
+ArtworksTaxonomies.allow({
     insert: function(userId) {
         return userId;
     },

@@ -20,8 +20,109 @@
 </template>
 
 <template name="schemaTaxonomyWizard">
-  <h4>Fields</h4>
-  {{#each fields}}
-    <button class="btn btn-danger taxonomy-field" data-field="{{name}}">{{name}}</button>
-  {{/each}}
+  <div class="col-xs-4">
+    <button class="btn btn-danger taxonomy-field" data-field="type">Add/Edit Types</button>
+    {{> typesTable}}
+  </div>
+  <div class="col-xs-4">
+    <button class="btn btn-danger taxonomy-field" data-field="type">Add/Edit Materials</button>
+    {{> materialsTable}}
+  </div>
+  <div class="col-xs-4">
+    <button class="btn btn-danger taxonomy-field" data-field="type">Add/Edit Techniques</button>
+    {{> techniquesTable}}
+  </div>
+
+  {{> addTypeModal}}
+</template>
+
+<template name="addTypeModal">
+  <div id="typeModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Artwork types</h4>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="new-type" placeholder="New type" autofocus>
+          <button class="btn btn-success add-type">Add</button>
+          <table>
+            <thead>
+              <tr>
+                <th>Fields</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each typeNames}}
+                <tr>
+                  <td>{{> maWizardTextInput field=this label=" "}}</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</template>
+
+<template name="typesTable">
+  <div id="typesTable">
+    <table>
+      <thead>
+        <tr>
+          <th>Types</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each this.type}}
+          <tr class="{{isTypeSelected id}}" data-ref="{{id}}">
+            <td>{{this.name}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template name="materialsTable">
+  <div id="materialsTable">
+    <table>
+      <thead>
+        <tr>
+          <th>Materials</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each materials}}
+          <tr class="{{isSelected id}}" data-ref='{{id}}'>
+            <td>{{this.name}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template name="techniquesTable">
+  <div id="techniquesTable">
+    <table>
+      <thead>
+        <tr>
+          <th>Techniques</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each techniques}}
+          <tr class="{{isSelected id}}" data-ref='{{id}}'>
+            <td>{{this.name}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </template>

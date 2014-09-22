@@ -42,13 +42,15 @@ artworkTypeTaxonomy = [
 	{ id: 4,
 		name: "Scultura",
 		technique: [
-			"1",
-			"2"
+			"5",
+			"6",
+			"7",
+			"8"
 		],
 		material: [
-			"1",
-			"2",
-			"3"
+			"4",
+			"5",
+			"6"
 		]
 	},
 	{ id: 5,
@@ -65,8 +67,32 @@ artworkTypeTaxonomy = [
 	}
 ];
 
-if(Taxonomies.find().fetch().length === 0)
-	Taxonomies.insert({type: artworkTypeTaxonomy});
+materials = [
+	{ id: 1, name: "Canvas"},
+	{ id: 2, name: "Carta"},
+	{ id: 3, name: "Intonaco"},
+	{ id: 4, name: "Acciaio ceramico"},
+	{ id: 5, name: "Acciaio cromato"},
+	{ id: 6, name: "Bronzo"}
+];
+
+techniques = [
+	{ id: 1, name: "Acquarello/ Watercolor" },
+	{ id: 2, name: "Aerografo" },
+	{ id: 3, name: "Affresco/ Mural Painting" },
+	{ id: 4, name: "Acrilico/ Acrylic paint" },
+	{ id: 5, name: "Acciaio" },
+	{ id: 6, name: "Acciaio arrugginito e verniciato" },
+	{ id: 7, name: "Alabastro" },
+	{ id: 8, name: "Ardesia" }
+];
+
+if(Meteor.isServer && ArtworksTaxonomies.find().fetch().length === 0)
+	ArtworksTaxonomies.insert({
+		type: artworkTypeTaxonomy,
+		"materials": materials,
+		"techniques": techniques
+	});
 
 /************************* OLD FIXTURES STRUCTURE ************************************************/
 artworkType = [

@@ -3,7 +3,7 @@ Artworks = new Meteor.Collection('artworks');
 Exhibitions = new Meteor.Collection('exhibitions');
 Schemas = new Meteor.Collection('schemas');
 // either this name should be changed, or this collection should include all taxonomies
-Taxonomies = new Meteor.Collection('taxonomies');
+ArtworksTaxonomies = new Meteor.Collection('artworks_taxonomies');
 
 // extending SimpleSchema for usage with maWizard
 SimpleSchema.extendOptions({
@@ -45,15 +45,41 @@ TaxonomySchemas.Artwork = {
     },
     "type.$.material": {
         type: [String],
-        label: "IDs of materials linked to current artork type"
+        label: "IDs of materials linked to current artork type",
+        optional: true
     },
     "type.$.technique": {
         type: [String],
-        label: "IDs of techniques linked to current artwork type"
-    }
+        label: "IDs of techniques linked to current artwork type",
+        optional: true
+    },
+    materials: {
+        type: [Object],
+        label: "Artworks materials"
+    },
+    "materials.$.id": {
+        type: String,
+        label: "Material ID"
+    },
+    "materials.$.name": {
+        type: String,
+        label: "Material name"
+    },
+    techniques: {
+        type: [Object],
+        label: "Artworks techniques"
+    },
+    "techniques.$.id": {
+        type: String,
+        label: "Technique ID"
+    },
+    "techniques.$.name": {
+        type: String,
+        label: "Technique name"
+    },
 };
 
-Taxonomies.attachSchema(new maSimpleSchema(TaxonomySchemas.Artwork));
+ArtworksTaxonomies.attachSchema(new maSimpleSchema(TaxonomySchemas.Artwork));
 
 SchemaDefinitions = {};
 
