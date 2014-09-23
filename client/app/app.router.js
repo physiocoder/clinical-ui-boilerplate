@@ -1,28 +1,5 @@
-hideFooter = function() {
-  return $('footer').addClass("hide");
-};
-
-function fadeContentIn(context) {
-  console.log("In fadeContentIn()");
-  //console.log("Template: " + Router.current().lookupTemplate());
-  var templateName = context.lookupTemplate();
-  var templateDiv = $('#' + templateName);
-
-  console.log("TemplateName, templateDiv ->");
-  console.log(templateName, templateDiv);
-
-  templateDiv.addClass("animated fadeIn");
-
-  templateDiv.on('webkitTransitionEnd', function() {
-    console.log("On webkitTransitionEnd");
-    var templateName = 'aboutPage';//Router.current().lookupTemplate();
-
-    console.log("On webkitTransitionEnd - div:", $('#' + templateName));
-    // remove animation classes to let the browser re-run the
-    // animation in case the classes are reapplied later
-    $('#' + templateName).removeClass("animated fadeIn");
-  });
-}
+// this is used in wizards' routes
+Meteor.subscribe('schemas');
 
 Router.configure({
   onBeforeAction: function(pause) {
@@ -197,7 +174,6 @@ Router.map(function() {
     },
     onAfterAction: function() {
       console.log("In onAfterAction");
-      fadeContentIn(this);
     }
   });
   this.route('anagraphic', {
@@ -239,7 +215,13 @@ Router.map(function() {
         else
           _id = this.params._id;
 
-        maWizard.init({collection: Artworks, id: _id, baseRoute: "artworks", template: this.route.options.template});
+        maWizard.init({
+          collection: Artworks,
+          activeFields: Schemas.findOne({name: "Artwork"}).visibleFields,
+          id: _id,
+          baseRoute: "artworks",
+          template: this.route.options.template
+        });
       }
 
     },
@@ -277,7 +259,13 @@ Router.map(function() {
           else
             _id = this.params._id;
           
-        maWizard.init({collection: Exhibitions, id: _id, baseRoute: "exhibitions", template: this.route.options.template});
+        maWizard.init({
+          collection: Exhibitions,
+          activeFields: Schemas.findOne({name: "Exhibition"}).visibleFields,
+          id: _id,
+          baseRoute: "exhibitions",
+          template: this.route.options.template
+        });
       }
 
     },

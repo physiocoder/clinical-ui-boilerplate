@@ -90,5 +90,5 @@ function saveSchemaDetailsToDatabase() {
     }
 }
 
-Schemas.remove({});
-saveSchemaDetailsToDatabase();
+if(Schemas.find().fetch().legnth === 0)
+    saveSchemaDetailsToDatabase();
