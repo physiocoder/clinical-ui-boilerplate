@@ -50,6 +50,8 @@ Template.schemaTaxonomyWizard.fields = function() {
 Template.schemaTaxonomyWizard.events({
 	'click .taxonomy-field': function(evt, templ) {
 		var field = evt.currentTarget.getAttribute('data-field');
+
+		/* all very nice but overengineered
 		var rawFields = SchemaDefinitions.Artwork;
 		var fieldNames = Object.keys(rawFields);
 
@@ -62,7 +64,16 @@ Template.schemaTaxonomyWizard.events({
 		if(isDependency)
 			console.log("It's a dependency!");
 		else
-			$('#typeModal').modal('show');
+			$('#addTypeModal').modal('show');
+		*/
+
+		if(field === "type")
+			$('#addTypeModal').modal('show');
+		else if(field === "material")
+			$('#addMaterialModal').modal('show');
+		else if(field === "technique")
+			$('#addTechniqueModal').modal('show');
+
 	}
 });
 
@@ -86,7 +97,7 @@ Template.addTypeModal.events({
 		function generateTypeID() {
 			var ID = Math.floor(Math.random() * 1000);
 			if(_.pluck(maWizard.getDataContext().type, "id").indexOf(ID) > -1)
-				return generateTypeID;
+				return generateTypeID();
 			else return ID;
 		}
 
@@ -95,6 +106,72 @@ Template.addTypeModal.events({
 				type: {
 					id: generateTypeID(),
 					name: newType
+				}
+			});
+		}
+	}
+});
+
+Template.addMaterialModal.materialNames = function() {
+	try {
+		return _.map(maWizard.getDataContext().materials, function(elem, index) {
+			return "materials." + index + ".name";
+		});
+	}
+	catch(e) {
+		return [];
+	}
+};
+
+Template.addMaterialModal.events({
+	'click .add-material': function(evt, templ) {
+		var newMaterial = $('.new-material').val();
+
+		function generateMaterialID() {
+			var ID = Math.floor(Math.random() * 1000);
+			if(_.pluck(maWizard.getDataContext().material, "id").indexOf(ID) > -1)
+				return generateMaterialID();
+			else return ID;
+		}
+
+		if(newMaterial) {
+			maWizard.updateContext({
+				materials: {
+					id: generateMaterialID(),
+					name: newMaterial
+				}
+			});
+		}
+	}
+});
+
+Template.addTechniqueModal.techniqueNames = function() {
+	try {
+		return _.map(maWizard.getDataContext().techniques, function(elem, index) {
+			return "techniques." + index + ".name";
+		});
+	}
+	catch(e) {
+		return [];
+	}
+};
+
+Template.addTechniqueModal.events({
+	'click .add-technique': function(evt, templ) {
+		var newTechnique = $('.new-technique').val();
+
+		function generateTechniqueID() {
+			var ID = Math.floor(Math.random() * 1000);
+			if(_.pluck(maWizard.getDataContext().technique, "id").indexOf(ID) > -1)
+				return generateTechniqueID();
+			else return ID;
+		}
+		
+		if(newTechnique) {
+			maWizard.updateContext({
+				techniques: {
+					id: generateTechniqueID(),
+					name: newTechnique
 				}
 			});
 		}

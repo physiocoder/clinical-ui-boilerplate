@@ -88,7 +88,7 @@ Template.artworksTab.created = function() {
 };
 
 Template.artworksTab.rendered = function() {
-	var table = this.$('table');
+	var table = this.$('table').DataTable();
 
 	this.autorun(function() {
 		maWizard.getDataContext();
@@ -98,7 +98,7 @@ Template.artworksTab.rendered = function() {
 		// rebuilding the multiselect, in order to be sure that the
 		// HTML code has already been updated
 		setTimeout(function() {
-			table.dataTable();
+			table.DataTable();
 		}, 0);
 	});
 };
@@ -154,7 +154,7 @@ Template.currentArtworksTable.events({
 });
 
 Template.artworksUpdatingTable.rendered = function() {
-	var table = this.$('table');
+	var table = this.$('table').DataTable();
 
 	this.autorun(function() {
 		maWizard.getDataContext();
@@ -164,7 +164,8 @@ Template.artworksUpdatingTable.rendered = function() {
 		// rebuilding the multiselect, in order to be sure that the
 		// HTML code has already been updated
 		setTimeout(function() {
-			table.dataTable();
+			table.DataTable();
+			table.draw();
 		}, 0);
 	});
 };

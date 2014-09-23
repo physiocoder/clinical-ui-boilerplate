@@ -25,19 +25,22 @@
     {{> typesTable}}
   </div>
   <div class="col-xs-4">
-    <button class="btn btn-danger taxonomy-field" data-field="type">Add/Edit Materials</button>
+    <button class="btn btn-danger taxonomy-field" data-field="material">Add/Edit Materials</button>
     {{> materialsTable}}
   </div>
   <div class="col-xs-4">
-    <button class="btn btn-danger taxonomy-field" data-field="type">Add/Edit Techniques</button>
+    <button class="btn btn-danger taxonomy-field" data-field="technique">Add/Edit Techniques</button>
     {{> techniquesTable}}
   </div>
 
   {{> addTypeModal}}
+  {{> addMaterialModal}}
+  {{> addTechniqueModal}}
+
 </template>
 
 <template name="addTypeModal">
-  <div id="typeModal" class="modal fade">
+  <div id="addTypeModal" class="modal fade">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -55,6 +58,74 @@
             </thead>
             <tbody>
               {{#each typeNames}}
+                <tr>
+                  <td>{{> maWizardTextInput field=this label=" "}}</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</template>
+
+<template name="addMaterialModal">
+  <div id="addMaterialModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Materials</h4>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="new-material" placeholder="New material" autofocus>
+          <button class="btn btn-success add-material">Add</button>
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each materialNames}}
+                <tr>
+                  <td>{{> maWizardTextInput field=this label=" "}}</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</template>
+
+<template name="addTechniqueModal">
+  <div id="addTechniqueModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Techniques</h4>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="new-technique" placeholder="New technique" autofocus>
+          <button class="btn btn-success add-technique">Add</button>
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each techniqueNames}}
                 <tr>
                   <td>{{> maWizardTextInput field=this label=" "}}</td>
                 </tr>
