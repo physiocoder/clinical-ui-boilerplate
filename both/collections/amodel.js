@@ -1,8 +1,6 @@
-Anagraphics = new Meteor.Collection('anagraphics');
 Artworks = new Meteor.Collection('artworks');
 Exhibitions = new Meteor.Collection('exhibitions');
 Schemas = new Meteor.Collection('schemas');
-// either this name should be changed, or this collection should include all taxonomies
 ArtworksTaxonomies = new Meteor.Collection('artworks_taxonomies');
 
 // extending SimpleSchema for usage with maWizard
@@ -11,10 +9,10 @@ SimpleSchema.extendOptions({
 });
 
 schemaDetails = {
-    name: {
+    definition: {
         type: String,
-        label: "Schema name",
-        max: 20,
+        label: "Schema's definition name",
+        max: 100
     },
     visibleFields: {
         type: [String],
@@ -83,25 +81,7 @@ ArtworksTaxonomies.attachSchema(new maSimpleSchema(TaxonomySchemas.Artwork));
 
 SchemaDefinitions = {};
 
-SchemaDefinitions.User = {
-    name: {
-        type: String,
-        label: "Name",
-        max: 20
-    },
-    surname: {
-        type: String,
-        label: "Surname",
-        max: 20
-    },
-    sex: {
-		type: String,
-		label: "sex",
-		max: 1
-    }
-};
-
-SchemaDefinitions.Artwork = {
+SchemaDefinitions["artworks_definitions"] = {
     inventory: {
         type: String,
         label: "Inventory",
@@ -279,7 +259,7 @@ SchemaDefinitions.Artwork = {
     }
 };
 
-SchemaDefinitions.Accessories = {
+AccessoriesDef = {
     frame: {
         type: Boolean,
         label: "Frame - accessory",
@@ -310,10 +290,9 @@ SchemaDefinitions.Accessories = {
     }
 };
 
-SchemaDefinitions.Artwork = _.extend(SchemaDefinitions.Artwork, SchemaDefinitions.Accessories);
+SchemaDefinitions["artworks_definitions"] = _.extend(SchemaDefinitions["artworks_definitions"], AccessoriesDef);
 
-Anagraphics.attachSchema(new maSimpleSchema(SchemaDefinitions.User));
-Artworks.attachSchema(new maSimpleSchema(SchemaDefinitions.Artwork));
+Artworks.attachSchema(new maSimpleSchema(SchemaDefinitions["artworks_definitions"]));
 
 var localStore = [
         new FS.Store.FileSystem("attachments", {
@@ -430,7 +409,7 @@ Attachments = new FS.Collection("attachments", {
     stores: s3Store
 });
 
-SchemaDefinitions.Exhibition = {
+SchemaDefinitions["exhibitions_definitions"] = {
     name: {
         type: String,
         label: "Exhibition name",
@@ -459,4 +438,4 @@ SchemaDefinitions.Exhibition = {
     }
 };
 
-Exhibitions.attachSchema(new maSimpleSchema(SchemaDefinitions.Exhibition));
+Exhibitions.attachSchema(new maSimpleSchema(SchemaDefinitions["exhibitions_definitions"]));

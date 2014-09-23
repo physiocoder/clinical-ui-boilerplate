@@ -78,10 +78,10 @@ ArtworksTaxonomies.allow({
 
 function saveSchemaDetailsToDatabase() {
     for(var schemaName in SchemaDefinitions) {
-        if(!Schemas.findOne({name: schemaName})) {
+        if(!Schemas.findOne({definition: schemaName})) {
             var entry = {};
 	
-            entry.name = schemaName;
+            entry.definition = schemaName;
             entry.visibleFields = Object.keys(SchemaDefinitions[schemaName]);
             entry.enabledFields = entry.visibleFields;
 
@@ -90,5 +90,5 @@ function saveSchemaDetailsToDatabase() {
     }
 }
 
-if(Schemas.find().fetch().legnth === 0)
+if(Schemas.find().fetch().length === 0)
     saveSchemaDetailsToDatabase();

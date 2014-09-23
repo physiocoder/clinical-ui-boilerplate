@@ -15,7 +15,7 @@ Template.schemaUIWizard.fields = function() {
 
 	var fields = [];
 	// deep copy the schema definition
-	var schemaDef = $.extend(true, {}, SchemaDefinitions[current.name]);
+	var schemaDef = $.extend(true, {}, SchemaDefinitions[current.definition]);
 
 	function getFields(schemaDef, fields, deps) {
 		if(_.size(schemaDef) === 0) return fields;
@@ -60,7 +60,7 @@ Template.fieldsListItem.events({
 	'change': function(evt, templ) {
 		var visibleFields = maWizard.getDataContext().visibleFields;
 		var enabledFields = maWizard.getDataContext().enabledFields;
-		var currentSchema = maWizard.getDataContext().name;
+		var currentSchema = maWizard.getDataContext().definition;
 		var currentField = this.name;
 
 		function enable(field) {

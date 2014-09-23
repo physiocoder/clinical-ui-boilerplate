@@ -217,7 +217,6 @@ Router.map(function() {
 
         maWizard.init({
           collection: Artworks,
-          activeFields: Schemas.findOne({name: "Artwork"}).visibleFields,
           id: _id,
           baseRoute: "artworks",
           template: this.route.options.template
@@ -261,7 +260,6 @@ Router.map(function() {
           
         maWizard.init({
           collection: Exhibitions,
-          activeFields: Schemas.findOne({name: "Exhibition"}).visibleFields,
           id: _id,
           baseRoute: "exhibitions",
           template: this.route.options.template
@@ -285,7 +283,7 @@ Router.map(function() {
       setPageTitle("UI settings");
     },
     waitOn: function() {
-      return Meteor.subscribe('schemas', {fields: {name: 1}});
+      return Meteor.subscribe('schemas', {fields: {definition: 1}});
     }
   });
   this.route('schemaUI', {
@@ -323,7 +321,7 @@ Router.map(function() {
       setPageTitle("Taxonomy settings");
     },
     waitOn: function() {
-      return Meteor.subscribe('schemas', {fields: {name: 1}});
+      return Meteor.subscribe('schemas', {fields: {definition: 1}});
     }
   });
   this.route('schemaTaxonomy', {

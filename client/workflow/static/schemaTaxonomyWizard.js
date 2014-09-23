@@ -23,30 +23,6 @@ Template.schemaTaxonomyWizard.rendered = function() {
 	});
 };
 
-Template.schemaTaxonomyWizard.fields = function() {
-	var rawFields = _.omit(ArtworksTaxonomies.find().fetch()[0], "_id");
-
-	var fields = [];
-
-	_.each(Object.keys(rawFields), function(fieldName) {
-		var field = rawFields[fieldName];
-		var fieldDef = SchemaDefinitions.Artwork[fieldName];
-		field.name = fieldName;
-		field.label = fieldDef.label;
-		fields.push(field);
-
-		_.each(fieldDef.maDependencies, function(dep) {
-			var dependentField = {
-				name: dep,
-				label: SchemaDefinitions.Artwork[dep].label
-			};
-			fields.push(dependentField);
-		});
-	});
-
-	return fields;
-};
-
 Template.schemaTaxonomyWizard.events({
 	'click .taxonomy-field': function(evt, templ) {
 		var field = evt.currentTarget.getAttribute('data-field');
