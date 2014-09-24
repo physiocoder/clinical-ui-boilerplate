@@ -21,10 +21,6 @@ schemaDetails = {
     visibleFields: {
         type: [String],
         label: "Visible fields"
-    },
-    enabledFields: {
-        type: [String],
-        label: "Enabled fields"
     }
 };
 

@@ -21,7 +21,7 @@ Template.schemaUIWizard.fields = function() {
 	var currentField;
 	var field = {};
 	var deps = [];
-	
+
 	while(filtered.length > 0) {
 		if(deps.length > 0) {
 			currentField = deps[0];
@@ -53,7 +53,28 @@ Template.fieldsListItem.isChecked = function() {
 };
 
 Template.fieldsListItem.isEnabled = function() {
-	return maWizard.getDataContext().enabledFields.indexOf(this.name) > -1 ? "" : "disabled";
+	var defs = SchemaDefinitions[maWizard.getDataContext().definition];
+
+	// if the `optional` property has not been set or is set to false, the field is required
+	function isRequired(field) {
+		if(defs[field].optional || defs[field].optional === false)
+			return false;
+		else
+			return true;
+	}
+	
+	if(isRequired(this.name))
+		return "disabled";
+
+	var state = "";
+
+	for(var def in defs) {
+		if(def.maDependencies && def.maDependencies.indexOf(this.name) > -1 && isRequired(def)) {
+			state = "disabled";
+		}
+	}
+
+	return state;
 };
 
 Template.fieldsListItem.events({

@@ -78,7 +78,7 @@ ArtworksTaxonomies.allow({
 
 function saveSchemaDetailsToDatabase() {
     for(var schemaName in SchemaDefinitions) {
-        
+
         // returns false for fields whose name is equal to/contains the String "id";
         // these usually are internal fields that we don't want to show to the user.
         // NOTE: I'm well aware of closures working, so you can safely ignore JSHint's warning
@@ -106,7 +106,6 @@ function saveSchemaDetailsToDatabase() {
             entry.definition = schemaName;
             entry.filtered = _.filter(Object.keys(SchemaDefinitions[schemaName]), filter);
             entry.visibleFields = entry.filtered;
-            entry.enabledFields = entry.visibleFields;
 
             Schemas.insert(entry);
         }
