@@ -14,9 +14,13 @@ schemaDetails = {
         label: "Schema's definition name",
         max: 100
     },
+    filtered: {
+        type: [String],
+        label: "Fields the user should be aware of"
+    },
     visibleFields: {
         type: [String],
-        label: "Fields to show"
+        label: "Visible fields"
     },
     enabledFields: {
         type: [String],

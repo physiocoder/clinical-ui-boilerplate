@@ -14,38 +14,38 @@ Template.schemaUIWizard.fields = function() {
 	if(!current) return [];
 
 	var fields = [];
-	// deep copy the schema definition
-	var schemaDef = $.extend(true, {}, SchemaDefinitions[current.definition]);
+	var schemaDef = SchemaDefinitions[current.definition];
+	// deep copy the filtered array
+	var filtered = $.extend(true, [], current.filtered);
 
-	function getFields(schemaDef, fields, deps) {
-		if(_.size(schemaDef) === 0) return fields;
-
-		var currentField;
-		var field = {};
-
-		if(deps && deps.length > 0) {
+	var currentField;
+	var field = {};
+	var deps = [];
+	
+	while(filtered.length > 0) {
+		if(deps.length > 0) {
 			currentField = deps[0];
 			field.label = "-> ";
 		}
 		else {
-			currentField = Object.keys(schemaDef)[0];
+			currentField = filtered[0];
 			field.label = "";
 		}
 
 		field.name = currentField;
 		field.label += schemaDef[currentField].label;
 
-		fields.push(field);
+		fields.push($.extend({}, field));
+
+		filtered.splice(filtered.indexOf(currentField), 1);
 
 		if(schemaDef[currentField].maDependencies)
-			return getFields(_.omit(schemaDef, currentField), fields, schemaDef[currentField].maDependencies);
-		else if(deps)
-			return getFields(_.omit(schemaDef, currentField), fields, deps.slice(1));
-		else
-			return getFields(_.omit(schemaDef, currentField), fields);
+			deps = schemaDef[currentField].maDependencies;
+		else if(deps.length > 0)
+			deps = deps.slice(1);
 	}
 
-	return getFields(schemaDef, fields);
+	return fields;
 };
 
 Template.fieldsListItem.isChecked = function() {
