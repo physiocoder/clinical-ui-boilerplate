@@ -97,16 +97,14 @@
       <div> <!-- objects container -->
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="#main" role="tab" data-toggle="tab">Main</a></li>
-          {{#if isMultiple}}
-            {{#each objects}}
-              <li><a href="#{{id}}Pane" class="object-tab" role="tab" data-toggle="tab">{{objNum}}</a></li>
-            {{/each}}
-            <li>
-              <a class="add-object" role="tab" data-toggle="tab">
-                <span class="glyphicon glyphicon-plus"></span>
-              </a>
-            </li>
-          {{/if}}
+          {{#each objects}}
+            <li><a href="#{{id}}Pane" class="object-tab" role="tab" data-toggle="tab">{{objNum}}</a></li>
+          {{/each}}
+          <li>
+            <a class="add-object" role="tab" data-toggle="tab">
+              <span class="glyphicon glyphicon-plus"></span>
+            </a>
+          </li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="main">
@@ -125,39 +123,34 @@
 
           }}
           </div>
-          {{#if isMultiple}}
-            {{#each objects}}
-            <div class="tab-pane object-pane" id="{{id}}Pane">
-              <div class="pane-content">
-                {{#if maWizardIsFieldActive objnameFieldStr}}
-                  <div class="form-group {{maWizardFieldValidity objnameFieldStr }}">
-                    <label class="control-label" for="objname">Name {{maWizardErrMsg objnameFieldStr}}</label>
-                    <input type="text" class="form-control " data-ma-wizard-control id="objname" placeholder="Object name..." value="{{objname}}"
-          data-schemafield={{objnameFieldStr}} maxlength=10>
-                  </div>
-                {{/if}}
-                {{> dimensionsTemplate
+          {{#each objects}}
+          <div class="tab-pane object-pane" id="{{id}}Pane">
+            <div class="pane-content">
+              {{#if maWizardIsFieldActive objnameFieldStr}}
+                <div class="form-group {{maWizardFieldValidity objnameFieldStr }}">
+                  <label class="control-label" for="objname">Name</label>
+                  <input type="text" class="form-control " data-ma-wizard-control id="objname" placeholder="Object name..." value="{{objname}}"
+        data-schemafield={{objnameFieldStr}} maxlength=10>
+                  <span class="help-block">{{maWizardErrMsg objnameFieldStr}}</span>
+                </div>
+              {{/if}}
+              {{> dimensionsTemplate
 
-                  heightVal = height
-                  lengthVal = length
-                  depthVal = depth
-                  heightField = heightFieldStr 
-                  lengthField = lengthFieldStr 
-                  depthField = depthFieldStr
+                heightVal = height
+                lengthVal = length
+                depthVal = depth
+                heightField = heightFieldStr 
+                lengthField = lengthFieldStr 
+                depthField = depthFieldStr
 
-                }}
-              </div>
-              <button class="remove-obj btn btn-danger" data-objref="{{id}}">Remove object</button>
+              }}
             </div>
-            {{/each}}
-          {{/if}}
+            <button class="remove-obj btn btn-danger" data-objref="{{id}}">Remove object</button>
+          </div>
+          {{/each}}
         </div>
       </div>
       <div>
-        <label>
-          <input class="multiple-checkbox" type="checkbox" value="multiple" {{isChecked}}>
-          Opera multipla
-        </label>
         {{> unitsSelection}}
       </div>
     </div>
@@ -182,21 +175,24 @@
   <div class="dimensionsTemplate">
     {{#if maWizardIsFieldActive heightField}}
       <div class="form-group field-height {{maWizardFieldValidity heightField }}">
-        <label class="control-label" for="heightElem">Height {{maWizardErrMsg heightField}}</label>
+        <label class="control-label" for="heightElem">Height</label>
         <input type="text" class="form-control " data-conversion id="heightElem" placeholder="Height in {{unit}}" value="{{convertValue 'heightVal'}}"
           data-schemafield="{{heightField}}" maxlength=10>
+        <span class="help-block">{{maWizardErrMsg heightField}}</span>
       </div>
     {{/if}}
     {{#if maWizardIsFieldActive lengthField}}
       <div class="form-group field-length {{maWizardFieldValidity lengthField }}">
-        <label class="control-label" for="lengthElem">Length {{maWizardErrMsg lengthField}}</label>
+        <label class="control-label" for="lengthElem">Length</label>
         <input type="text" class="form-control " data-conversion id="lengthElem" placeholder="Length in {{unit}}" value="{{convertValue 'lengthVal'}}" data-schemafield="{{lengthField}}" maxlength=10>
+        <span class="help-block">{{maWizardErrMsg lengthField}}</span>
       </div>
     {{/if}}
     {{#if maWizardIsFieldActive depthField}}
       <div class="form-group field-depth {{maWizardFieldValidity depthField }}">
-        <label class="control-label" for="depthElem">Depth {{maWizardErrMsg depthField}}</label>
+        <label class="control-label" for="depthElem">Depth</label>
         <input type="text" class="form-control " data-conversion id="depthElem" placeholder="Depth in {{unit}}" value="{{convertValue 'depthVal'}}" data-schemafield="{{depthField}}" maxlength=10>
+        <span class="help-block">{{maWizardErrMsg depthField}}</span>
       </div>
     {{/if}}
   </div>

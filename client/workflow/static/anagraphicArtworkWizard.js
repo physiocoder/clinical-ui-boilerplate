@@ -59,10 +59,6 @@ Template.physicsDescriptionSection.isChecked = function() {
 		return '';
 };
 
-Template.physicsDescriptionSection.isMultiple = function() {
-	return this.multiple;
-};
-
 Template.physicsDescriptionSection.objects = function() {
 	return _.map(this.objects, function(elem, index, list) {
 		elem["objNum"] = index + 1;
@@ -134,8 +130,11 @@ Template.physicsDescriptionSection.events({
 
 		maWizard.updateContext({objects: newObj});
 
-		// let the user insert values for the new object <- doesn't work
-		$('a[href=#' + newObj.id + 'Pane]').tab('show');
+		// let the user insert values for the new object, using a setTimeout
+		// to wait for the interface to be up-to-date
+		setTimeout(function() {
+			$('a[href=#' + newObj.id + 'Pane]').tab('show');
+		}, 0);
 		
 	},
 	'click .remove-obj': function(evt, templ) {
