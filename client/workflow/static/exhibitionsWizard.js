@@ -88,19 +88,7 @@ Template.artworksTab.created = function() {
 };
 
 Template.artworksTab.rendered = function() {
-	var table = this.$('table').DataTable();
-
-	this.autorun(function() {
-		maWizard.getDataContext();
-
-		// here we use a timeout to be sure that all the helpers
-		// that react to the data context changes are executed before
-		// rebuilding the multiselect, in order to be sure that the
-		// HTML code has already been updated
-		setTimeout(function() {
-			table.DataTable();
-		}, 0);
-	});
+	var table = this.$('table').dataTable();
 };
 
 Template.artworksTab.inUpdateMode = function() {
@@ -136,6 +124,14 @@ Template.artworksListItem.selectedIfParticipating = function() {
 };
 
 Template.currentArtworksTable.participatingArtworks = function() {
+	$('#currentArtworksTable table').attr('style', "visibility:hidden");
+	$('#currentArtworksTable table').DataTable().destroy(false);
+
+	setTimeout(function() {
+		$('#currentArtworksTable table').dataTable();
+		$('#currentArtworksTable table').attr('style', "visibility:show");
+	}, 0);
+
 	var current = maWizard.getDataContext();
 
 	if(current === undefined || current.artworks === undefined)
@@ -155,19 +151,6 @@ Template.currentArtworksTable.events({
 
 Template.artworksUpdatingTable.rendered = function() {
 	var table = this.$('table').DataTable();
-
-	this.autorun(function() {
-		maWizard.getDataContext();
-
-		// here we use a timeout to be sure that all the helpers
-		// that react to the data context changes are executed before
-		// rebuilding the multiselect, in order to be sure that the
-		// HTML code has already been updated
-		setTimeout(function() {
-			table.DataTable();
-			table.draw();
-		}, 0);
-	});
 };
 
 Template.artworksUpdatingTable.artworksList = function() {
