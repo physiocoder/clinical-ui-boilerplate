@@ -10,7 +10,7 @@
       {{#if _id}}
           {{> maWizardDiscard}}
           {{> maWizardBack}}
-          {{> maWizardBtn label="Ok"}}
+          {{> maWizardSave label="Ok"}}
         {{else}}
           {{> maWizardDiscard}}
           {{> maWizardCreate}}
@@ -70,14 +70,23 @@
     {{> maWizardTextInput field="authors"}}
     {{> maWizardTextarea field="description"}}
     {{> maWizardTextInput field="dating"}}
-    {{> maWizardSelect field="type"}}
+    {{> maWizardSelect
+      field="type"
+      addRoute="/settings/taxonomy/schema_4xRarm2WaH7QYnTQv"
+    }}
   </div>
 </template>
 
 <template name="materialSection">
   <div id="materialSection">
-    {{> maWizardMultiselect field="material"}}
-    {{> maWizardMultiselect field="technique"}}
+    {{> maWizardMultiselect
+      field="material"
+      addRoute="/settings/taxonomy/schema_4xRarm2WaH7QYnTQv"
+    }}
+    {{> maWizardMultiselect
+      field="technique"
+      addRoute="/settings/taxonomy/schema_4xRarm2WaH7QYnTQv"
+    }}
     {{> accessoriesSection}}
   </div>
 </template>

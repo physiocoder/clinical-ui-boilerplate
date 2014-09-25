@@ -17,4 +17,5 @@ cfs:filesystem
 cfs:graphicsmagick
 cfs:ui
 ma:wizard
+natestrauser:select2
 
