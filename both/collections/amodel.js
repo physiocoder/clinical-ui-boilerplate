@@ -115,7 +115,7 @@ SchemaDefinitions["artworks_definitions"] = {
         max: 200,
         maDependencies: ["material", "technique"],
         maAllowedValues: function() {
-            return _.map(artworkType, function(elem) {
+            return _.map(ArtworksTaxonomies.find().fetch()[0].type, function(elem) {
                 return {label: elem.name, value: elem.id};
             });
         }
@@ -129,7 +129,15 @@ SchemaDefinitions["artworks_definitions"] = {
         // the current value
         maAllowedValues: function(getKeyValue) {
             try {
-                return _.map(artworkTypeLookUp[getKeyValue("type")].materials, function(elem) {
+                var materialIDs = _.find(ArtworksTaxonomies.findOne().type, function(el) {
+                    return el.id === getKeyValue("type");
+                }).material;
+
+                var materials = _.filter(ArtworksTaxonomies.findOne().materials, function(elem) {
+                    return materialIDs.indexOf(elem.id) > -1;
+                });
+
+                return _.map(materials, function(elem) {
                     return {label: elem.name, value: elem.id.toString()};
                 });
             }
@@ -144,7 +152,15 @@ SchemaDefinitions["artworks_definitions"] = {
         optional: true,
         maAllowedValues: function(getKeyValue) {
             try {
-                return _.map(artworkTypeLookUp[getKeyValue("type")].tecnica, function(elem) {
+                var techniqueIDs = _.find(ArtworksTaxonomies.findOne().type, function(el) {
+                    return el.id === getKeyValue("type");
+                }).technique;
+
+                var techniques = _.filter(ArtworksTaxonomies.findOne().techniques, function(elem) {
+                    return techniqueIDs.indexOf(elem.id) > -1;
+                });
+
+                return _.map(techniques, function(elem) {
                     return {label: elem.name, value: elem.id.toString()};
                 });
             }

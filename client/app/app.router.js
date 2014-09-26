@@ -1,6 +1,3 @@
-// this is used in wizards' routes
-Meteor.subscribe('schemas');
-
 Router.configure({
   onBeforeAction: function(pause) {
     // see: https://github.com/EventedMind/iron-router/issues/554

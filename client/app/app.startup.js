@@ -2,6 +2,10 @@ Session.setDefault('resize', null);
 
 Meteor.startup(function(){
   if(Meteor.userId()){
+
+    Meteor.subscribe('schemas');
+    Meteor.subscribe('artworks_taxonomies');
+
     removeWallpaper();
   }else{
     setWallpaper();
