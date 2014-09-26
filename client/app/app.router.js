@@ -351,4 +351,79 @@ Router.map(function() {
         return maWizard.getDataContext();
     }
   });
+  this.route('collections', {
+      path: '/collections',
+      template: 'collections',
+      // yieldTemplates: getYieldTemplates(),
+      onBeforeAction: function() {
+        setPageTitle("Collections List");
+      },
+      waitOn: function() {
+        return [Meteor.subscribe('collections'), Meteor.subscribe('artworks')];
+      },
+      data: function() {
+        return Collections.find().fetch();
+      }
+    });
+
+    this.route('collectionsWizardDialog', {
+      path: '/collections/edit/:_id',
+      template: 'modal',
+      // yieldTemplates: getYieldTemplates(),
+      onBeforeAction: function() {
+        if(this.ready()) {
+          var _id;
+        
+          setPageTitle("Collection: " + this.name);
+
+          if(this.params._id === 'add')
+              _id = undefined;
+            else
+              _id = this.params._id;
+            
+          maWizard.init({
+            collection: Collections,
+            isModal: true,
+            id: _id,
+            baseRoute: "collections",
+            template: this.route.options.template
+          });
+        }
+      },
+      waitOn: function() {
+        return [Meteor.subscribe('collections'), Meteor.subscribe('artworks')];
+      },
+      data: function() {
+        return Collections.find().fetch();
+      }
+    });
+
+    this.route('collectionsWizard', {
+      path: '/collections/:_id',
+      template: 'collectionsWizardContainer',
+      // yieldTemplates: getYieldTemplates(),
+      onBeforeAction: function() {
+
+        if(this.ready()) {
+          var _id;
+        
+          setPageTitle("Collection: " + this.name);
+
+          if(this.params._id === 'add')
+              _id = undefined;
+            else
+              _id = this.params._id;
+            
+          maWizard.init({collection: Collections, id: _id, baseRoute: "collections", template: this.route.options.template});
+        }
+
+      },
+      waitOn: function() {
+        return [Meteor.subscribe('collections', this.params._id), Meteor.subscribe('artworks')];
+      },
+      data: function() {
+        if(this.ready())
+          return maWizard.getDataContext();
+      }
+    });
 });

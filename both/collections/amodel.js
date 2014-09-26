@@ -2,6 +2,7 @@ Artworks = new Meteor.Collection('artworks');
 Exhibitions = new Meteor.Collection('exhibitions');
 Schemas = new Meteor.Collection('schemas');
 ArtworksTaxonomies = new Meteor.Collection('artworks_taxonomies');
+Collections = new Meteor.Collection('collections');
 
 // extending SimpleSchema for usage with maWizard
 SimpleSchema.extendOptions({
@@ -439,3 +440,25 @@ SchemaDefinitions["exhibitions_definitions"] = {
 };
 
 Exhibitions.attachSchema(new maSimpleSchema(SchemaDefinitions["exhibitions_definitions"]));
+
+SchemaDefinitions["collections_definitions"] = {
+    userId: {
+      type: String,
+      optional: true,
+      autoValue: function () {
+        return Meteor.userId();
+      }
+    },
+    name: {
+      type: String,
+      optional: false,
+      label: "Name",
+    },
+    description: {
+      type: String,
+      optional: true,
+      label: "Description",
+    }
+};
+
+Collections.attachSchema(new maSimpleSchema(SchemaDefinitions["collections_definitions"]));

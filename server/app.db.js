@@ -10,6 +10,10 @@ Meteor.publish('exhibitions', function() {
 	return Exhibitions.find();
 });
 
+Meteor.publish('collections', function() {
+    return Collections.find();
+});
+
 Meteor.publish('attachments', function() {
 	return Attachments.find();
 });
@@ -35,6 +39,18 @@ Exhibitions.allow({
 	insert: function(userId) {
 		return userId;
 	},
+    update: function(userId) {
+        return userId;
+    },
+    remove: function(userId) {
+        return userId;
+    }
+});
+
+Collections.allow({
+    insert: function(userId) {
+        return userId;
+    },
     update: function(userId) {
         return userId;
     },

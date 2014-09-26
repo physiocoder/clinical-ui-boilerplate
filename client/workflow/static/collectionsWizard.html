@@ -1,0 +1,29 @@
+<template name="collectionsWizardContainer">
+  <div id="collectionsWizard" class="panel panel-inverse">
+    <div class="panel-heading">
+      <h4 class="panel-title">Collection Wizard</h4>
+    </div>
+    <div class="panel-body">
+      {{> collectionsWizard}}
+    </div>
+  </div>
+</template>
+
+<template name="collectionsWizard">
+	<div id="collectionsWizard">
+    <div>
+      {{> maWizardTextInput field="name" placeholder="Enter collection name"}}
+      {{> maWizardTextInput field="description" placeholder="Collection description"}}
+    </div>
+    <div>
+      {{#if _id}}
+        {{> maWizardDelete}}
+        {{> maWizardDiscard}}
+        {{> maWizardOk}}
+      {{else}}
+        {{> maWizardDiscard}}
+        {{> maWizardCreate}}
+      {{/if}}
+    </div>
+	</div>
+</template>

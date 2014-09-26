@@ -1,0 +1,78 @@
+<template name="modal">
+  <div id="modal">
+    {{> collections}}
+    {{> collectionsWizardDialog}}
+  </div>
+</template>
+
+<template name="collections">
+  <div id="collections" class="panel panel-inverse">
+    <div class="panel-heading">
+      <h4 class="panel-title">Collections Management</h4>
+    </div>
+    <div class="panel-body">
+      {{> collectionsList}}
+      {{> addListItem collection="collections"}}
+    </div>
+  </div>
+</template>
+
+<template name="collectionsList">
+  <div id="collectionsList">
+    <table class="table table-hover table-striped table-bordered dataTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Number of items</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each this}}
+          {{> collectionsListItem}}
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template name="collectionsListItem">
+  <tr class="list-item" data-ref="{{_id}}">
+    <td>{{name}}</td>
+    <td>{{description}}</td>
+    <td>{{itemsNumber}}</td>
+  </tr>
+</template>
+
+<template name="addListItem">
+  <button data-collection="{{collection}}" class="add btn btn-primary">Add {{collection}}</button>
+</template>
+
+<template name="collectionsWizardDialog">
+  {{#with currentCollection}}
+  <div id="collectionsWizardDialog" class="modal">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Collection Wizard</h4>
+        </div>
+        <div class="modal-body">
+          {{> maWizardTextInput field="name" placeholder="Enter collection name"}}
+          {{> maWizardTextInput field="description" placeholder="Collection description"}}
+        </div>
+        <div class="modal-footer">
+          {{#if _id}}
+            {{> maWizardDelete}}
+            {{> maWizardDiscard}}
+            {{> maWizardOk}}
+          {{else}}
+            {{> maWizardDiscard}}
+            {{> maWizardCreate}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/with}}
+</template>
