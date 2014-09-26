@@ -9,7 +9,7 @@
     <div class="panel-footer text-right">
       {{#if _id}}
           {{> maWizardDiscard}}
-          {{> maWizardBack}}
+          {{> maWizardOk label="Back"}}
           {{> maWizardSave label="Ok"}}
         {{else}}
           {{> maWizardDiscard}}
@@ -67,6 +67,7 @@
 <template name="anagraphicSection">
   <div id="anagraphicSection" class="form-group">
     {{> maWizardTextInput field="inventory"}}
+    {{> maWizardTextInput field="title"}}
     {{> maWizardTextInput field="authors"}}
     {{> maWizardTextarea field="description"}}
     {{> maWizardTextInput field="dating"}}

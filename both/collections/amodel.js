@@ -280,30 +280,37 @@ AccessoriesDef = {
     frame: {
         type: Boolean,
         label: "Frame - accessory",
+        optional: true
     },
     mount: {
         type: Boolean,
         label: "Mount - accessory",
+        optional: true
     },
     base: {
         type: Boolean,
         label: "Base - accessory",
+        optional: true
     },
     manuals: {
         type: Boolean,
         label: "Manuals - accessory",
+        optional: true
     },
     covers: {
         type: Boolean,
         label: "Covers - accessory",
+        optional: true
     },
     "case": {
         type: Boolean,
         label: "Case - accessory",
+        optional: true
     },
     belts: {
         type: Boolean,
         label: "Belts - accessory",
+        optional: true
     }
 };
 
