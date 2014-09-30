@@ -169,9 +169,10 @@ Template.artworksUpdatingTable.events({
 		if(evt.currentTarget.classList.contains("selected")) {
 			// remove elem from 'artworks' array
 			current.splice(current.indexOf(id), 1);
-			updated = current;
 		}
 		else current.push(id);
+
+		updated = current;
 
 		evt.currentTarget.classList.toggle("selected");
 
